@@ -1,0 +1,8 @@
+<Solution>
+  <Project Path="Headquartz.App/Headquartz.App.csproj" />
+  <Project Path="Headquartz.Domain/Headquartz.Domain.csproj" />
+  <Project Path="Headquartz.Infrastructure/Headquartz.Infrastructure.csproj" />
+  <Project Path="Headquartz.Networking/Headquartz.Networking.csproj" />
+  <Project Path="Headquartz.Shared/Headquartz.Shared.csproj" />
+  <Project Path="Headquartz.Simulation/Headquartz.Simulation.csproj" />
+</Solution>

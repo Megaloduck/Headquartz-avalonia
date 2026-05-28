@@ -1,0 +1,216 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Headquartz.App.CompanyView">
+	
+	<ScrollViewer>
+
+		<StackPanel Margin="30"
+                    Spacing="20">
+
+			<TextBlock
+                FontSize="34"
+                FontWeight="Bold"
+                Text="Company Overview"/>
+
+			<WrapPanel>
+
+				<!-- CASH -->
+
+				<Border
+                    Width="250"
+                    Margin="10"
+                    Padding="20"
+                    Background="#202633"
+                    CornerRadius="12">
+
+					<StackPanel>
+
+						<TextBlock
+                            FontSize="18"
+                            Text="Cash"/>
+
+						<TextBlock
+                            FontSize="32"
+                            FontWeight="Bold"
+                            Text="{Binding Cash}"/>
+
+					</StackPanel>
+
+				</Border>
+
+				<!-- REVENUE -->
+
+				<Border
+                    Width="250"
+                    Margin="10"
+                    Padding="20"
+                    Background="#202633"
+                    CornerRadius="12">
+
+					<StackPanel>
+
+						<TextBlock
+                            FontSize="18"
+                            Text="Revenue"/>
+
+						<TextBlock
+                            FontSize="32"
+                            FontWeight="Bold"
+                            Text="{Binding Revenue}"/>
+
+					</StackPanel>
+
+				</Border>
+
+				<!-- EXPENSES -->
+
+				<Border
+                    Width="250"
+                    Margin="10"
+                    Padding="20"
+                    Background="#202633"
+                    CornerRadius="12">
+
+					<StackPanel>
+
+						<TextBlock
+                            FontSize="18"
+                            Text="Expenses"/>
+
+						<TextBlock
+                            FontSize="32"
+                            FontWeight="Bold"
+                            Text="{Binding Expenses}"/>
+
+					</StackPanel>
+
+				</Border>
+
+				<!-- REPUTATION -->
+
+				<Border
+                    Width="250"
+                    Margin="10"
+                    Padding="20"
+                    Background="#202633"
+                    CornerRadius="12">
+
+					<StackPanel>
+
+						<TextBlock
+                            FontSize="18"
+                            Text="Reputation"/>
+
+						<TextBlock
+                            FontSize="32"
+                            FontWeight="Bold"
+                            Text="{Binding Reputation}"/>
+
+					</StackPanel>
+
+				</Border>
+
+			</WrapPanel>
+
+			<!-- SECOND ROW -->
+
+			<WrapPanel>
+
+				<Border
+                    Width="250"
+                    Margin="10"
+                    Padding="20"
+                    Background="#202633"
+                    CornerRadius="12">
+
+					<StackPanel>
+
+						<TextBlock
+                            FontSize="18"
+                            Text="Employees"/>
+
+						<TextBlock
+                            FontSize="32"
+                            FontWeight="Bold"
+                            Text="{Binding EmployeeCount}"/>
+
+					</StackPanel>
+
+				</Border>
+
+				<Border
+                    Width="250"
+                    Margin="10"
+                    Padding="20"
+                    Background="#202633"
+                    CornerRadius="12">
+
+					<StackPanel>
+
+						<TextBlock
+                            FontSize="18"
+                            Text="Tasks"/>
+
+						<TextBlock
+                            FontSize="32"
+                            FontWeight="Bold"
+                            Text="{Binding ActiveTasks}"/>
+
+					</StackPanel>
+
+				</Border>
+
+				<Border
+                    Width="250"
+                    Margin="10"
+                    Padding="20"
+                    Background="#202633"
+                    CornerRadius="12">
+
+					<StackPanel>
+
+						<TextBlock
+                            FontSize="18"
+                            Text="Orders"/>
+
+						<TextBlock
+                            FontSize="32"
+                            FontWeight="Bold"
+                            Text="{Binding ActiveOrders}"/>
+
+					</StackPanel>
+
+				</Border>
+
+				<Border
+                    Width="250"
+                    Margin="10"
+                    Padding="20"
+                    Background="#202633"
+                    CornerRadius="12">
+
+					<StackPanel>
+
+						<TextBlock
+                            FontSize="18"
+                            Text="Simulation Tick"/>
+
+						<TextBlock
+                            FontSize="32"
+                            FontWeight="Bold"
+                            Text="{Binding Tick}"/>
+
+					</StackPanel>
+
+				</Border>
+
+			</WrapPanel>
+
+		</StackPanel>
+
+	</ScrollViewer>
+
+</UserControl>

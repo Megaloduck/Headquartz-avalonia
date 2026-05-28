@@ -1,0 +1,76 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <AvaloniaUseCompiledBindingsByDefault>false</AvaloniaUseCompiledBindingsByDefault>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <AvaloniaResource Include="Assets\**" />
+    <AvaloniaXaml Remove="Assets\Themes\DarkTheme.axaml" />
+    <AvaloniaXaml Remove="Assets\Themes\LightTheme.axaml" />
+    <Folder Include="Assets\Styles\" />
+    <Folder Include="Views\Personalization\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="12.0.3" />
+    <PackageReference Include="Avalonia.Desktop" Version="12.0.3" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="12.0.3" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="12.0.3" />
+    <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
+    <PackageReference Include="Avalonia.Diagnostics" Version="11.3.16">
+      <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
+      <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.8" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.8" />
+    <PackageReference Include="Serilog" Version="4.3.1" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="6.1.1" />	  
+  </ItemGroup>
+
+	<ItemGroup>		
+		<ProjectReference Include="..\Headquartz.Domain\Headquartz.Domain.csproj" />
+		<ProjectReference Include="..\Headquartz.Infrastructure\Headquartz.Infrastructure.csproj" />
+		<ProjectReference Include="..\Headquartz.Networking\Headquartz.Networking.csproj" />
+		<ProjectReference Include="..\Headquartz.Shared\Headquartz.Shared.csproj" />
+		<ProjectReference Include="..\Headquartz.Simulation\Headquartz.Simulation.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <AvaloniaResource Update="Assets\Themes\LightTheme.axaml">
+	    <SubType>Designer</SubType>
+	  </AvaloniaResource>
+	  <AvaloniaResource Update="Assets\Themes\DarkTheme.axaml">
+	    <SubType>Designer</SubType>
+	  </AvaloniaResource>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Update="Views\MainMenu\ForecastView.axaml.cs">
+	    <DependentUpon>ForecastView.axaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\Managements\Finance\FinanceDashboardView.axaml.cs">
+	    <DependentUpon>FinanceDashboardView.axaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\Managements\Logistics\LogisticsDashboardView.axaml.cs">
+	    <DependentUpon>LogisticsDashboardView.axaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\Managements\Marketing\MarketingDashboardView.axaml.cs">
+	    <DependentUpon>MarketingDashboardView.axaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\Managements\Production\ProductionDashboardView.axaml.cs">
+	    <DependentUpon>ProductionDashboardView.axaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\Managements\Sales\SalesDashboardView.axaml.cs">
+	    <DependentUpon>SalesDashboardView.axaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\Managements\Warehouse\WarehouseDashboardView.axaml.cs">
+	    <DependentUpon>WarehouseDashboardView.axaml</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+</Project>
