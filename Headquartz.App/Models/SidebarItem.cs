@@ -13,4 +13,6 @@ public class SidebarItem
     public string Route { get; set; } = "";
 
     public bool IsVisible { get; set; } = true;
+
+
 }
