@@ -2,215 +2,189 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Headquartz.App.CompanyView">
-	
+
 	<ScrollViewer>
+		<StackPanel Margin="30" Spacing="20">
 
-		<StackPanel Margin="30"
-                    Spacing="20">
+			<!-- TITLE + WORLD TIME -->
+			<Grid ColumnDefinitions="*,Auto">
+				<StackPanel Grid.Column="0">
+					<TextBlock FontSize="34" FontWeight="Bold" Text="Company Overview"/>
+					<TextBlock FontSize="13" Foreground="#6B7280" Text="{Binding WorldTime}"/>
+				</StackPanel>
+				<Border
+                    Grid.Column="1"
+                    Padding="16,10"
+                    Background="#202633"
+                    CornerRadius="10"
+                    VerticalAlignment="Center">
+					<StackPanel HorizontalAlignment="Center">
+						<TextBlock FontSize="11" Foreground="#6B7280" Text="COMPANY HEALTH" HorizontalAlignment="Center"/>
+						<TextBlock
+                            FontSize="28"
+                            FontWeight="Bold"
+                            Text="{Binding CompanyHealth, StringFormat={}{0}/100}"
+                            HorizontalAlignment="Center"/>
+						<ProgressBar
+                            Value="{Binding CompanyHealth}"
+                            Maximum="100"
+                            Height="6"
+                            Width="120"
+                            Foreground="#10B981"/>
+					</StackPanel>
+				</Border>
+			</Grid>
 
-			<TextBlock
-                FontSize="34"
-                FontWeight="Bold"
-                Text="Company Overview"/>
-
+			<!-- FINANCIAL KPIs -->
 			<WrapPanel>
 
-				<!-- CASH -->
-
-				<Border
-                    Width="250"
-                    Margin="10"
-                    Padding="20"
-                    Background="#202633"
-                    CornerRadius="12">
-
+				<Border Width="220" Margin="10" Padding="20" Background="#202633" CornerRadius="12">
 					<StackPanel>
-
-						<TextBlock
-                            FontSize="18"
-                            Text="Cash"/>
-
-						<TextBlock
-                            FontSize="32"
-                            FontWeight="Bold"
-                            Text="{Binding Cash}"/>
-
+						<TextBlock FontSize="13" Foreground="#9CA3AF" Text="Cash"/>
+						<TextBlock FontSize="28" FontWeight="Bold" Text="{Binding Cash, StringFormat='${0:N0}'}"/>
 					</StackPanel>
-
 				</Border>
 
-				<!-- REVENUE -->
-
-				<Border
-                    Width="250"
-                    Margin="10"
-                    Padding="20"
-                    Background="#202633"
-                    CornerRadius="12">
-
+				<Border Width="220" Margin="10" Padding="20" Background="#202633" CornerRadius="12">
 					<StackPanel>
-
-						<TextBlock
-                            FontSize="18"
-                            Text="Revenue"/>
-
-						<TextBlock
-                            FontSize="32"
-                            FontWeight="Bold"
-                            Text="{Binding Revenue}"/>
-
+						<TextBlock FontSize="13" Foreground="#9CA3AF" Text="Revenue"/>
+						<TextBlock FontSize="28" FontWeight="Bold" Text="{Binding Revenue, StringFormat='${0:N0}'}"/>
 					</StackPanel>
-
 				</Border>
 
-				<!-- EXPENSES -->
-
-				<Border
-                    Width="250"
-                    Margin="10"
-                    Padding="20"
-                    Background="#202633"
-                    CornerRadius="12">
-
+				<Border Width="220" Margin="10" Padding="20" Background="#202633" CornerRadius="12">
 					<StackPanel>
-
-						<TextBlock
-                            FontSize="18"
-                            Text="Expenses"/>
-
-						<TextBlock
-                            FontSize="32"
-                            FontWeight="Bold"
-                            Text="{Binding Expenses}"/>
-
+						<TextBlock FontSize="13" Foreground="#9CA3AF" Text="Expenses"/>
+						<TextBlock FontSize="28" FontWeight="Bold" Text="{Binding Expenses, StringFormat='${0:N0}'}"/>
 					</StackPanel>
-
 				</Border>
 
-				<!-- REPUTATION -->
-
-				<Border
-                    Width="250"
-                    Margin="10"
-                    Padding="20"
-                    Background="#202633"
-                    CornerRadius="12">
-
+				<Border Width="220" Margin="10" Padding="20" Background="#202633" CornerRadius="12">
 					<StackPanel>
-
-						<TextBlock
-                            FontSize="18"
-                            Text="Reputation"/>
-
-						<TextBlock
-                            FontSize="32"
-                            FontWeight="Bold"
-                            Text="{Binding Reputation}"/>
-
+						<TextBlock FontSize="13" Foreground="#9CA3AF" Text="Reputation"/>
+						<TextBlock FontSize="28" FontWeight="Bold" Text="{Binding Reputation, StringFormat={}{0}/100}"/>
 					</StackPanel>
+				</Border>
 
+				<Border Width="220" Margin="10" Padding="20" Background="#202633" CornerRadius="12">
+					<StackPanel>
+						<TextBlock FontSize="13" Foreground="#9CA3AF" Text="Employees"/>
+						<TextBlock FontSize="28" FontWeight="Bold" Text="{Binding EmployeeCount}"/>
+					</StackPanel>
+				</Border>
+
+				<Border Width="220" Margin="10" Padding="20" Background="#202633" CornerRadius="12">
+					<StackPanel>
+						<TextBlock FontSize="13" Foreground="#9CA3AF" Text="Active Tasks"/>
+						<TextBlock FontSize="28" FontWeight="Bold" Text="{Binding ActiveTasks}"/>
+					</StackPanel>
+				</Border>
+
+				<Border Width="220" Margin="10" Padding="20" Background="#202633" CornerRadius="12">
+					<StackPanel>
+						<TextBlock FontSize="13" Foreground="#9CA3AF" Text="Active Orders"/>
+						<TextBlock FontSize="28" FontWeight="Bold" Text="{Binding ActiveOrders}"/>
+					</StackPanel>
+				</Border>
+
+				<Border Width="220" Margin="10" Padding="20" Background="#202633" CornerRadius="12">
+					<StackPanel>
+						<TextBlock FontSize="13" Foreground="#9CA3AF" Text="Simulation Tick"/>
+						<TextBlock FontSize="28" FontWeight="Bold" Text="{Binding Tick}"/>
+					</StackPanel>
 				</Border>
 
 			</WrapPanel>
 
-			<!-- SECOND ROW -->
+			<!-- DEPARTMENT HEALTH GRID -->
+			<Border Padding="20" Background="#202633" CornerRadius="12">
+				<StackPanel>
+					<TextBlock FontSize="22" FontWeight="Bold" Text="Department Status" Margin="0,0,0,16"/>
+					<ItemsControl ItemsSource="{Binding DepartmentHealth}">
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<Border Margin="0,5" Padding="14" Background="#2B3242" CornerRadius="8">
+									<Grid ColumnDefinitions="30,160,*,*,80,90">
 
-			<WrapPanel>
+										<!-- Emoji -->
+										<TextBlock Grid.Column="0" Text="{Binding Emoji}" FontSize="16" VerticalAlignment="Center"/>
 
-				<Border
-                    Width="250"
-                    Margin="10"
-                    Padding="20"
-                    Background="#202633"
-                    CornerRadius="12">
+										<!-- Name -->
+										<TextBlock Grid.Column="1" FontWeight="SemiBold" Text="{Binding Name}" VerticalAlignment="Center"/>
 
-					<StackPanel>
+										<!-- Efficiency bar -->
+										<StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
+											<TextBlock Text="Eff" FontSize="11" Foreground="#6B7280" Width="24"/>
+											<ProgressBar Value="{Binding Efficiency}" Maximum="100" Height="6" Width="120" Foreground="#10B981"/>
+											<TextBlock Text="{Binding Efficiency, StringFormat={}{0}%}" FontSize="11" Foreground="#9CA3AF"/>
+										</StackPanel>
 
-						<TextBlock
-                            FontSize="18"
-                            Text="Employees"/>
+										<!-- Stress bar -->
+										<StackPanel Grid.Column="3" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
+											<TextBlock Text="Stress" FontSize="11" Foreground="#6B7280" Width="36"/>
+											<ProgressBar Value="{Binding StressLevel}" Maximum="100" Height="6" Width="120" Foreground="#EF4444"/>
+											<TextBlock Text="{Binding StressLevel, StringFormat={}{0}%}" FontSize="11" Foreground="#9CA3AF"/>
+										</StackPanel>
 
-						<TextBlock
-                            FontSize="32"
-                            FontWeight="Bold"
-                            Text="{Binding EmployeeCount}"/>
+										<!-- Staff count -->
+										<TextBlock
+                                            Grid.Column="4"
+                                            Text="{Binding StaffCount, StringFormat='👤 {0}'}"
+                                            FontSize="12"
+                                            Foreground="#6B7280"
+                                            VerticalAlignment="Center"
+                                            HorizontalAlignment="Center"/>
 
-					</StackPanel>
+										<!-- Status badge -->
+										<TextBlock
+                                            Grid.Column="5"
+                                            Text="{Binding StatusText}"
+                                            FontSize="12"
+                                            Foreground="#9CA3AF"
+                                            HorizontalAlignment="Right"
+                                            VerticalAlignment="Center"/>
 
-				</Border>
+									</Grid>
+								</Border>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+				</StackPanel>
+			</Border>
 
-				<Border
-                    Width="250"
-                    Margin="10"
-                    Padding="20"
-                    Background="#202633"
-                    CornerRadius="12">
-
-					<StackPanel>
-
-						<TextBlock
-                            FontSize="18"
-                            Text="Tasks"/>
-
-						<TextBlock
-                            FontSize="32"
-                            FontWeight="Bold"
-                            Text="{Binding ActiveTasks}"/>
-
-					</StackPanel>
-
-				</Border>
-
-				<Border
-                    Width="250"
-                    Margin="10"
-                    Padding="20"
-                    Background="#202633"
-                    CornerRadius="12">
-
-					<StackPanel>
-
-						<TextBlock
-                            FontSize="18"
-                            Text="Orders"/>
-
-						<TextBlock
-                            FontSize="32"
-                            FontWeight="Bold"
-                            Text="{Binding ActiveOrders}"/>
-
-					</StackPanel>
-
-				</Border>
-
-				<Border
-                    Width="250"
-                    Margin="10"
-                    Padding="20"
-                    Background="#202633"
-                    CornerRadius="12">
-
-					<StackPanel>
-
-						<TextBlock
-                            FontSize="18"
-                            Text="Simulation Tick"/>
-
-						<TextBlock
-                            FontSize="32"
-                            FontWeight="Bold"
-                            Text="{Binding Tick}"/>
-
-					</StackPanel>
-
-				</Border>
-
-			</WrapPanel>
+			<!-- CRITICAL ALERTS FEED -->
+			<Border Padding="20" Background="#202633" CornerRadius="12">
+				<StackPanel>
+					<TextBlock FontSize="22" FontWeight="Bold" Text="Critical Alerts" Margin="0,0,0,12"/>
+					<TextBlock
+                        IsVisible="{Binding !RecentAlerts.Count}"
+                        Text="No critical alerts. Company is running smoothly."
+                        Foreground="#6B7280"/>
+					<ItemsControl ItemsSource="{Binding RecentAlerts}">
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<Border Margin="0,5" Padding="14" Background="#2B3242" CornerRadius="8">
+									<Grid ColumnDefinitions="*,Auto">
+										<StackPanel Grid.Column="0">
+											<TextBlock FontSize="14" FontWeight="Bold" Text="{Binding Title}"/>
+											<TextBlock FontSize="12" Foreground="#9CA3AF" Text="{Binding Description}" TextWrapping="Wrap" Margin="0,3,0,0"/>
+										</StackPanel>
+										<StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="12,0,0,0" Spacing="4">
+											<TextBlock FontSize="11" Foreground="#EF4444" HorizontalAlignment="Right"
+                                                Text="{Binding Severity}"/>
+											<TextBlock FontSize="11" Foreground="#6B7280" HorizontalAlignment="Right"
+                                                Text="{Binding RemainingTicks, StringFormat={}{0} ticks}"/>
+										</StackPanel>
+									</Grid>
+								</Border>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+				</StackPanel>
+			</Border>
 
 		</StackPanel>
-
 	</ScrollViewer>
 
 </UserControl>

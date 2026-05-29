@@ -2,13 +2,150 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Headquartz.App.WarehouseDashboardView">
-	<Grid>
-		<TextBlock
-            Text="WarehouseDashboard"
-            FontSize="28"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"/>
-	</Grid>
+
+	<ScrollViewer>
+		<StackPanel Margin="30" Spacing="20">
+
+			<TextBlock FontSize="34" FontWeight="Bold" Text="Warehouse"/>
+
+			<!-- LOW STOCK BANNER -->
+			<Border IsVisible="{Binding HasLowStock}" Background="#7C2D12" CornerRadius="12" Padding="20">
+				<StackPanel Orientation="Horizontal" Spacing="12">
+					<TextBlock Text="📦" FontSize="22" VerticalAlignment="Center"/>
+					<StackPanel>
+						<TextBlock
+                            Text="{Binding LowStockCount, StringFormat={}{0} ITEM(S) BELOW MINIMUM STOCK}"
+                            FontSize="16" FontWeight="Bold" Foreground="#FDBA74"/>
+						<TextBlock Text="Production and logistics may be blocked. Emergency restock recommended." Foreground="#FDBA74"/>
+					</StackPanel>
+				</StackPanel>
+			</Border>
+
+			<!-- KPIs -->
+			<ItemsControl ItemsSource="{Binding Kpis}">
+				<ItemsControl.ItemsPanel>
+					<ItemsPanelTemplate>
+						<WrapPanel/>
+					</ItemsPanelTemplate>
+				</ItemsControl.ItemsPanel>
+				<ItemsControl.ItemTemplate>
+					<DataTemplate>
+						<Border Width="220" Margin="10" Padding="20" Background="#202633" CornerRadius="12">
+							<StackPanel>
+								<TextBlock FontSize="13" Foreground="#9CA3AF" Text="{Binding Title}"/>
+								<TextBlock FontSize="28" FontWeight="Bold" Text="{Binding Value}"/>
+							</StackPanel>
+						</Border>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
+
+			<!-- ACTIONS -->
+			<WrapPanel>
+				<Button Padding="14" Margin="10" Command="{Binding EmergencyRestockCommand}"    Content="📥  Emergency Restock"/>
+				<Button Padding="14" Margin="10" Command="{Binding ReorganizeWarehouseCommand}" Content="🔄  Reorganize (−15% Stress)"/>
+			</WrapPanel>
+
+			<!-- INVENTORY LIST -->
+			<Border Padding="20" Background="#202633" CornerRadius="12">
+				<StackPanel>
+					<TextBlock FontSize="22" FontWeight="Bold" Text="Inventory" Margin="0,0,0,16"/>
+					<ItemsControl ItemsSource="{Binding Inventory}">
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<Border Margin="0,6" Padding="16" Background="#2B3242" CornerRadius="8">
+									<StackPanel Spacing="10">
+
+										<Grid ColumnDefinitions="*,Auto,Auto">
+											<StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8">
+												<TextBlock FontSize="16" FontWeight="Bold" Text="{Binding Name}" VerticalAlignment="Center"/>
+												<!-- Low stock warning -->
+												<Border
+                                                    IsVisible="{Binding IsLow}"
+                                                    Background="#7F1D1D"
+                                                    CornerRadius="6"
+                                                    Padding="6,2"
+                                                    VerticalAlignment="Center">
+													<TextBlock Text="LOW" FontSize="10" FontWeight="Bold" Foreground="#FCA5A5"/>
+												</Border>
+											</StackPanel>
+											<TextBlock
+                                                Grid.Column="1"
+                                                Margin="16,0,0,0"
+                                                FontSize="20"
+                                                FontWeight="Bold"
+                                                Text="{Binding Quantity}"
+                                                VerticalAlignment="Center"/>
+											<TextBlock
+                                                Grid.Column="2"
+                                                Margin="8,0,0,0"
+                                                FontSize="12"
+                                                Foreground="#6B7280"
+                                                Text="units"
+                                                VerticalAlignment="Center"/>
+										</Grid>
+
+										<!-- Stock level bar -->
+										<StackPanel Orientation="Horizontal" Spacing="8">
+											<ProgressBar
+                                                Value="{Binding FillPercent}"
+                                                Maximum="1.0"
+                                                Height="8"
+                                                Width="320"
+                                                Foreground="#F97316"
+                                                VerticalAlignment="Center"/>
+											<TextBlock
+                                                FontSize="11"
+                                                Foreground="#6B7280"
+                                                Text="{Binding FillPercent, StringFormat={}{0:P0}}"
+                                                VerticalAlignment="Center"/>
+										</StackPanel>
+
+										<!-- Min / Max / Cost -->
+										<StackPanel Orientation="Horizontal" Spacing="20">
+											<TextBlock FontSize="11" Foreground="#6B7280"
+                                                Text="{Binding MinimumStock, StringFormat='Min: {0}'}"/>
+											<TextBlock FontSize="11" Foreground="#6B7280"
+                                                Text="{Binding MaximumStock, StringFormat='Max: {0}'}"/>
+											<TextBlock FontSize="11" Foreground="#6B7280"
+                                                Text="{Binding UnitCost, StringFormat='Cost: ${0}/unit'}"/>
+										</StackPanel>
+
+									</StackPanel>
+								</Border>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+				</StackPanel>
+			</Border>
+
+			<!-- EVENTS -->
+			<Border Padding="20" Background="#202633" CornerRadius="12">
+				<StackPanel>
+					<TextBlock FontSize="22" FontWeight="Bold" Text="Warehouse Alerts" Margin="0,0,0,12"/>
+					<TextBlock IsVisible="{Binding !Events.Count}" Text="No active alerts." Foreground="#6B7280"/>
+					<ItemsControl ItemsSource="{Binding Events}">
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<Border Margin="0,6" Padding="14" Background="#2B3242" CornerRadius="8">
+									<StackPanel>
+										<TextBlock FontSize="15" FontWeight="Bold" Text="{Binding Title}"/>
+										<TextBlock Margin="0,4" Foreground="#9CA3AF" Text="{Binding Description}" TextWrapping="Wrap"/>
+										<StackPanel Orientation="Horizontal" Spacing="16" Margin="0,6,0,0">
+											<TextBlock FontSize="12" Foreground="#F97316"
+                                                Text="{Binding Severity, StringFormat='Severity: {0}'}"/>
+											<TextBlock FontSize="12" Foreground="#6B7280"
+                                                Text="{Binding RemainingTicks, StringFormat='Ticks left: {0}'}"/>
+										</StackPanel>
+									</StackPanel>
+								</Border>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+				</StackPanel>
+			</Border>
+
+		</StackPanel>
+	</ScrollViewer>
 </UserControl>

@@ -4,12 +4,11 @@ using System.Text;
 
 namespace Headquartz.App.ViewModels;
 
-public class CompanyViewModel
-    : CompanyDashboardViewModel
+public class CompanyViewModel : CompanyDashboardViewModel
 {
-    public CompanyViewModel(
-        Services.SimulationService simulation)
+    public CompanyViewModel(Services.SimulationService simulation)
         : base(simulation)
     {
+
     }
 }
