@@ -2,13 +2,152 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Headquartz.App.FinanceDashboardView">
-	<Grid>
-		<TextBlock
-            Text="Finance Dashboard"
-            FontSize="28"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"/>
-	</Grid>
+
+	<ScrollViewer>
+		<StackPanel Margin="30" Spacing="20">
+
+			<!-- TITLE -->
+			<TextBlock FontSize="34" FontWeight="Bold" Text="Finance"/>
+
+			<!-- CRISIS BANNER -->
+			<Border
+                IsVisible="{Binding IsCashCritical}"
+                Background="#7F1D1D"
+                CornerRadius="12"
+                Padding="20">
+				<StackPanel Orientation="Horizontal" Spacing="12">
+					<TextBlock Text="⚠" FontSize="22" Foreground="#FCA5A5" VerticalAlignment="Center"/>
+					<StackPanel>
+						<TextBlock Text="CASH CRISIS ACTIVE" FontSize="16" FontWeight="Bold" Foreground="#FCA5A5"/>
+						<TextBlock Text="Company cash is below zero. Immediate action required." Foreground="#FCA5A5"/>
+					</StackPanel>
+				</StackPanel>
+			</Border>
+
+			<!-- PAYROLL AT RISK BANNER -->
+			<Border
+                IsVisible="{Binding IsPayrollAtRisk}"
+                Background="#78350F"
+                CornerRadius="12"
+                Padding="20">
+				<StackPanel Orientation="Horizontal" Spacing="12">
+					<TextBlock Text="💸" FontSize="22" VerticalAlignment="Center"/>
+					<StackPanel>
+						<TextBlock Text="PAYROLL AT RISK" FontSize="16" FontWeight="Bold" Foreground="#FDE68A"/>
+						<TextBlock
+                            Text="{Binding NextPayroll, StringFormat='Next payroll of ${0:N0} may not be covered.'}"
+                            Foreground="#FDE68A"/>
+					</StackPanel>
+				</StackPanel>
+			</Border>
+
+			<!-- KPI ROW -->
+			<ItemsControl ItemsSource="{Binding Kpis}">
+				<ItemsControl.ItemsPanel>
+					<ItemsPanelTemplate>
+						<WrapPanel/>
+					</ItemsPanelTemplate>
+				</ItemsControl.ItemsPanel>
+				<ItemsControl.ItemTemplate>
+					<DataTemplate>
+						<Border Width="220" Margin="10" Padding="20" Background="#202633" CornerRadius="12">
+							<StackPanel>
+								<TextBlock FontSize="13" Foreground="#9CA3AF" Text="{Binding Title}"/>
+								<TextBlock FontSize="28" FontWeight="Bold" Text="{Binding Value}"/>
+							</StackPanel>
+						</Border>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
+
+			<!-- ACTIONS -->
+			<WrapPanel>
+				<Button Padding="14" Margin="10" Command="{Binding TakeLoanCommand}"    Content="💳  Take Loan (+$25,000)"/>
+				<Button Padding="14" Margin="10" Command="{Binding CutBudgetsCommand}"  Content="✂   Cut All Budgets (−10%)"/>
+				<Button Padding="14" Margin="10" Command="{Binding FreezeBonusesCommand}" Content="🧊  Freeze Bonuses"/>
+			</WrapPanel>
+
+			<!-- DEPARTMENT BUDGETS -->
+			<Border Padding="20" Background="#202633" CornerRadius="12">
+				<StackPanel>
+					<TextBlock FontSize="22" FontWeight="Bold" Text="Department Budgets" Margin="0,0,0,16"/>
+
+					<ItemsControl ItemsSource="{Binding DepartmentBudgets}">
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<Border Margin="0,5" Padding="14" Background="#2B3242" CornerRadius="8">
+									<Grid ColumnDefinitions="*,100,80,100">
+
+										<TextBlock
+                                            Grid.Column="0"
+                                            FontWeight="SemiBold"
+                                            Text="{Binding DepartmentName}"
+                                            VerticalAlignment="Center"/>
+
+										<TextBlock
+                                            Grid.Column="1"
+                                            Text="{Binding Budget, StringFormat='${0:N0}'}"
+                                            Foreground="#9CA3AF"
+                                            VerticalAlignment="Center"/>
+
+										<StackPanel Grid.Column="2" VerticalAlignment="Center">
+											<TextBlock
+                                                Text="{Binding Efficiency, StringFormat='⚙ {0}%'}"
+                                                FontSize="12"
+                                                Foreground="#6B7280"/>
+										</StackPanel>
+
+										<TextBlock
+                                            Grid.Column="3"
+                                            Text="{Binding StatusText}"
+                                            HorizontalAlignment="Right"
+                                            VerticalAlignment="Center"
+                                            FontSize="12"
+                                            Foreground="#9CA3AF"/>
+
+									</Grid>
+								</Border>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+
+				</StackPanel>
+			</Border>
+
+			<!-- DEPARTMENT EVENTS -->
+			<Border Padding="20" Background="#202633" CornerRadius="12">
+				<StackPanel>
+					<TextBlock FontSize="22" FontWeight="Bold" Text="Finance Alerts" Margin="0,0,0,12"/>
+
+					<TextBlock
+                        IsVisible="{Binding !Events.Count}"
+                        Text="No active alerts."
+                        Foreground="#6B7280"/>
+
+					<ItemsControl ItemsSource="{Binding Events}">
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<Border Margin="0,6" Padding="14" Background="#2B3242" CornerRadius="8">
+									<StackPanel>
+										<TextBlock FontSize="15" FontWeight="Bold" Text="{Binding Title}"/>
+										<TextBlock Margin="0,4,0,0" Foreground="#9CA3AF" Text="{Binding Description}" TextWrapping="Wrap"/>
+										<StackPanel Orientation="Horizontal" Spacing="16" Margin="0,6,0,0">
+											<TextBlock FontSize="12" Foreground="#EF4444"
+                                                Text="{Binding Severity, StringFormat='Severity: {0}'}"/>
+											<TextBlock FontSize="12" Foreground="#6B7280"
+                                                Text="{Binding RemainingTicks, StringFormat='Ticks left: {0}'}"/>
+										</StackPanel>
+									</StackPanel>
+								</Border>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+
+				</StackPanel>
+			</Border>
+
+		</StackPanel>
+	</ScrollViewer>
+
 </UserControl>

@@ -57,7 +57,7 @@ public partial class ShellViewModel
 
     public ObservableCollection<SidebarSection>
         SidebarSections
-    { get; } = [];
+            { get; } = [];
 
     // =========================================================
     // CONSTRUCTOR

@@ -42,16 +42,16 @@ public class NavigationService
                     new HRDashboardViewModel(_simulation),
 
                 "finance/dashboard" =>
-                    new FinanceDashboardViewModel(),
+                    new FinanceDashboardViewModel(_simulation),
 
                 "sales/dashboard" =>
-                    new SalesDashboardViewModel(),
+                    new SalesDashboardViewModel(_simulation),
 
                 "marketing/dashboard" =>
                     new MarketingDashboardViewModel(),
 
                 "production/dashboard" =>
-                    new ProductionDashboardViewModel(),
+                    new ProductionDashboardViewModel(_simulation),
 
                 "warehouse/dashboard" =>
                     new WarehouseDashboardViewModel(),

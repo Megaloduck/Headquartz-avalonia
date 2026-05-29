@@ -2,13 +2,159 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Headquartz.App.SalesDashboardView">
-	<Grid>
-		<TextBlock
-            Text="Sales Dashboard"
-            FontSize="28"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"/>
-	</Grid>
+
+	<ScrollViewer>
+		<StackPanel Margin="30" Spacing="20">
+
+			<!-- TITLE -->
+			<TextBlock FontSize="34" FontWeight="Bold" Text="Sales"/>
+
+			<!-- OVERDUE ORDERS BANNER -->
+			<Border
+                IsVisible="{Binding OverdueOrders}"
+                Background="#7F1D1D"
+                CornerRadius="12"
+                Padding="20">
+				<StackPanel Orientation="Horizontal" Spacing="12">
+					<TextBlock Text="📦" FontSize="22" VerticalAlignment="Center"/>
+					<StackPanel>
+						<TextBlock
+                            Text="{Binding OverdueOrders, StringFormat={}{0} ORDER(S) PAST DEADLINE}"	
+                            FontSize="16" FontWeight="Bold" Foreground="#FCA5A5"/>
+						<TextBlock
+                            Text="These orders will be cancelled and will damage reputation."
+                            Foreground="#FCA5A5"/>
+					</StackPanel>
+				</StackPanel>
+			</Border>
+
+			<!-- KPI ROW -->
+			<ItemsControl ItemsSource="{Binding Kpis}">
+				<ItemsControl.ItemsPanel>
+					<ItemsPanelTemplate>
+						<WrapPanel/>
+					</ItemsPanelTemplate>
+				</ItemsControl.ItemsPanel>
+				<ItemsControl.ItemTemplate>
+					<DataTemplate>
+						<Border Width="220" Margin="10" Padding="20" Background="#202633" CornerRadius="12">
+							<StackPanel>
+								<TextBlock FontSize="13" Foreground="#9CA3AF" Text="{Binding Title}"/>
+								<TextBlock FontSize="28" FontWeight="Bold" Text="{Binding Value}"/>
+							</StackPanel>
+						</Border>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
+
+			<!-- ACTIONS -->
+			<WrapPanel>
+				<Button Padding="14" Margin="10" Command="{Binding GenerateLeadCommand}"       Content="🎯  Generate Lead"/>
+				<Button Padding="14" Margin="10" Command="{Binding RunDiscountCampaignCommand}" Content="📣  Run Discount Campaign (+5 Rep)"/>
+			</WrapPanel>
+
+			<!-- ACTIVE ORDERS -->
+			<Border Padding="20" Background="#202633" CornerRadius="12">
+				<StackPanel>
+					<TextBlock FontSize="22" FontWeight="Bold" Text="Active Orders" Margin="0,0,0,16"/>
+
+					<TextBlock
+                        IsVisible="{Binding !Orders.Count}"
+                        Text="No active orders."
+                        Foreground="#6B7280"/>
+
+					<ItemsControl ItemsSource="{Binding Orders}">
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<Border
+                                    Margin="0,5"
+                                    Padding="14"
+                                    CornerRadius="8"
+                                    Background="#2B3242">
+
+									<Grid ColumnDefinitions="*,120,100,110">
+
+										<!-- Client + product -->
+										<StackPanel Grid.Column="0">
+											<TextBlock FontWeight="SemiBold" Text="{Binding ClientName}"/>
+											<TextBlock
+                                                FontSize="12"
+                                                Foreground="#6B7280"
+                                                Text="{Binding ProductName}"/>
+										</StackPanel>
+
+										<!-- Revenue -->
+										<TextBlock
+                                            Grid.Column="1"
+                                            Text="{Binding Revenue, StringFormat='${0:N0}'}"
+                                            Foreground="#10B981"
+                                            VerticalAlignment="Center"/>
+
+										<!-- Status -->
+										<TextBlock
+                                            Grid.Column="2"
+                                            Text="{Binding Status}"
+                                            FontSize="12"
+                                            Foreground="#9CA3AF"
+                                            VerticalAlignment="Center"/>
+
+										<!-- Deadline -->
+										<StackPanel Grid.Column="3" VerticalAlignment="Center">
+											<TextBlock
+                                                FontSize="11"
+                                                Text="{Binding Deadline}"
+                                                Foreground="#6B7280"/>
+											<TextBlock
+                                                FontSize="11"
+                                                FontWeight="Bold"
+                                                Text="OVERDUE"
+                                                Foreground="#EF4444"
+                                                IsVisible="{Binding IsOverdue}"/>
+										</StackPanel>
+
+									</Grid>
+
+								</Border>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+
+				</StackPanel>
+			</Border>
+
+			<!-- SALES EVENTS -->
+			<Border Padding="20" Background="#202633" CornerRadius="12">
+				<StackPanel>
+					<TextBlock FontSize="22" FontWeight="Bold" Text="Sales Alerts" Margin="0,0,0,12"/>
+
+					<TextBlock
+                        IsVisible="{Binding !Events.Count}"
+                        Text="No active alerts."
+                        Foreground="#6B7280"/>
+
+					<ItemsControl ItemsSource="{Binding Events}">
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<Border Margin="0,6" Padding="14" Background="#2B3242" CornerRadius="8">
+									<StackPanel>
+										<TextBlock FontSize="15" FontWeight="Bold" Text="{Binding Title}"/>
+										<TextBlock Margin="0,4" Foreground="#9CA3AF" Text="{Binding Description}" TextWrapping="Wrap"/>
+										<StackPanel Orientation="Horizontal" Spacing="16">
+											<TextBlock FontSize="12" Foreground="#3B82F6"
+                                                Text="{Binding Severity, StringFormat='Severity: {0}'}"/>
+											<TextBlock FontSize="12" Foreground="#6B7280"
+                                                Text="{Binding RemainingTicks, StringFormat='Ticks left: {0}'}"/>
+										</StackPanel>
+									</StackPanel>
+								</Border>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+				</StackPanel>
+			</Border>
+
+		</StackPanel>
+	</ScrollViewer>
+
 </UserControl>

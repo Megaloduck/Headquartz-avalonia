@@ -4,11 +4,195 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Headquartz.App.ProductionDashboardView">
-	<Grid>
-		<TextBlock
-            Text="Production Dashboard"
-            FontSize="28"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"/>
-	</Grid>
-</UserControl>
+
+		<ScrollViewer>
+			<StackPanel Margin="30" Spacing="20">
+
+				<!-- TITLE -->
+				<TextBlock FontSize="34" FontWeight="Bold" Text="Production"/>
+
+				<!-- DEPT CRISIS BANNER -->
+				<Border
+					IsVisible="{Binding IsDeptCritical}"
+					Background="#7C2D12"
+					CornerRadius="12"
+					Padding="20">
+					<StackPanel Orientation="Horizontal" Spacing="12">
+						<TextBlock Text="🏭" FontSize="22" VerticalAlignment="Center"/>
+						<StackPanel>
+							<TextBlock Text="PRODUCTION UNDER CRITICAL STRESS" FontSize="16" FontWeight="Bold" Foreground="#FDBA74"/>
+							<TextBlock
+								Text="{Binding DeptStress, StringFormat='Stress level at {0}%. Output degraded. Maintenance required.'}"
+								Foreground="#FDBA74"/>
+						</StackPanel>
+					</StackPanel>
+				</Border>
+
+				<!-- KPI ROW -->
+				<ItemsControl ItemsSource="{Binding Kpis}">
+					<ItemsControl.ItemsPanel>
+						<ItemsPanelTemplate>
+							<WrapPanel/>
+						</ItemsPanelTemplate>
+					</ItemsControl.ItemsPanel>
+					<ItemsControl.ItemTemplate>
+						<DataTemplate>
+							<Border Width="220" Margin="10" Padding="20" Background="#202633" CornerRadius="12">
+								<StackPanel>
+									<TextBlock FontSize="13" Foreground="#9CA3AF" Text="{Binding Title}"/>
+									<TextBlock FontSize="28" FontWeight="Bold" Text="{Binding Value}"/>
+								</StackPanel>
+							</Border>
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
+
+				<!-- DEPT HEALTH BARS -->
+				<Border Padding="20" Background="#202633" CornerRadius="12">
+					<StackPanel Spacing="12">
+						<TextBlock FontSize="18" FontWeight="Bold" Text="Department Health"/>
+
+						<StackPanel Spacing="4">
+							<StackPanel Orientation="Horizontal" Spacing="8">
+								<TextBlock Text="Efficiency" FontSize="12" Foreground="#9CA3AF" Width="80"/>
+								<ProgressBar
+									Value="{Binding DeptEfficiency}"
+									Maximum="100"
+									Height="10"
+									Width="260"
+									Foreground="#10B981"
+									VerticalAlignment="Center"/>
+								<TextBlock
+									Text="{Binding DeptEfficiency, StringFormat={}{0}%}"
+									FontSize="12" Foreground="#9CA3AF"/>
+							</StackPanel>
+
+							<StackPanel Orientation="Horizontal" Spacing="8">
+								<TextBlock Text="Stress" FontSize="12" Foreground="#9CA3AF" Width="80"/>
+								<ProgressBar
+									Value="{Binding DeptStress}"
+									Maximum="100"
+									Height="10"
+									Width="260"
+									Foreground="#EF4444"
+									VerticalAlignment="Center"/>
+								<TextBlock
+									Text="{Binding DeptStress, StringFormat={}{0}%}"
+									FontSize="12" Foreground="#9CA3AF"/>
+							</StackPanel>
+						</StackPanel>
+					</StackPanel>
+				</Border>
+
+				<!-- ACTIONS -->
+				<WrapPanel>
+					<Button Padding="14" Margin="10" Command="{Binding StartProductionRunCommand}" Content="▶  Start Production Run"/>
+					<Button Padding="14" Margin="10" Command="{Binding ScheduleMaintenanceCommand}" Content="🔧  Schedule Maintenance (−20% Stress)"/>
+				</WrapPanel>
+
+				<!-- WORK ORDERS -->
+				<Border Padding="20" Background="#202633" CornerRadius="12">
+					<StackPanel>
+						<TextBlock FontSize="22" FontWeight="Bold" Text="Work Orders" Margin="0,0,0,16"/>
+
+						<TextBlock
+							IsVisible="{Binding !WorkOrders.Count}"
+							Text="No active work orders."
+							Foreground="#6B7280"/>
+
+						<ItemsControl ItemsSource="{Binding WorkOrders}">
+							<ItemsControl.ItemTemplate>
+								<DataTemplate>
+									<Border Margin="0,5" Padding="14" Background="#2B3242" CornerRadius="8">
+										<StackPanel Spacing="8">
+
+											<Grid ColumnDefinitions="*,Auto,Auto">
+												<TextBlock
+													Grid.Column="0"
+													FontWeight="SemiBold"
+													Text="{Binding Name}"/>
+												<TextBlock
+													Grid.Column="1"
+													Margin="12,0"
+													FontSize="11"
+													Foreground="#6B7280"
+													Text="{Binding Priority, StringFormat='[{0}]'}"
+													VerticalAlignment="Center"/>
+												<TextBlock
+													Grid.Column="2"
+													FontSize="12"
+													Foreground="#9CA3AF"
+													Text="{Binding Status}"
+													VerticalAlignment="Center"/>
+											</Grid>
+
+											<!-- Progress bar -->
+											<StackPanel Orientation="Horizontal" Spacing="8">
+												<ProgressBar
+													Value="{Binding Progress}"
+													Maximum="1.0"
+													Height="6"
+													Width="320"
+													Foreground="#6366F1"
+													VerticalAlignment="Center"/>
+												<TextBlock
+													FontSize="11"
+													Foreground="#6B7280"
+													Text="{Binding Progress, StringFormat={}{0:P0}}"
+													VerticalAlignment="Center"/>
+											</StackPanel>
+
+											<StackPanel Orientation="Horizontal" Spacing="16">
+												<TextBlock FontSize="11" Foreground="#6B7280"
+													Text="{Binding Workers, StringFormat='👷 {0} workers'}"/>
+												<TextBlock FontSize="11" Foreground="#6B7280"
+													Text="{Binding RemainingTicks, StringFormat='⏱ {0} ticks left'}"/>
+												<TextBlock FontSize="11" Foreground="#EF4444"
+													IsVisible="{Binding IsBlocked}"
+													Text="⚠ BLOCKED — no workers available"/>
+											</StackPanel>
+
+										</StackPanel>
+									</Border>
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+						</ItemsControl>
+
+					</StackPanel>
+				</Border>
+
+				<!-- PRODUCTION EVENTS -->
+				<Border Padding="20" Background="#202633" CornerRadius="12">
+					<StackPanel>
+						<TextBlock FontSize="22" FontWeight="Bold" Text="Production Alerts" Margin="0,0,0,12"/>
+
+						<TextBlock
+							IsVisible="{Binding !Events.Count}"
+							Text="No active alerts."
+							Foreground="#6B7280"/>
+
+						<ItemsControl ItemsSource="{Binding Events}">
+							<ItemsControl.ItemTemplate>
+								<DataTemplate>
+									<Border Margin="0,6" Padding="14" Background="#2B3242" CornerRadius="8">
+										<StackPanel>
+											<TextBlock FontSize="15" FontWeight="Bold" Text="{Binding Title}"/>
+											<TextBlock Margin="0,4" Foreground="#9CA3AF" Text="{Binding Description}" TextWrapping="Wrap"/>
+											<StackPanel Orientation="Horizontal" Spacing="16">
+												<TextBlock FontSize="12" Foreground="#F97316"
+													Text="{Binding Severity, StringFormat='Severity: {0}'}"/>
+												<TextBlock FontSize="12" Foreground="#6B7280"
+													Text="{Binding RemainingTicks, StringFormat='Ticks left: {0}'}"/>
+											</StackPanel>
+										</StackPanel>
+									</Border>
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+						</ItemsControl>
+					</StackPanel>
+				</Border>
+
+			</StackPanel>
+		</ScrollViewer>
+
+	</UserControl>
