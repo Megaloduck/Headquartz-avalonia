@@ -8,6 +8,7 @@
 		<StackPanel Margin="30" Spacing="20">
 
 			<TextBlock FontSize="34" FontWeight="Bold" Text="Employee Management"/>
+			<TextBlock FontSize="13" Foreground="#6B7280" Text="Staff directory"/>
 
 			<!-- SUMMARY ROW -->
 			<WrapPanel>

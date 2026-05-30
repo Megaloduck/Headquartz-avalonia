@@ -22,15 +22,17 @@ public class NavigationService
         {
             // ── Main menu ─────────────────────────────────────
             "company" => new CompanyViewModel(_simulation),
-            "forecast" => new ForecastViewModel(),
+            "forecast" => new ForecastViewModel(_simulation),
 
             // ── Human Resources ───────────────────────────────
             "hr/dashboard" => new HRDashboardViewModel(_simulation),
             "hr/employees" => new HREmployeeManagementViewModel(_simulation),
             "hr/recruitment" => new HRRecruitmentViewModel(_simulation),
+            "hr/payroll" => new HRPayrollViewModel(_simulation),
 
             // ── Finance ───────────────────────────────────────
             "finance/dashboard" => new FinanceDashboardViewModel(_simulation),
+            "finance/budget" => new FinanceBudgetAllocationViewModel(_simulation),
 
             // ── Sales ─────────────────────────────────────────
             "sales/dashboard" => new SalesDashboardViewModel(_simulation),

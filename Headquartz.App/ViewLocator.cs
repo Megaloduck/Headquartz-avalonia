@@ -12,34 +12,23 @@ public class ViewLocator : IDataTemplate
     {
         return data switch
         {
-            // Main menu
             CompanyViewModel => new CompanyView(),
             ForecastViewModel => new ForecastView(),
 
-            // HR
             HRDashboardViewModel => new HRDashboardView(),
             HREmployeeManagementViewModel => new HREmployeeManagementView(),
             HRRecruitmentViewModel => new HRRecruitmentView(),
+            HRPayrollViewModel => new HRPayrollView(),
 
-            // Finance
             FinanceDashboardViewModel => new FinanceDashboardView(),
+            FinanceBudgetAllocationViewModel => new FinanceBudgetAllocationView(),
 
-            // Sales
             SalesDashboardViewModel => new SalesDashboardView(),
-
-            // Marketing
             MarketingDashboardViewModel => new MarketingDashboardView(),
-
-            // Production
             ProductionDashboardViewModel => new ProductionDashboardView(),
-
-            // Warehouse
             WarehouseDashboardViewModel => new WarehouseDashboardView(),
-
-            // Logistics
             LogisticsDashboardViewModel => new LogisticsDashboardView(),
 
-            // Fallback
             NotFoundViewModel => new NotFoundView(),
 
             _ => new TextBlock { Text = "View Not Found" }

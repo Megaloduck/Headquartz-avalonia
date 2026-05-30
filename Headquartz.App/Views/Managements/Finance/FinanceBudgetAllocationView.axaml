@@ -1,0 +1,146 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             x:Class="Headquartz.App.FinanceBudgetAllocationView">
+	
+	<ScrollViewer>
+		<StackPanel Margin="30" Spacing="20">
+
+			<TextBlock FontSize="34" FontWeight="Bold" Text="Budget Allocation"/>
+
+			<!-- SUMMARY ROW -->
+			<WrapPanel>
+				<Border Width="220" Margin="10" Padding="20" Background="#202633" CornerRadius="12">
+					<StackPanel>
+						<TextBlock FontSize="13" Foreground="#9CA3AF" Text="Company Cash"/>
+						<TextBlock FontSize="26" FontWeight="Bold"
+                            Text="{Binding CompanyCash, StringFormat='${0:N0}'}"/>
+					</StackPanel>
+				</Border>
+				<Border Width="220" Margin="10" Padding="20" Background="#202633" CornerRadius="12">
+					<StackPanel>
+						<TextBlock FontSize="13" Foreground="#9CA3AF" Text="Total Budget Allocated"/>
+						<TextBlock FontSize="26" FontWeight="Bold"
+                            Text="{Binding TotalBudget, StringFormat='${0:N0}'}"/>
+					</StackPanel>
+				</Border>
+				<Border Width="220" Margin="10" Padding="20" Background="#202633" CornerRadius="12">
+					<StackPanel>
+						<TextBlock FontSize="13" Foreground="#9CA3AF" Text="Operational Cost / Tick"/>
+						<TextBlock FontSize="26" FontWeight="Bold"
+                            Text="{Binding TotalOperationalCost, StringFormat='${0:N0}'}"/>
+					</StackPanel>
+				</Border>
+			</WrapPanel>
+
+			<!-- ACTIONS -->
+			<WrapPanel>
+				<Button Padding="14" Margin="10" Command="{Binding ResetAllCommand}" Content="↺  Reset All Budgets"/>
+			</WrapPanel>
+
+			<!-- DEPARTMENT BUDGET TABLE -->
+			<Border Padding="20" Background="#202633" CornerRadius="12">
+				<StackPanel>
+					<TextBlock FontSize="22" FontWeight="Bold" Text="Department Budgets" Margin="0,0,0,16"/>
+
+					<ItemsControl ItemsSource="{Binding Departments}">
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<Border Margin="0,6" Padding="16" Background="#2B3242" CornerRadius="8">
+									<Grid ColumnDefinitions="32,*,180,Auto">
+
+										<!-- Emoji -->
+										<TextBlock
+                                            Grid.Column="0"
+                                            Text="{Binding Emoji}"
+                                            FontSize="18"
+                                            VerticalAlignment="Center"/>
+
+										<!-- Name + health bars -->
+										<StackPanel Grid.Column="1" Spacing="6" Margin="8,0">
+											<TextBlock
+                                                FontSize="14"
+                                                FontWeight="SemiBold"
+                                                Text="{Binding Name}"/>
+											<StackPanel Orientation="Horizontal" Spacing="16">
+												<StackPanel Orientation="Horizontal" Spacing="6">
+													<TextBlock Text="Eff" FontSize="11" Foreground="#6B7280" Width="22"/>
+													<ProgressBar
+                                                        Value="{Binding Efficiency}"
+                                                        Maximum="100"
+                                                        Height="5" Width="80"
+                                                        Foreground="#10B981"
+                                                        VerticalAlignment="Center"/>
+													<TextBlock
+                                                        Text="{Binding Efficiency, StringFormat={}{0}%}"
+                                                        FontSize="11" Foreground="#9CA3AF"/>
+												</StackPanel>
+												<StackPanel Orientation="Horizontal" Spacing="6">
+													<TextBlock Text="Stress" FontSize="11" Foreground="#6B7280" Width="34"/>
+													<ProgressBar
+                                                        Value="{Binding StressLevel}"
+                                                        Maximum="100"
+                                                        Height="5" Width="80"
+                                                        Foreground="#EF4444"
+                                                        VerticalAlignment="Center"/>
+													<TextBlock
+                                                        Text="{Binding StressLevel, StringFormat={}{0}%}"
+                                                        FontSize="11" Foreground="#9CA3AF"/>
+												</StackPanel>
+												<TextBlock
+                                                    FontSize="11" Foreground="#6B7280"
+                                                    Text="{Binding StaffCount, StringFormat='👤 {0} staff'}"
+                                                    VerticalAlignment="Center"/>
+											</StackPanel>
+										</StackPanel>
+
+										<!-- Budget amount -->
+										<TextBlock
+                                            Grid.Column="2"
+                                            Text="{Binding Budget, StringFormat='${0:N0}'}"
+                                            FontSize="20"
+                                            FontWeight="Bold"
+                                            VerticalAlignment="Center"
+                                            HorizontalAlignment="Right"
+                                            Margin="0,0,16,0"/>
+
+										<!-- +/- buttons -->
+										<StackPanel
+                                            Grid.Column="3"
+                                            Orientation="Horizontal"
+                                            Spacing="6"
+                                            VerticalAlignment="Center">
+											<Button
+                                                Width="36" Height="36"
+                                                Background="#374151"
+                                                CornerRadius="6"
+                                                FontSize="18"
+                                                HorizontalContentAlignment="Center"
+                                                Command="{Binding $parent[ItemsControl].DataContext.DecreaseCommand}"
+                                                CommandParameter="{Binding}"
+                                                Content="−"/>
+											<Button
+                                                Width="36" Height="36"
+                                                Background="#374151"
+                                                CornerRadius="6"
+                                                FontSize="18"
+                                                HorizontalContentAlignment="Center"
+                                                Command="{Binding $parent[ItemsControl].DataContext.IncreaseCommand}"
+                                                CommandParameter="{Binding}"
+                                                Content="+"/>
+										</StackPanel>
+
+									</Grid>
+								</Border>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+
+				</StackPanel>
+			</Border>
+
+		</StackPanel>
+	</ScrollViewer>
+
+</UserControl>
