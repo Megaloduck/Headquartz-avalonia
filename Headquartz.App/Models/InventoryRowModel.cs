@@ -6,6 +6,7 @@ namespace Headquartz.App.Models;
 
 public class InventoryRowModel
 {
+    public Guid ItemId { get; set; }
     public string Name { get; set; } = "";
     public int Quantity { get; set; }
     public int MinimumStock { get; set; }

@@ -24,10 +24,18 @@ public class ViewLocator : IDataTemplate
             FinanceBudgetAllocationViewModel => new FinanceBudgetAllocationView(),
 
             SalesDashboardViewModel => new SalesDashboardView(),
+            SalesOrdersViewModel => new SalesOrdersView(),
+
             MarketingDashboardViewModel => new MarketingDashboardView(),
+
             ProductionDashboardViewModel => new ProductionDashboardView(),
+            ProductionWorkOrdersViewModel => new ProductionWorkOrdersView(),
+
             WarehouseDashboardViewModel => new WarehouseDashboardView(),
+            WarehouseInventoryViewModel => new WarehouseInventoryView(),
+
             LogisticsDashboardViewModel => new LogisticsDashboardView(),
+            LogisticsShipmentsViewModel => new LogisticsShipmentsView(),
 
             NotFoundViewModel => new NotFoundView(),
 

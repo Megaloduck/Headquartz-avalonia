@@ -6,6 +6,7 @@ namespace Headquartz.App.Models;
 
 public class TaskRowModel
 {
+    public Guid TaskId { get; set; }
     public string Name { get; set; } = "";
     public string Priority { get; set; } = "";
     public string Status { get; set; } = "";

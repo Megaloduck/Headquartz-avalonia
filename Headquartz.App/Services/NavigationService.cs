@@ -36,18 +36,22 @@ public class NavigationService
 
             // ── Sales ─────────────────────────────────────────
             "sales/dashboard" => new SalesDashboardViewModel(_simulation),
+            "sales/orders" => new SalesOrdersViewModel(_simulation),
 
             // ── Marketing ─────────────────────────────────────
             "marketing/dashboard" => new MarketingDashboardViewModel(_simulation),
 
             // ── Production ────────────────────────────────────
             "production/dashboard" => new ProductionDashboardViewModel(_simulation),
+            "production/workorders" => new ProductionWorkOrdersViewModel(_simulation),
 
             // ── Warehouse ─────────────────────────────────────
             "warehouse/dashboard" => new WarehouseDashboardViewModel(_simulation),
+            "warehouse/inventory" => new WarehouseInventoryViewModel(_simulation),
 
             // ── Logistics ─────────────────────────────────────
             "logistics/dashboard" => new LogisticsDashboardViewModel(_simulation),
+            "logistics/shipments" => new LogisticsShipmentsViewModel(_simulation),
 
             // ── Fallback ──────────────────────────────────────
             _ => new NotFoundViewModel(),

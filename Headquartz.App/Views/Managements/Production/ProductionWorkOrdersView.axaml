@@ -1,0 +1,168 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             x:Class="Headquartz.App.ProductionWorkOrdersView">
+
+	<ScrollViewer>
+		<StackPanel Margin="30" Spacing="20">
+
+			<TextBlock FontSize="34" FontWeight="Bold" Text="Work Orders"/>
+
+			<!-- KPI ROW -->
+			<ItemsControl ItemsSource="{Binding Kpis}">
+				<ItemsControl.ItemsPanel>
+					<ItemsPanelTemplate>
+						<WrapPanel/>
+					</ItemsPanelTemplate>
+				</ItemsControl.ItemsPanel>
+				<ItemsControl.ItemTemplate>
+					<DataTemplate>
+						<Border Width="200" Margin="10" Padding="20" Background="#202633" CornerRadius="12">
+							<StackPanel>
+								<TextBlock FontSize="13" Foreground="#9CA3AF" Text="{Binding Title}"/>
+								<TextBlock FontSize="26" FontWeight="Bold" Text="{Binding Value}"/>
+							</StackPanel>
+						</Border>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
+
+			<!-- ACTIONS + FILTER ROW -->
+			<Grid ColumnDefinitions="Auto,*">
+
+				<Button
+                    Grid.Column="0"
+                    Padding="14,9"
+                    Background="#6366F1"
+                    CornerRadius="8"
+                    Command="{Binding AddWorkOrderCommand}"
+                    Content="＋  New Work Order"/>
+
+				<ItemsControl Grid.Column="1" ItemsSource="{Binding Filters}" Margin="16,0,0,0">
+					<ItemsControl.ItemsPanel>
+						<ItemsPanelTemplate>
+							<StackPanel Orientation="Horizontal" Spacing="8"/>
+						</ItemsPanelTemplate>
+					</ItemsControl.ItemsPanel>
+					<ItemsControl.ItemTemplate>
+						<DataTemplate>
+							<Button
+                                Padding="14,8"
+                                CornerRadius="8"
+                                Background="#202633"
+                                Command="{Binding $parent[ItemsControl].DataContext.SetFilterCommand}"
+                                CommandParameter="{Binding}"
+                                Content="{Binding}"/>
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
+
+			</Grid>
+
+			<!-- TASK LIST -->
+			<Border Padding="20" Background="#202633" CornerRadius="12">
+				<StackPanel>
+
+					<TextBlock
+                        IsVisible="{Binding !Tasks.Count}"
+                        Text="No work orders match this filter."
+                        Foreground="#6B7280"/>
+
+					<ItemsControl ItemsSource="{Binding Tasks}">
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<Border Margin="0,5" Padding="16" Background="#2B3242" CornerRadius="8">
+									<StackPanel Spacing="10">
+
+										<!-- Title row -->
+										<Grid ColumnDefinitions="*,90,90,Auto">
+
+											<StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8">
+												<TextBlock
+                                                    FontWeight="SemiBold"
+                                                    FontSize="14"
+                                                    Text="{Binding Name}"
+                                                    VerticalAlignment="Center"/>
+												<Border
+                                                    IsVisible="{Binding IsBlocked}"
+                                                    Background="#450A0A"
+                                                    CornerRadius="5"
+                                                    Padding="6,2"
+                                                    VerticalAlignment="Center">
+													<TextBlock
+                                                        Text="BLOCKED"
+                                                        FontSize="10"
+                                                        FontWeight="Bold"
+                                                        Foreground="#FCA5A5"/>
+												</Border>
+											</StackPanel>
+
+											<Border
+                                                Grid.Column="1"
+                                                Padding="8,3"
+                                                CornerRadius="6"
+                                                Background="#1F2937"
+                                                VerticalAlignment="Center"
+                                                HorizontalAlignment="Left">
+												<TextBlock
+                                                    FontSize="11"
+                                                    Foreground="#9CA3AF"
+                                                    Text="{Binding Priority, StringFormat='P: {0}'}"/>
+											</Border>
+
+											<TextBlock
+                                                Grid.Column="2"
+                                                FontSize="12"
+                                                Foreground="#9CA3AF"
+                                                Text="{Binding Status}"
+                                                VerticalAlignment="Center"/>
+
+											<Button
+                                                Grid.Column="3"
+                                                Padding="10,5"
+                                                FontSize="11"
+                                                Background="#450A0A"
+                                                CornerRadius="6"
+                                                VerticalAlignment="Center"
+                                                Command="{Binding $parent[ItemsControl].DataContext.CancelTaskCommand}"
+                                                CommandParameter="{Binding}"
+                                                Content="✕ Cancel"/>
+										</Grid>
+
+										<!-- Progress bar -->
+										<StackPanel Orientation="Horizontal" Spacing="10">
+											<ProgressBar
+                                                Value="{Binding Progress}"
+                                                Maximum="1.0"
+                                                Height="7"
+                                                Width="300"
+                                                Foreground="#6366F1"
+                                                VerticalAlignment="Center"/>
+											<TextBlock
+                                                FontSize="12"
+                                                Foreground="#9CA3AF"
+                                                Text="{Binding Progress, StringFormat='{}{0:P0}'}"
+                                                VerticalAlignment="Center"/>
+										</StackPanel>
+
+										<!-- Meta -->
+										<StackPanel Orientation="Horizontal" Spacing="20">
+											<TextBlock FontSize="11" Foreground="#6B7280"
+                                                Text="{Binding Workers, StringFormat='👷 {0} workers'}"/>
+											<TextBlock FontSize="11" Foreground="#6B7280"
+                                                Text="{Binding RemainingTicks, StringFormat='⏱ {0} ticks left'}"/>
+										</StackPanel>
+
+									</StackPanel>
+								</Border>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+
+				</StackPanel>
+			</Border>
+
+		</StackPanel>
+	</ScrollViewer>
+</UserControl>
