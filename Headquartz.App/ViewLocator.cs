@@ -6,56 +6,45 @@ using Headquartz.App.Views;
 
 namespace Headquartz.App;
 
-public class ViewLocator
-    : IDataTemplate
+public class ViewLocator : IDataTemplate
 {
-    public Control? Build(
-        object? data)
+    public Control? Build(object? data)
     {
         return data switch
         {
-            CompanyViewModel =>
-                new CompanyView(),
+            // Main menu
+            CompanyViewModel => new CompanyView(),
+            ForecastViewModel => new ForecastView(),
 
-            ForecastViewModel =>
-                new ForecastView(),
+            // HR
+            HRDashboardViewModel => new HRDashboardView(),
+            HREmployeeManagementViewModel => new HREmployeeManagementView(),
+            HRRecruitmentViewModel => new HRRecruitmentView(),
 
-            HRDashboardViewModel =>
-                new HRDashboardView(),
+            // Finance
+            FinanceDashboardViewModel => new FinanceDashboardView(),
 
-            FinanceDashboardViewModel =>
-                new FinanceDashboardView(),
+            // Sales
+            SalesDashboardViewModel => new SalesDashboardView(),
 
-            SalesDashboardViewModel =>
-                new SalesDashboardView(),
+            // Marketing
+            MarketingDashboardViewModel => new MarketingDashboardView(),
 
-            MarketingDashboardViewModel =>
-                new MarketingDashboardView(),
+            // Production
+            ProductionDashboardViewModel => new ProductionDashboardView(),
 
-            ProductionDashboardViewModel =>
-                new ProductionDashboardView(),
+            // Warehouse
+            WarehouseDashboardViewModel => new WarehouseDashboardView(),
 
-            WarehouseDashboardViewModel =>
-                new WarehouseDashboardView(),
+            // Logistics
+            LogisticsDashboardViewModel => new LogisticsDashboardView(),
 
-            LogisticsDashboardViewModel =>
-                new LogisticsDashboardView(),
+            // Fallback
+            NotFoundViewModel => new NotFoundView(),
 
-            NotFoundViewModel =>
-                new NotFoundView(),
-
-            _ =>
-                new TextBlock
-                {
-                    Text =
-                        "View Not Found"
-                }
+            _ => new TextBlock { Text = "View Not Found" }
         };
     }
 
-    public bool Match(
-        object? data)
-    {
-        return data is ViewModelBase;
-    }
+    public bool Match(object? data) => data is ViewModelBase;
 }

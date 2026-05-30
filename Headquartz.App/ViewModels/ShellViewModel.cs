@@ -1,45 +1,43 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.Linq;
+
+using Avalonia.Threading;
+
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 using Headquartz.App.Models;
 using Headquartz.App.Services;
 using Headquartz.Domain.Enums;
 
-using System.Collections.ObjectModel;
-
 namespace Headquartz.App.ViewModels;
 
-public partial class ShellViewModel
-    : ViewModelBase
+public partial class ShellViewModel : ViewModelBase
 {
-    private readonly NavigationService
-        _navigation;
-
-    private readonly SimulationService
-        _simulation;
+    private readonly NavigationService _navigation;
+    private readonly SimulationService _simulation;
+    private readonly NotificationService _notifications;
 
     // =========================================================
     // SPLASH STATE
     // =========================================================
 
-    private bool _roleSelected = false;
+    private bool _roleSelected;
     public bool RoleSelected
     {
         get => _roleSelected;
         set => SetProperty(ref _roleSelected, value);
     }
 
-    public ObservableCollection<RoleCardModel>
-        RoleCards
-    { get; } = [];
+    public ObservableCollection<RoleCardModel> RoleCards { get; } = [];
 
     // =========================================================
     // SHELL STATE
     // =========================================================
 
     [ObservableProperty]
-    private PlayerRole _currentRole =
-        PlayerRole.HumanResourcesManager;
+    private PlayerRole _currentRole = PlayerRole.HumanResourcesManager;
 
     private string _roleName = "";
     public string RoleName
@@ -55,9 +53,8 @@ public partial class ShellViewModel
         set => SetProperty(ref _currentView, value);
     }
 
-    public ObservableCollection<SidebarSection>
-        SidebarSections
-            { get; } = [];
+    public ObservableCollection<SidebarSection> SidebarSections { get; } = [];
+    public ObservableCollection<NotificationModel> Notifications { get; } = [];
 
     // =========================================================
     // CONSTRUCTOR
@@ -66,14 +63,51 @@ public partial class ShellViewModel
     public ShellViewModel()
     {
         _simulation = new SimulationService();
-
         _navigation = new NavigationService(_simulation);
 
         _ = _simulation.StartAsync();
 
         _navigation.OnViewChanged += HandleViewChanged;
 
+        // Notification service subscribes to engine event bus
+        _notifications = new NotificationService(_simulation.Engine);
+        _notifications.NotificationFired += OnNotificationFired;
+
+        // Tick-based cleanup: remove notifications older than 6 seconds
+        _simulation.Engine.OnUpdated += () =>
+            Dispatcher.UIThread.Post(PruneOldNotifications);
+
         BuildRoleCards();
+    }
+
+    // =========================================================
+    // NOTIFICATIONS
+    // =========================================================
+
+    private void OnNotificationFired(NotificationModel notification)
+    {
+        Dispatcher.UIThread.Post(() =>
+        {
+            Notifications.Insert(0, notification);
+
+            // Cap at 4 visible at once
+            while (Notifications.Count > 4)
+                Notifications.RemoveAt(Notifications.Count - 1);
+        });
+    }
+
+    private void PruneOldNotifications()
+    {
+        var cutoff = DateTime.UtcNow.AddSeconds(-6);
+        var stale = Notifications.Where(n => n.CreatedAt < cutoff).ToList();
+        foreach (var n in stale)
+            Notifications.Remove(n);
+    }
+
+    [RelayCommand]
+    private void DismissNotification(NotificationModel n)
+    {
+        Notifications.Remove(n);
     }
 
     // =========================================================
@@ -84,11 +118,8 @@ public partial class ShellViewModel
     private void SelectRole(RoleCardModel card)
     {
         CurrentRole = card.Role;
-
         LoadSidebar();
-
         _navigation.Navigate("company");
-
         RoleSelected = true;
     }
 
@@ -111,7 +142,6 @@ public partial class ShellViewModel
             Emoji = "👥",
             AccentColor = "#8B5CF6",
         });
-
         RoleCards.Add(new RoleCardModel
         {
             Role = PlayerRole.FinanceManager,
@@ -121,7 +151,6 @@ public partial class ShellViewModel
             Emoji = "💰",
             AccentColor = "#10B981",
         });
-
         RoleCards.Add(new RoleCardModel
         {
             Role = PlayerRole.SalesManager,
@@ -131,7 +160,6 @@ public partial class ShellViewModel
             Emoji = "📈",
             AccentColor = "#3B82F6",
         });
-
         RoleCards.Add(new RoleCardModel
         {
             Role = PlayerRole.MarketingManager,
@@ -141,7 +169,6 @@ public partial class ShellViewModel
             Emoji = "📣",
             AccentColor = "#F59E0B",
         });
-
         RoleCards.Add(new RoleCardModel
         {
             Role = PlayerRole.ProductionManager,
@@ -151,7 +178,6 @@ public partial class ShellViewModel
             Emoji = "🏭",
             AccentColor = "#EF4444",
         });
-
         RoleCards.Add(new RoleCardModel
         {
             Role = PlayerRole.WarehouseManager,
@@ -161,7 +187,6 @@ public partial class ShellViewModel
             Emoji = "📦",
             AccentColor = "#F97316",
         });
-
         RoleCards.Add(new RoleCardModel
         {
             Role = PlayerRole.LogisticsManager,
@@ -171,7 +196,6 @@ public partial class ShellViewModel
             Emoji = "🚚",
             AccentColor = "#06B6D4",
         });
-
         RoleCards.Add(new RoleCardModel
         {
             Role = PlayerRole.Chairman,
@@ -202,10 +226,7 @@ public partial class ShellViewModel
     // SIDEBAR
     // =========================================================
 
-    partial void OnCurrentRoleChanged(PlayerRole value)
-    {
-        LoadSidebar();
-    }
+    partial void OnCurrentRoleChanged(PlayerRole value) => LoadSidebar();
 
     private void LoadSidebar()
     {
@@ -224,10 +245,7 @@ public partial class ShellViewModel
             _ => "Unknown Role",
         };
 
-        foreach (var section in
-            SidebarService.GetSections(CurrentRole))
-        {
+        foreach (var section in SidebarService.GetSections(CurrentRole))
             SidebarSections.Add(section);
-        }
     }
 }

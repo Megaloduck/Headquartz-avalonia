@@ -1,0 +1,127 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             x:Class="Headquartz.App.HRRecruitmentView">
+
+	<ScrollViewer>
+		<StackPanel Margin="30" Spacing="20">
+
+			<TextBlock FontSize="34" FontWeight="Bold" Text="Recruitment"/>
+
+			<!-- FUNDS ROW -->
+			<WrapPanel>
+				<Border Width="220" Margin="10" Padding="20" Background="#202633" CornerRadius="12">
+					<StackPanel>
+						<TextBlock FontSize="13" Foreground="#9CA3AF" Text="Available Cash"/>
+						<TextBlock FontSize="26" FontWeight="Bold"
+                            Text="{Binding CompanyCash, StringFormat='${0:N0}'}"/>
+					</StackPanel>
+				</Border>
+				<Border Width="220" Margin="10" Padding="20" Background="#202633" CornerRadius="12">
+					<StackPanel>
+						<TextBlock FontSize="13" Foreground="#9CA3AF" Text="Hire Cost (2× salary)"/>
+						<TextBlock FontSize="26" FontWeight="Bold"
+                            Text="{Binding HireCost, StringFormat='${0:N0}'}"/>
+					</StackPanel>
+				</Border>
+			</WrapPanel>
+
+			<!-- HIRE FORM -->
+			<Border Padding="28" Background="#202633" CornerRadius="12">
+				<StackPanel Spacing="20">
+
+					<TextBlock FontSize="22" FontWeight="Bold" Text="New Employee"/>
+
+					<!-- Name row -->
+					<StackPanel Spacing="8">
+						<TextBlock FontSize="13" Foreground="#9CA3AF" Text="EMPLOYEE NAME"/>
+						<StackPanel Orientation="Horizontal" Spacing="10">
+							<TextBox
+                                Text="{Binding EmployeeName}"
+                                Watermark="Enter name..."
+                                MinWidth="280"
+                                Padding="10,8"
+                                Background="#2B3242"
+                                BorderThickness="1"
+                                BorderBrush="#374151"
+                                CornerRadius="8"/>
+							<Button
+                                Padding="12,8"
+                                Background="#374151"
+                                CornerRadius="8"
+                                Command="{Binding RandomNameCommand}"
+                                Content="🎲 Random"/>
+						</StackPanel>
+					</StackPanel>
+
+					<!-- Role + Department row -->
+					<Grid ColumnDefinitions="*,24,*">
+
+						<StackPanel Grid.Column="0" Spacing="8">
+							<TextBlock FontSize="13" Foreground="#9CA3AF" Text="ROLE"/>
+							<ComboBox
+                                ItemsSource="{Binding AvailableRoles}"
+                                SelectedItem="{Binding SelectedRole}"
+                                HorizontalAlignment="Stretch"
+                                Padding="10,8"
+                                Background="#2B3242"
+                                BorderBrush="#374151"/>
+						</StackPanel>
+
+						<StackPanel Grid.Column="2" Spacing="8">
+							<TextBlock FontSize="13" Foreground="#9CA3AF" Text="DEPARTMENT"/>
+							<ComboBox
+                                ItemsSource="{Binding AvailableDepartments}"
+                                SelectedItem="{Binding SelectedDepartment}"
+                                HorizontalAlignment="Stretch"
+                                Padding="10,8"
+                                Background="#2B3242"
+                                BorderBrush="#374151"/>
+						</StackPanel>
+
+					</Grid>
+
+					<!-- Salary -->
+					<StackPanel Spacing="8">
+						<TextBlock FontSize="13" Foreground="#9CA3AF" Text="MONTHLY SALARY ($)"/>
+						<TextBox
+                            Text="{Binding Salary}"
+                            Watermark="e.g. 2500"
+                            MaxWidth="200"
+                            HorizontalAlignment="Left"
+                            Padding="10,8"
+                            Background="#2B3242"
+                            BorderThickness="1"
+                            BorderBrush="#374151"
+                            CornerRadius="8"/>
+					</StackPanel>
+
+					<!-- Hire button -->
+					<Button
+                        Padding="18,12"
+                        HorizontalAlignment="Left"
+                        Background="#6366F1"
+                        CornerRadius="8"
+                        Command="{Binding HireCommand}">
+						<TextBlock Text="✅  Confirm Hire" FontSize="14" FontWeight="Bold" Foreground="White"/>
+					</Button>
+
+					<!-- Status message -->
+					<Border
+                        IsVisible="{Binding StatusMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                        Padding="14,10"
+                        Background="#2B3242"
+                        CornerRadius="8">
+						<TextBlock
+                            Text="{Binding StatusMessage}"
+                            FontSize="13"
+                            TextWrapping="Wrap"/>
+					</Border>
+
+				</StackPanel>
+			</Border>
+
+		</StackPanel>
+	</ScrollViewer>
+</UserControl>

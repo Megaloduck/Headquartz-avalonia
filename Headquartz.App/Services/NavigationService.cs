@@ -20,23 +20,34 @@ public class NavigationService
     {
         CurrentView = route switch
         {
+            // ── Main menu ─────────────────────────────────────
             "company" => new CompanyViewModel(_simulation),
             "forecast" => new ForecastViewModel(),
 
+            // ── Human Resources ───────────────────────────────
             "hr/dashboard" => new HRDashboardViewModel(_simulation),
+            "hr/employees" => new HREmployeeManagementViewModel(_simulation),
+            "hr/recruitment" => new HRRecruitmentViewModel(_simulation),
 
+            // ── Finance ───────────────────────────────────────
             "finance/dashboard" => new FinanceDashboardViewModel(_simulation),
 
+            // ── Sales ─────────────────────────────────────────
             "sales/dashboard" => new SalesDashboardViewModel(_simulation),
 
+            // ── Marketing ─────────────────────────────────────
             "marketing/dashboard" => new MarketingDashboardViewModel(_simulation),
 
+            // ── Production ────────────────────────────────────
             "production/dashboard" => new ProductionDashboardViewModel(_simulation),
 
+            // ── Warehouse ─────────────────────────────────────
             "warehouse/dashboard" => new WarehouseDashboardViewModel(_simulation),
 
+            // ── Logistics ─────────────────────────────────────
             "logistics/dashboard" => new LogisticsDashboardViewModel(_simulation),
 
+            // ── Fallback ──────────────────────────────────────
             _ => new NotFoundViewModel(),
         };
 

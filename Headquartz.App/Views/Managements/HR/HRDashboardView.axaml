@@ -5,225 +5,89 @@
              x:Class="Headquartz.App.HRDashboardView">
 
 	<ScrollViewer>
+		<StackPanel Margin="30" Spacing="20">
 
-		<StackPanel
-            Margin="30"
-            Spacing="20">
+			<TextBlock FontSize="34" FontWeight="Bold" Text="Human Resources"/>
 
-			<TextBlock
-                FontSize="34"
-                FontWeight="Bold"
-                Text="Human Resources"/>
+			<!-- RESIGNATION RISK BANNER -->
+			<Border IsVisible="{Binding HasResignationRisk}" Background="#7F1D1D" CornerRadius="12" Padding="20">
+				<StackPanel Orientation="Horizontal" Spacing="12">
+					<TextBlock Text="🚨" FontSize="22" VerticalAlignment="Center"/>
+					<StackPanel>
+						<TextBlock Text="RESIGNATION RISK DETECTED" FontSize="16" FontWeight="Bold" Foreground="#FCA5A5"/>
+						<TextBlock Text="One or more employees have critically low morale and may resign this tick." Foreground="#FCA5A5"/>
+					</StackPanel>
+				</StackPanel>
+			</Border>
 
-			<!-- KPI ROW -->
-
-			<ItemsControl
-                ItemsSource="{Binding Kpis}">
-
+			<!-- KPIs -->
+			<ItemsControl ItemsSource="{Binding Kpis}">
 				<ItemsControl.ItemsPanel>
 					<ItemsPanelTemplate>
 						<WrapPanel/>
 					</ItemsPanelTemplate>
 				</ItemsControl.ItemsPanel>
-
 				<ItemsControl.ItemTemplate>
-
 					<DataTemplate>
-
-						<Border
-                            Width="220"
-                            Margin="10"
-                            Padding="20"
-                            Background="#202633"
-                            CornerRadius="12">
-
+						<Border Width="200" Margin="10" Padding="20" Background="#202633" CornerRadius="12">
 							<StackPanel>
-
-								<TextBlock
-                                    FontSize="18"
-                                    Text="{Binding Title}"/>
-
-								<TextBlock
-                                    FontSize="30"
-                                    FontWeight="Bold"
-                                    Text="{Binding Value}"/>
-
+								<TextBlock FontSize="13" Foreground="#9CA3AF" Text="{Binding Title}"/>
+								<TextBlock FontSize="28" FontWeight="Bold" Text="{Binding Value}"/>
 							</StackPanel>
-
 						</Border>
-
 					</DataTemplate>
-
 				</ItemsControl.ItemTemplate>
-
 			</ItemsControl>
 
 			<!-- ACTIONS -->
-
 			<WrapPanel>
-
-				<Button
-                    Padding="14"
-                    Margin="10"
-                    Command="{Binding HireEmployeeCommand}"
-                    Content="Hire Employee"/>
-
-				<Button
-                    Padding="14"
-                    Margin="10"
-                    Command="{Binding StartTrainingCommand}"
-                    Content="Start Training"/>
-
+				<Button Padding="14" Margin="10" Command="{Binding HireEmployeeCommand}"     Content="👤  Quick Hire"/>
+				<Button Padding="14" Margin="10" Command="{Binding StartTrainingCommand}"    Content="📚  Start Training (+10 Morale)"/>
+				<Button Padding="14" Margin="10" Command="{Binding BoostCompanyMoraleCommand}" Content="🎉  Company Morale Boost (−$3,000)"/>
 			</WrapPanel>
 
-			<!-- TASKS -->
-
-			<Border
-                Padding="20"
-                Background="#202633"
-                CornerRadius="12">
-
+			<!-- PENDING TASKS -->
+			<Border Padding="20" Background="#202633" CornerRadius="12">
 				<StackPanel>
-
-					<TextBlock
-                        FontSize="24"
-                        FontWeight="Bold"
-                        Text="Pending Tasks"/>
-					<Border
-    Padding="20"
-    Background="#202633"
-    CornerRadius="12">
-
-						<StackPanel>
-
-							<TextBlock
-								FontSize="24"
-								FontWeight="Bold"
-								Text="Department Events"/>
-
-							<ItemsControl
-								Margin="0,20,0,0"
-								ItemsSource="{Binding Events}">
-
-								<ItemsControl.ItemTemplate>
-
-									<DataTemplate>
-
-										<Border
-											Margin="0,8"
-											Padding="14"
-											Background="#2B3242"
-											CornerRadius="8">
-
-											<StackPanel>
-
-												<TextBlock
-													FontSize="18"
-													FontWeight="Bold"
-													Text="{Binding Title}"/>
-
-												<TextBlock
-													Margin="0,6,0,0"
-													Text="{Binding Description}"/>
-
-												<TextBlock
-													Margin="0,6,0,0"
-													FontWeight="Bold"
-													Text="{Binding Severity}"/>
-
-												<TextBlock
-													Margin="0,4,0,0"
-													Text="{Binding RemainingTicks,
-                                               StringFormat='Ticks Left: {0}'}"/>
-
-											</StackPanel>
-
-										</Border>
-
-									</DataTemplate>
-
-								</ItemsControl.ItemTemplate>
-
-							</ItemsControl>
-
-						</StackPanel>
-
-					</Border>
-
-					<ItemsControl
-                        Margin="0,20,0,0"
-                        ItemsSource="{Binding PendingTasks}">
-
+					<TextBlock FontSize="22" FontWeight="Bold" Text="HR Tasks" Margin="0,0,0,12"/>
+					<ItemsControl ItemsSource="{Binding PendingTasks}">
 						<ItemsControl.ItemTemplate>
-
 							<DataTemplate>
-
-								<Border
-                                    Margin="0,5"
-                                    Padding="10"
-                                    Background="#2B3242"
-                                    CornerRadius="8">
-
-									<TextBlock
-                                        Text="{Binding}"/>
-
+								<Border Margin="0,4" Padding="12" Background="#2B3242" CornerRadius="6">
+									<TextBlock Text="{Binding}" FontSize="13"/>
 								</Border>
-
 							</DataTemplate>
-
 						</ItemsControl.ItemTemplate>
-
 					</ItemsControl>
-
 				</StackPanel>
-
 			</Border>
 
-			<!-- EMPLOYEES -->
-
-			<Border
-                Padding="20"
-                Background="#202633"
-                CornerRadius="12">
-
+			<!-- HR EVENTS -->
+			<Border Padding="20" Background="#202633" CornerRadius="12">
 				<StackPanel>
-
-					<TextBlock
-                        FontSize="24"
-                        FontWeight="Bold"
-                        Text="Employees"/>
-
-					<ItemsControl
-                        Margin="0,20,0,0"
-                        ItemsSource="{Binding Employees}">
-
+					<TextBlock FontSize="22" FontWeight="Bold" Text="HR Alerts" Margin="0,0,0,12"/>
+					<TextBlock IsVisible="{Binding !Events.Count}" Text="No active alerts." Foreground="#6B7280"/>
+					<ItemsControl ItemsSource="{Binding Events}">
 						<ItemsControl.ItemTemplate>
-
 							<DataTemplate>
-
-								<Border
-                                    Margin="0,5"
-                                    Padding="10"
-                                    Background="#2B3242"
-                                    CornerRadius="8">
-
-									<TextBlock
-                                        Text="{Binding}"/>
-
+								<Border Margin="0,6" Padding="14" Background="#2B3242" CornerRadius="8">
+									<StackPanel>
+										<TextBlock FontSize="15" FontWeight="Bold" Text="{Binding Title}"/>
+										<TextBlock Margin="0,4" Foreground="#9CA3AF" Text="{Binding Description}" TextWrapping="Wrap"/>
+										<StackPanel Orientation="Horizontal" Spacing="16" Margin="0,6,0,0">
+											<TextBlock FontSize="12" Foreground="#8B5CF6"
+                                                Text="{Binding Severity, StringFormat='Severity: {0}'}"/>
+											<TextBlock FontSize="12" Foreground="#6B7280"
+                                                Text="{Binding RemainingTicks, StringFormat='Ticks left: {0}'}"/>
+										</StackPanel>
+									</StackPanel>
 								</Border>
-
 							</DataTemplate>
-
 						</ItemsControl.ItemTemplate>
-
 					</ItemsControl>
-
 				</StackPanel>
-
 			</Border>
 
 		</StackPanel>
-
 	</ScrollViewer>
-
 </UserControl>
