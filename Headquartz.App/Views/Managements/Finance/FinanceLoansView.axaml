@@ -36,9 +36,8 @@
                         Text="All loans carry 5% interest per payroll cycle (every 10 ticks). Repay early to minimise interest."/>
 
 					<WrapPanel>
-						<!-- Fixed: Use HorizontalSpacing and VerticalSpacing instead of Spacing -->
 						<Button
-                            Padding="18,12" CornerRadius="8" Background="#1F2937"
+                            Padding="18,12" Margin="0,0,12,0" CornerRadius="8" Background="#1F2937"
                             Command="{Binding TakeLoanCommand}"
                             CommandParameter="10000">
 							<StackPanel HorizontalAlignment="Center">
@@ -47,7 +46,7 @@
 							</StackPanel>
 						</Button>
 						<Button
-                            Padding="18,12" CornerRadius="8" Background="#1F2937"
+                            Padding="18,12" Margin="0,0,12,0" CornerRadius="8" Background="#1F2937"
                             Command="{Binding TakeLoanCommand}"
                             CommandParameter="25000">
 							<StackPanel HorizontalAlignment="Center">
@@ -56,7 +55,7 @@
 							</StackPanel>
 						</Button>
 						<Button
-                            Padding="18,12" CornerRadius="8" Background="#1F2937"
+                            Padding="18,12" Margin="0,0,12,0" CornerRadius="8" Background="#1F2937"
                             Command="{Binding TakeLoanCommand}"
                             CommandParameter="50000">
 							<StackPanel HorizontalAlignment="Center">
@@ -87,11 +86,11 @@
 			<Border Padding="20" Background="#202633" CornerRadius="12">
 				<StackPanel>
 					<TextBlock FontSize="22" FontWeight="Bold" Text="Active Loans" Margin="0,0,0,16"/>
-					<TextBlock IsVisible="{Binding !ActiveLoansList.Count}" 
-							   Text="No active loans. Company is debt-free."
-							   Foreground="#6B7280"/>
-					<ItemsControl ItemsSource="{Binding ActiveLoansList}">
-						<!-- Updated: ActiveLoans → ActiveLoansList -->
+					<TextBlock
+                        IsVisible="{Binding !ActiveLoans.Count}"
+                        Text="No active loans. Company is debt-free."
+                        Foreground="#6B7280"/>
+					<ItemsControl ItemsSource="{Binding ActiveLoans}">
 						<ItemsControl.ItemTemplate>
 							<DataTemplate>
 								<Border Margin="0,5" Padding="16" Background="#2B3242" CornerRadius="8">
@@ -107,13 +106,13 @@
 										<StackPanel Grid.Column="1" VerticalAlignment="Center">
 											<TextBlock FontSize="11" Foreground="#6B7280" Text="OWED"/>
 											<TextBlock FontSize="15" FontWeight="Bold" Foreground="#EF4444"
-                                                Text="{Binding TotalOwed, StringFormat='{}${0:N0}'}"/>
+                                                Text="{Binding TotalOwed, StringFormat='${0:N0}'}"/>
 										</StackPanel>
 
 										<StackPanel Grid.Column="2" VerticalAlignment="Center">
 											<TextBlock FontSize="11" Foreground="#6B7280" Text="INTEREST PAID"/>
 											<TextBlock FontSize="13" Foreground="#F97316"
-                                                Text="{Binding InterestPaid, StringFormat='{}${0:N0}'}"/>
+                                                Text="{Binding InterestPaid, StringFormat='${0:N0}'}"/>
 										</StackPanel>
 
 										<StackPanel Grid.Column="3" VerticalAlignment="Center">
@@ -144,11 +143,11 @@
 			<Border Padding="20" Background="#202633" CornerRadius="12">
 				<StackPanel>
 					<TextBlock FontSize="20" FontWeight="Bold" Text="Repaid Loans" Margin="0,0,0,12"/>
-					<TextBlock IsVisible="{Binding !PaidLoansList.Count}"  
-							   Text="No repaid loans yet."
-							   Foreground="#6B7280"/>
-					<ItemsControl ItemsSource="{Binding PaidLoansList}">
-						<!-- Updated: PaidLoans → PaidLoansList -->
+					<TextBlock
+                        IsVisible="{Binding !PaidLoans.Count}"
+                        Text="No repaid loans yet."
+                        Foreground="#6B7280"/>
+					<ItemsControl ItemsSource="{Binding PaidLoans}">
 						<ItemsControl.ItemTemplate>
 							<DataTemplate>
 								<Border Margin="0,4" Padding="14,10" Background="#2B3242" CornerRadius="8">

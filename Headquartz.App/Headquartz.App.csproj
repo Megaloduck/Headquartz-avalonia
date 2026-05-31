@@ -13,7 +13,6 @@
     <AvaloniaXaml Remove="Assets\Themes\DarkTheme.axaml" />
     <AvaloniaXaml Remove="Assets\Themes\LightTheme.axaml" />
     <Folder Include="Assets\Styles\" />
-    <Folder Include="Views\Personalization\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -51,7 +50,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Update="Views\MainMenu\ForecastView.axaml.cs">
+	  <Compile Update="Views\Overview\ForecastView.axaml.cs">
 	    <DependentUpon>ForecastView.axaml</DependentUpon>
 	  </Compile>
 	  <Compile Update="Views\Managements\Finance\FinanceDashboardView.axaml.cs">

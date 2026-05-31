@@ -22,14 +22,14 @@ public partial class FinanceLoansViewModel : ViewModelBase
     [ObservableProperty] private decimal _companyCash;
     [ObservableProperty] private decimal _totalDebt;
     [ObservableProperty] private decimal _totalInterestPaid;
-    [ObservableProperty] private int _activeLoansCount;  // Changed from _activeLoans
+    [ObservableProperty] private int _activeLoansCount;
     [ObservableProperty] private string _statusMessage = "";
 
     // ── Collections ──────────────────────────────────────────
 
-    public ObservableCollection<KpiCardModel> Kpis { get; } = [];
-    public ObservableCollection<LoanRowModel> ActiveLoansList { get; } = [];  // Renamed
-    public ObservableCollection<LoanRowModel> PaidLoansList { get; } = [];     // Renamed
+    public ObservableCollection<KpiCardModel> Kpis { get; } = new ObservableCollection<KpiCardModel>();
+    public ObservableCollection<LoanRowModel> ActiveLoans { get; } = new ObservableCollection<LoanRowModel>();
+    public ObservableCollection<LoanRowModel> PaidLoans { get; } = new ObservableCollection<LoanRowModel>();
 
     // ── Constructor ───────────────────────────────────────────
 
@@ -46,8 +46,10 @@ public partial class FinanceLoansViewModel : ViewModelBase
     // ── Commands ──────────────────────────────────────────────
 
     [RelayCommand]
-    private void TakeLoan(decimal amount)
+    private void TakeLoan(string amountStr)
     {
+        if (!decimal.TryParse(amountStr, out decimal amount)) return;
+
         var company = _simulation.Engine.Company;
 
         var loan = new LoanRecord
@@ -100,12 +102,12 @@ public partial class FinanceLoansViewModel : ViewModelBase
         CompanyCash = company.Cash;
         TotalDebt = company.Loans.Where(l => !l.IsRepaid).Sum(l => l.TotalOwed);
         TotalInterestPaid = company.Loans.Sum(l => l.InterestPaid);
-        ActiveLoansCount = company.Loans.Count(l => !l.IsRepaid);  // Updated
+        ActiveLoansCount = company.Loans.Count(l => !l.IsRepaid);
 
         Kpis.Clear();
         Kpis.Add(new KpiCardModel { Title = "Cash", Value = $"${CompanyCash:N0}" });
         Kpis.Add(new KpiCardModel { Title = "Total Debt", Value = $"${TotalDebt:N0}" });
-        Kpis.Add(new KpiCardModel { Title = "Active Loans", Value = ActiveLoansCount.ToString() });  // Updated
+        Kpis.Add(new KpiCardModel { Title = "Active Loans", Value = ActiveLoansCount.ToString() });
         Kpis.Add(new KpiCardModel { Title = "Interest Paid", Value = $"${TotalInterestPaid:N0}" });
 
         ActiveLoans_Rebuild(company, clock);
@@ -116,12 +118,12 @@ public partial class FinanceLoansViewModel : ViewModelBase
         Headquartz.Domain.Entities.Company company,
         Headquartz.Simulation.Ticks.SimulationClock clock)
     {
-        ActiveLoansList.Clear();  // Updated
+        ActiveLoans.Clear();
         foreach (var loan in company.Loans
                      .Where(l => !l.IsRepaid)
                      .OrderBy(l => l.TakenAtTick))
         {
-            ActiveLoansList.Add(ToRow(loan, clock));  // Updated
+            ActiveLoans.Add(ToRow(loan, clock));
         }
     }
 
@@ -129,13 +131,13 @@ public partial class FinanceLoansViewModel : ViewModelBase
         Headquartz.Domain.Entities.Company company,
         Headquartz.Simulation.Ticks.SimulationClock clock)
     {
-        PaidLoansList.Clear();  // Updated
+        PaidLoans.Clear();
         foreach (var loan in company.Loans
                      .Where(l => l.IsRepaid)
                      .OrderByDescending(l => l.TakenAtTick)
                      .Take(10))
         {
-            PaidLoansList.Add(ToRow(loan, clock));  // Updated
+            PaidLoans.Add(ToRow(loan, clock));
         }
     }
 

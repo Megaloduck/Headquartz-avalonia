@@ -1,0 +1,119 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             x:Class="Headquartz.App.CommunicationView">
+
+	<Grid RowDefinitions="Auto,Auto,*,Auto">
+
+		<!-- HEADER -->
+		<StackPanel Grid.Row="0" Margin="30,30,30,10">
+			<TextBlock FontSize="34" FontWeight="Bold" Text="Communication"/>
+			<StackPanel Orientation="Horizontal" Spacing="20" Margin="0,4,0,0">
+				<TextBlock FontSize="13" Foreground="#6B7280"
+                    Text="{Binding WorldTime, StringFormat='World time: {0}'}"/>
+				<TextBlock FontSize="13" Foreground="#6B7280"
+                    Text="{Binding CurrentTick, StringFormat='Tick: {0}'}"/>
+			</StackPanel>
+		</StackPanel>
+
+		<!-- CLEAR BUTTON -->
+		<Button
+            Grid.Row="1"
+            HorizontalAlignment="Right"
+            Margin="0,0,30,10"
+            Padding="12,7"
+            Background="#374151"
+            CornerRadius="7"
+            Command="{Binding ClearMessagesCommand}"
+            Content="Clear Board"/>
+
+		<!-- MESSAGE LIST -->
+		<ScrollViewer Grid.Row="2" Margin="30,0">
+			<ItemsControl ItemsSource="{Binding Messages}">
+				<ItemsControl.ItemTemplate>
+					<DataTemplate>
+						<Border
+                            Margin="0,4"
+                            Padding="14,12"
+                            CornerRadius="10"
+                            Background="#202633">
+							<Grid ColumnDefinitions="Auto,*,100">
+
+								<!-- Avatar -->
+								<Border
+                                    Grid.Column="0"
+                                    Width="38" Height="38"
+                                    CornerRadius="19"
+                                    Background="#2B3242"
+                                    Margin="0,0,12,0">
+									<TextBlock
+                                        Text="{Binding SenderEmoji}"
+                                        FontSize="18"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"/>
+								</Border>
+
+								<!-- Message -->
+								<StackPanel Grid.Column="1" Spacing="3">
+									<TextBlock
+                                        FontSize="12"
+                                        FontWeight="Bold"
+                                        Foreground="#9CA3AF"
+                                        Text="{Binding SenderRole}"/>
+									<TextBlock
+                                        FontSize="14"
+                                        Text="{Binding Text}"
+                                        TextWrapping="Wrap"
+                                        Foreground="#D1D5DB"/>
+								</StackPanel>
+
+								<!-- Timestamp -->
+								<TextBlock
+                                    Grid.Column="2"
+                                    FontSize="11"
+                                    Foreground="#4B5563"
+                                    Text="{Binding Timestamp}"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Top"
+                                    Margin="0,2,0,0"/>
+
+							</Grid>
+						</Border>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
+		</ScrollViewer>
+
+		<!-- INPUT ROW -->
+		<Border
+            Grid.Row="3"
+            Margin="30,10,30,30"
+            Padding="16,12"
+            Background="#202633"
+            CornerRadius="12">
+
+			<Grid ColumnDefinitions="*,Auto">
+				<TextBox
+                    Grid.Column="0"
+                    Text="{Binding NewMessage}"
+                    Watermark="Type a message to your team..."
+                    Background="Transparent"
+                    BorderThickness="0"
+                    FontSize="14"
+                    Padding="4,6"/>
+
+				<Button
+                    Grid.Column="1"
+                    Padding="18,10"
+                    Background="#6366F1"
+                    CornerRadius="8"
+                    Margin="10,0,0,0"
+                    Command="{Binding PostMessageCommand}"
+                    Content="Send →"/>
+			</Grid>
+
+		</Border>
+
+	</Grid>
+</UserControl>

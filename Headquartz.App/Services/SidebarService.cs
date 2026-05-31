@@ -17,7 +17,7 @@ public static class SidebarService
     {
         return
         [
-            BuildMainMenuSection(),
+            BuildOverviewSection(),
             BuildManagementSection(role),
             BuildPersonalizationSection(),
         ];
@@ -27,11 +27,11 @@ public static class SidebarService
     // COMMON SECTIONS
     // =========================================================
 
-    private static SidebarSection BuildMainMenuSection()
+    private static SidebarSection BuildOverviewSection()
     {
         return new SidebarSection
         {
-            Title = "Main menu",
+            Title = "Overview",
             Items =
             [
                 new() { Title = "Company",   Icon = "Building",   Route = "company"   },

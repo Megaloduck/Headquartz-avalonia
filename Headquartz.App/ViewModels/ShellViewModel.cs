@@ -119,7 +119,7 @@ public partial class ShellViewModel : ViewModelBase
     {
         CurrentRole = card.Role;
         LoadSidebar();
-        _navigation.Navigate("company");
+        _navigation.Navigate("company", card.Role);
         RoleSelected = true;
     }
 
@@ -132,7 +132,7 @@ public partial class ShellViewModel : ViewModelBase
     [RelayCommand]
     private void NavigateSettings()
     {
-        _navigation.Navigate("settings");
+        _navigation.Navigate("settings", CurrentRole);
         // Make sure shell is visible if coming from splash
         if (!RoleSelected) RoleSelected = true;
     }
@@ -222,7 +222,7 @@ public partial class ShellViewModel : ViewModelBase
     [RelayCommand]
     private void Navigate(SidebarItem item)
     {
-        _navigation.Navigate(item.Route);
+        _navigation.Navigate(item.Route, CurrentRole);
     }
 
     private void HandleViewChanged()
