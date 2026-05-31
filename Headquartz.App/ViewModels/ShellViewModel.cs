@@ -129,6 +129,14 @@ public partial class ShellViewModel : ViewModelBase
         RoleSelected = false;
     }
 
+    [RelayCommand]
+    private void NavigateSettings()
+    {
+        _navigation.Navigate("settings");
+        // Make sure shell is visible if coming from splash
+        if (!RoleSelected) RoleSelected = true;
+    }
+
     private void BuildRoleCards()
     {
         RoleCards.Clear();

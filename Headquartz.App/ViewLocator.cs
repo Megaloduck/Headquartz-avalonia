@@ -1,6 +1,5 @@
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
-
 using Headquartz.App.ViewModels;
 using Headquartz.App.Views;
 
@@ -14,6 +13,7 @@ public class ViewLocator : IDataTemplate
         {
             CompanyViewModel => new CompanyView(),
             ForecastViewModel => new ForecastView(),
+            SettingsViewModel => new SettingsView(),
 
             HRDashboardViewModel => new HRDashboardView(),
             HREmployeeManagementViewModel => new HREmployeeManagementView(),
@@ -22,6 +22,7 @@ public class ViewLocator : IDataTemplate
 
             FinanceDashboardViewModel => new FinanceDashboardView(),
             FinanceBudgetAllocationViewModel => new FinanceBudgetAllocationView(),
+            FinanceLoansViewModel => new FinanceLoansView(),
 
             SalesDashboardViewModel => new SalesDashboardView(),
             SalesOrdersViewModel => new SalesOrdersView(),
@@ -30,6 +31,7 @@ public class ViewLocator : IDataTemplate
 
             ProductionDashboardViewModel => new ProductionDashboardView(),
             ProductionWorkOrdersViewModel => new ProductionWorkOrdersView(),
+            ProductionMaintenanceViewModel => new ProductionMaintenanceView(),
 
             WarehouseDashboardViewModel => new WarehouseDashboardView(),
             WarehouseInventoryViewModel => new WarehouseInventoryView(),

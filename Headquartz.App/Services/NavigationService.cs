@@ -20,40 +20,34 @@ public class NavigationService
     {
         CurrentView = route switch
         {
-            // ── Main menu ─────────────────────────────────────
             "company" => new CompanyViewModel(_simulation),
             "forecast" => new ForecastViewModel(_simulation),
+            "settings" => new SettingsViewModel(_simulation),
 
-            // ── Human Resources ───────────────────────────────
             "hr/dashboard" => new HRDashboardViewModel(_simulation),
             "hr/employees" => new HREmployeeManagementViewModel(_simulation),
             "hr/recruitment" => new HRRecruitmentViewModel(_simulation),
             "hr/payroll" => new HRPayrollViewModel(_simulation),
 
-            // ── Finance ───────────────────────────────────────
             "finance/dashboard" => new FinanceDashboardViewModel(_simulation),
             "finance/budget" => new FinanceBudgetAllocationViewModel(_simulation),
+            "finance/loans" => new FinanceLoansViewModel(_simulation),
 
-            // ── Sales ─────────────────────────────────────────
             "sales/dashboard" => new SalesDashboardViewModel(_simulation),
             "sales/orders" => new SalesOrdersViewModel(_simulation),
 
-            // ── Marketing ─────────────────────────────────────
             "marketing/dashboard" => new MarketingDashboardViewModel(_simulation),
 
-            // ── Production ────────────────────────────────────
             "production/dashboard" => new ProductionDashboardViewModel(_simulation),
             "production/workorders" => new ProductionWorkOrdersViewModel(_simulation),
+            "production/maintenance" => new ProductionMaintenanceViewModel(_simulation),
 
-            // ── Warehouse ─────────────────────────────────────
             "warehouse/dashboard" => new WarehouseDashboardViewModel(_simulation),
             "warehouse/inventory" => new WarehouseInventoryViewModel(_simulation),
 
-            // ── Logistics ─────────────────────────────────────
             "logistics/dashboard" => new LogisticsDashboardViewModel(_simulation),
             "logistics/shipments" => new LogisticsShipmentsViewModel(_simulation),
 
-            // ── Fallback ──────────────────────────────────────
             _ => new NotFoundViewModel(),
         };
 

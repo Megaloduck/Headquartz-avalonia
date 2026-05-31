@@ -16,7 +16,7 @@ public class SimulationEngine
     public EventBus Events { get; }
     public CommandProcessor Commands { get; }
 
-    private readonly PeriodicTimer _timer;
+    private volatile int _tickDelayMs = 1_000;
     private readonly List<ISimulationSystem> _systems = [];
     private readonly EventSystem _eventSystem;
 
@@ -40,7 +40,7 @@ public class SimulationEngine
         SeedInventory();
 
         Clock = new SimulationClock();
-        _timer = new PeriodicTimer(TimeSpan.FromSeconds(1));
+        // tick delay set via SetTickSpeed (default 1 000 ms)
         _eventSystem = new EventSystem();
 
         RegisterEventHandlers();
@@ -53,8 +53,21 @@ public class SimulationEngine
 
     public async Task StartAsync()
     {
-        while (await _timer.WaitForNextTickAsync())
+        while (true)
+        {
+            await Task.Delay(_tickDelayMs);
             Update();
+        }
+    }
+
+    /// <summary>
+    /// Adjusts simulation speed at runtime.
+    /// 0.5 = half speed, 1.0 = normal, 2.0 = double, etc.
+    /// </summary>
+    public void SetTickSpeed(double multiplier)
+    {
+        double safe = Math.Max(0.1, multiplier);
+        _tickDelayMs = (int)(1_000 / safe);
     }
 
     public CompanySnapshot CreateSnapshot() => new()

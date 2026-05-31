@@ -12,12 +12,16 @@ public class SimulationService
 
     public SimulationService()
     {
-        Engine =
-            new SimulationEngine();
+        Engine = new SimulationEngine();
     }
 
     public async Task StartAsync()
     {
         await Engine.StartAsync();
+    }
+
+    public void SetTickSpeed(double multiplier)
+    {
+        Engine.SetTickSpeed(multiplier);
     }
 }

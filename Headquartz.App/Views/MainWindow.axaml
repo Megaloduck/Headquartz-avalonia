@@ -132,7 +132,8 @@
                             HorizontalContentAlignment="Left"
                             Background="Transparent"
                             BorderThickness="0"
-                            CornerRadius="6">
+                            CornerRadius="6"
+                            Command="{Binding NavigateSettingsCommand}">
 							<StackPanel Orientation="Horizontal" Spacing="10">
 								<TextBlock Text="&#9881;" FontSize="14" Foreground="#9CA3AF" VerticalAlignment="Center"/>
 								<TextBlock Text="Settings" FontSize="13" Foreground="#9CA3AF" VerticalAlignment="Center"/>
@@ -218,7 +219,6 @@
 															</StackPanel>
 
 															
-
 														</Grid>
 
 													</Button>
