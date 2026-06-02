@@ -1,0 +1,318 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             x:Class="Headquartz.App.MainMenuView"
+             Background="#080C14">
+
+    <Grid ColumnDefinitions="*,440,*" RowDefinitions="*,Auto,*">
+
+        <!-- ── Background glows ────────────────────────────── -->
+        <Canvas Grid.ColumnSpan="3" Grid.RowSpan="3" IsHitTestVisible="False">
+            <Ellipse Canvas.Left="-200" Canvas.Top="-200"
+                Width="600" Height="600" Opacity="0.07">
+                <Ellipse.Fill>
+                    <RadialGradientBrush>
+                        <GradientStop Color="#6366F1" Offset="0"/>
+                        <GradientStop Color="Transparent" Offset="1"/>
+                    </RadialGradientBrush>
+                </Ellipse.Fill>
+            </Ellipse>
+            <Ellipse Canvas.Right="-150" Canvas.Bottom="-100"
+                Width="500" Height="500" Opacity="0.05">
+                <Ellipse.Fill>
+                    <RadialGradientBrush>
+                        <GradientStop Color="#06B6D4" Offset="0"/>
+                        <GradientStop Color="Transparent" Offset="1"/>
+                    </RadialGradientBrush>
+                </Ellipse.Fill>
+            </Ellipse>
+        </Canvas>
+
+        <!-- ── Center column ──────────────────────────────── -->
+        <StackPanel Grid.Column="1" Grid.Row="1" Spacing="0">
+
+            <!-- Logo + title -->
+            <StackPanel HorizontalAlignment="Center" Spacing="12" Margin="0,0,0,40">
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="16">
+                    <Border Width="56" Height="56" CornerRadius="14">
+                        <Border.Background>
+                            <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                                <GradientStop Color="#6366F1" Offset="0"/>
+                                <GradientStop Color="#4338CA" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <TextBlock
+                            Text="H" FontSize="30" FontWeight="Black"
+                            Foreground="White"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"/>
+                    </Border>
+
+                    <TextBlock
+                        Text="HEADQUARTZ"
+                        FontSize="36"
+                        FontWeight="Black"
+                        Foreground="White"
+                        LetterSpacing="6"
+                        VerticalAlignment="Center"/>
+                </StackPanel>
+
+                <TextBlock
+                    Text="Enterprise Resource Planning Simulator"
+                    FontSize="13"
+                    Foreground="#374151"
+                    LetterSpacing="2"
+                    HorizontalAlignment="Center"/>
+
+            </StackPanel>
+
+            <!-- Player profile chip -->
+            <Border
+                Margin="0,0,0,32"
+                Padding="14,10"
+                Background="#0F1623"
+                BorderBrush="#1F2937"
+                BorderThickness="1"
+                CornerRadius="12"
+                HorizontalAlignment="Center">
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <Border Width="32" Height="32" CornerRadius="16" Background="#1F2937">
+                        <TextBlock
+                            Text="{Binding PlayerAvatar}"
+                            FontSize="18"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"/>
+                    </Border>
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock
+                            Text="{Binding PlayerName}"
+                            FontSize="13"
+                            FontWeight="SemiBold"
+                            Foreground="White"/>
+                        <TextBlock
+                            Text="{Binding PlayerLevel, StringFormat='Level {0}'}"
+                            FontSize="11"
+                            Foreground="#4B5563"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- Main action buttons -->
+            <StackPanel Spacing="10">
+
+                <!-- HOST GAME -->
+                <Button
+                    HorizontalAlignment="Stretch"
+                    Padding="0,16"
+                    CornerRadius="12"
+                    Command="{Binding HostGameCommand}">
+                    <Button.Background>
+                        <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,0%">
+                            <GradientStop Color="#6366F1" Offset="0"/>
+                            <GradientStop Color="#4F46E5" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Button.Background>
+                    <Grid ColumnDefinitions="32,*,32">
+                        <TextBlock
+                            Grid.Column="0"
+                            Text="🎮"
+                            FontSize="18"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center"/>
+                        <StackPanel Grid.Column="1" HorizontalAlignment="Center">
+                            <TextBlock
+                                Text="Host Game"
+                                FontSize="16"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                HorizontalAlignment="Center"/>
+                            <TextBlock
+                                Text="Create a new multiplayer room"
+                                FontSize="11"
+                                Foreground="#A5B4FC"
+                                HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </Grid>
+                </Button>
+
+                <!-- JOIN GAME (expandable) -->
+                <StackPanel Spacing="8">
+                    <Button
+                        HorizontalAlignment="Stretch"
+                        Padding="0,16"
+                        CornerRadius="12"
+                        Background="#0F1623"
+                        BorderBrush="#1F2937"
+                        BorderThickness="1"
+                        Command="{Binding ToggleJoinInputCommand}">
+                        <Grid ColumnDefinitions="32,*,32">
+                            <TextBlock
+                                Grid.Column="0"
+                                Text="🔗"
+                                FontSize="18"
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Center"/>
+                            <StackPanel Grid.Column="1" HorizontalAlignment="Center">
+                                <TextBlock
+                                    Text="Join Game"
+                                    FontSize="16"
+                                    FontWeight="Bold"
+                                    Foreground="White"
+                                    HorizontalAlignment="Center"/>
+                                <TextBlock
+                                    Text="Enter a room code to join"
+                                    FontSize="11"
+                                    Foreground="#4B5563"
+                                    HorizontalAlignment="Center"/>
+                            </StackPanel>
+                        </Grid>
+                    </Button>
+
+                    <!-- Room code input (shown when join is toggled) -->
+                    <Border
+                        IsVisible="{Binding ShowJoinInput}"
+                        Padding="16"
+                        Background="#0F1623"
+                        BorderBrush="#1F2937"
+                        BorderThickness="1"
+                        CornerRadius="10">
+                        <StackPanel Spacing="10">
+
+                            <TextBlock
+                                Text="ROOM CODE"
+                                FontSize="11"
+                                FontWeight="Bold"
+                                Foreground="#4B5563"
+                                LetterSpacing="2"/>
+
+                            <Grid ColumnDefinitions="*,Auto">
+                                <TextBox
+                                    Grid.Column="0"
+                                    Text="{Binding JoinRoomCode}"
+                                    Watermark="e.g. HQ4J2X"
+                                    MaxLength="6"
+                                    FontSize="20"
+                                    FontWeight="Bold"
+                                    Padding="14,10"
+                                    Background="#111827"
+                                    BorderBrush="#374151"
+                                    BorderThickness="1"
+                                    CornerRadius="8"
+                                    Foreground="White"
+                                    LetterSpacing="4"/>
+                                <Button
+                                    Grid.Column="1"
+                                    Margin="8,0,0,0"
+                                    Padding="18,10"
+                                    Background="#059669"
+                                    CornerRadius="8"
+                                    Command="{Binding ConfirmJoinCommand}">
+                                    <TextBlock
+                                        Text="Join →"
+                                        FontSize="14"
+                                        FontWeight="Bold"
+                                        Foreground="White"/>
+                                </Button>
+                            </Grid>
+
+                            <Border
+                                IsVisible="{Binding HasJoinError}"
+                                Padding="10,8"
+                                Background="#450A0A"
+                                CornerRadius="6">
+                                <TextBlock
+                                    Text="{Binding JoinError}"
+                                    FontSize="12"
+                                    Foreground="#FCA5A5"/>
+                            </Border>
+
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+                <!-- PLAY SOLO -->
+                <Button
+                    HorizontalAlignment="Stretch"
+                    Padding="0,14"
+                    CornerRadius="12"
+                    Background="#0F1623"
+                    BorderBrush="#1F2937"
+                    BorderThickness="1"
+                    Command="{Binding PlaySoloCommand}">
+                    <Grid ColumnDefinitions="32,*,32">
+                        <TextBlock
+                            Grid.Column="0"
+                            Text="🏢"
+                            FontSize="16"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center"/>
+                        <TextBlock
+                            Grid.Column="1"
+                            Text="Continue / Solo"
+                            FontSize="15"
+                            FontWeight="SemiBold"
+                            Foreground="#D1D5DB"
+                            HorizontalAlignment="Center"/>
+                    </Grid>
+                </Button>
+
+            </StackPanel>
+
+            <!-- Divider -->
+            <Border Height="1" Background="#111827" Margin="0,24"/>
+
+            <!-- Secondary actions -->
+            <Grid ColumnDefinitions="*,*,*,*" Margin="0,0,0,0">
+                <Button
+                    Grid.Column="0"
+                    Padding="0,10"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    Command="{Binding OpenTutorialCommand}">
+                    <StackPanel HorizontalAlignment="Center" Spacing="4">
+                        <TextBlock Text="📖" FontSize="18" HorizontalAlignment="Center"/>
+                        <TextBlock Text="Tutorial" FontSize="11" Foreground="#4B5563" HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+                <Button
+                    Grid.Column="1"
+                    Padding="0,10"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    Command="{Binding OpenSettingsCommand}">
+                    <StackPanel HorizontalAlignment="Center" Spacing="4">
+                        <TextBlock Text="⚙️" FontSize="18" HorizontalAlignment="Center"/>
+                        <TextBlock Text="Settings" FontSize="11" Foreground="#4B5563" HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+                <Button
+                    Grid.Column="2"
+                    Padding="0,10"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    Command="{Binding OpenCreditsCommand}">
+                    <StackPanel HorizontalAlignment="Center" Spacing="4">
+                        <TextBlock Text="🏆" FontSize="18" HorizontalAlignment="Center"/>
+                        <TextBlock Text="Credits" FontSize="11" Foreground="#4B5563" HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+                <Button
+                    Grid.Column="3"
+                    Padding="0,10"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    Command="{Binding ExitGameCommand}">
+                    <StackPanel HorizontalAlignment="Center" Spacing="4">
+                        <TextBlock Text="🚪" FontSize="18" HorizontalAlignment="Center"/>
+                        <TextBlock Text="Exit" FontSize="11" Foreground="#4B5563" HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+            </Grid>
+
+        </StackPanel>
+
+    </Grid>
+
+</UserControl>

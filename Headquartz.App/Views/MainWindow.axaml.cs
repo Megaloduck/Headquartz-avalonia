@@ -12,6 +12,6 @@ public partial class MainWindow
         InitializeComponent();
 
         DataContext =
-            new ShellViewModel();
+            new RootViewModel();
     }
 }

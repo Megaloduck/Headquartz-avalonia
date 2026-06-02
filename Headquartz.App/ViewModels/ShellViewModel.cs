@@ -20,20 +20,7 @@ public partial class ShellViewModel : ViewModelBase
     private readonly NotificationService _notifications;
 
     // =========================================================
-    // SPLASH STATE
-    // =========================================================
-
-    private bool _roleSelected;
-    public bool RoleSelected
-    {
-        get => _roleSelected;
-        set => SetProperty(ref _roleSelected, value);
-    }
-
-    public ObservableCollection<RoleCardModel> RoleCards { get; } = [];
-
-    // =========================================================
-    // SHELL STATE
+    // STATE
     // =========================================================
 
     [ObservableProperty]
@@ -53,31 +40,36 @@ public partial class ShellViewModel : ViewModelBase
         set => SetProperty(ref _currentView, value);
     }
 
+    // RoleSelected is always true when ShellViewModel is active
+    // (onboarding is handled by OnboardingShellViewModel now)
+    public bool RoleSelected => true;
+
     public ObservableCollection<SidebarSection> SidebarSections { get; } = [];
     public ObservableCollection<NotificationModel> Notifications { get; } = [];
 
     // =========================================================
-    // CONSTRUCTOR
+    // CONSTRUCTOR — accepts pre-built simulation + chosen role
     // =========================================================
 
-    public ShellViewModel()
+    public ShellViewModel(
+        SimulationService simulation,
+        PlayerRole startingRole)
     {
-        _simulation = new SimulationService();
+        _simulation = simulation;
         _navigation = new NavigationService(_simulation);
 
-        _ = _simulation.StartAsync();
+        CurrentRole = startingRole;
 
         _navigation.OnViewChanged += HandleViewChanged;
 
-        // Notification service subscribes to engine event bus
         _notifications = new NotificationService(_simulation.Engine);
         _notifications.NotificationFired += OnNotificationFired;
 
-        // Tick-based cleanup: remove notifications older than 6 seconds
         _simulation.Engine.OnUpdated += () =>
             Dispatcher.UIThread.Post(PruneOldNotifications);
 
-        BuildRoleCards();
+        LoadSidebar();
+        _navigation.Navigate("company", CurrentRole);
     }
 
     // =========================================================
@@ -89,8 +81,6 @@ public partial class ShellViewModel : ViewModelBase
         Dispatcher.UIThread.Post(() =>
         {
             Notifications.Insert(0, notification);
-
-            // Cap at 4 visible at once
             while (Notifications.Count > 4)
                 Notifications.RemoveAt(Notifications.Count - 1);
         });
@@ -111,111 +101,6 @@ public partial class ShellViewModel : ViewModelBase
     }
 
     // =========================================================
-    // SPLASH — ROLE SELECTION
-    // =========================================================
-
-    [RelayCommand]
-    private void SelectRole(RoleCardModel card)
-    {
-        CurrentRole = card.Role;
-        LoadSidebar();
-        _navigation.Navigate("company", card.Role);
-        RoleSelected = true;
-    }
-
-    [RelayCommand]
-    private void BackToRoleSelect()
-    {
-        RoleSelected = false;
-    }
-
-    [RelayCommand]
-    private void NavigateSettings()
-    {
-        _navigation.Navigate("settings", CurrentRole);
-        // Make sure shell is visible if coming from splash
-        if (!RoleSelected) RoleSelected = true;
-    }
-
-    private void BuildRoleCards()
-    {
-        RoleCards.Clear();
-
-        RoleCards.Add(new RoleCardModel
-        {
-            Role = PlayerRole.HumanResourcesManager,
-            Title = "HR Manager",
-            Department = "Human Resources",
-            Description = "Hiring, morale, training & payroll",
-            Emoji = "👥",
-            AccentColor = "#8B5CF6",
-        });
-        RoleCards.Add(new RoleCardModel
-        {
-            Role = PlayerRole.FinanceManager,
-            Title = "Finance Manager",
-            Department = "Finance",
-            Description = "Budgets, cash flow & audits",
-            Emoji = "💰",
-            AccentColor = "#10B981",
-        });
-        RoleCards.Add(new RoleCardModel
-        {
-            Role = PlayerRole.SalesManager,
-            Title = "Sales Manager",
-            Department = "Sales",
-            Description = "Revenue, clients & pipeline",
-            Emoji = "📈",
-            AccentColor = "#3B82F6",
-        });
-        RoleCards.Add(new RoleCardModel
-        {
-            Role = PlayerRole.MarketingManager,
-            Title = "Marketing Manager",
-            Department = "Marketing",
-            Description = "Campaigns, branding & research",
-            Emoji = "📣",
-            AccentColor = "#F59E0B",
-        });
-        RoleCards.Add(new RoleCardModel
-        {
-            Role = PlayerRole.ProductionManager,
-            Title = "Production Manager",
-            Department = "Production",
-            Description = "Manufacturing, lines & quality",
-            Emoji = "🏭",
-            AccentColor = "#EF4444",
-        });
-        RoleCards.Add(new RoleCardModel
-        {
-            Role = PlayerRole.WarehouseManager,
-            Title = "Warehouse Manager",
-            Department = "Warehouse",
-            Description = "Inventory, stock & storage",
-            Emoji = "📦",
-            AccentColor = "#F97316",
-        });
-        RoleCards.Add(new RoleCardModel
-        {
-            Role = PlayerRole.LogisticsManager,
-            Title = "Logistics Manager",
-            Department = "Logistics",
-            Description = "Shipments, routes & fleet",
-            Emoji = "🚚",
-            AccentColor = "#06B6D4",
-        });
-        RoleCards.Add(new RoleCardModel
-        {
-            Role = PlayerRole.Chairman,
-            Title = "Board Chairman",
-            Department = "Management",
-            Description = "Oversee all departments",
-            Emoji = "🏛️",
-            AccentColor = "#EAB308",
-        });
-    }
-
-    // =========================================================
     // NAVIGATION
     // =========================================================
 
@@ -223,6 +108,12 @@ public partial class ShellViewModel : ViewModelBase
     private void Navigate(SidebarItem item)
     {
         _navigation.Navigate(item.Route, CurrentRole);
+    }
+
+    [RelayCommand]
+    private void NavigateSettings()
+    {
+        _navigation.Navigate("settings", CurrentRole);
     }
 
     private void HandleViewChanged()

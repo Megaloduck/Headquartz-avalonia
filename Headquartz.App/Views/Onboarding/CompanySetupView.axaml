@@ -1,0 +1,343 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             x:Class="Headquartz.App.CompanySetupView"
+             Background="#080C14">
+
+    <ScrollViewer>
+        <Grid ColumnDefinitions="*,640,*" Margin="0,40,0,40">
+
+            <!-- ── Main column ────────────────────────────── -->
+            <StackPanel Grid.Column="1" Spacing="0">
+
+                <!-- Header -->
+                <StackPanel Spacing="6" Margin="0,0,0,36">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <Button
+                            Padding="8,6"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Command="{Binding GoBackCommand}">
+                            <TextBlock Text="← Back" FontSize="12" Foreground="#374151"/>
+                        </Button>
+                    </StackPanel>
+                    <TextBlock
+                        Text="Company Setup"
+                        FontSize="32"
+                        FontWeight="Bold"
+                        Foreground="White"/>
+                    <TextBlock
+                        Text="Configure your company before the session begins"
+                        FontSize="14"
+                        Foreground="#4B5563"/>
+                </StackPanel>
+
+                <!-- ── Step 1: Name ──────────────────────── -->
+                <Border
+                    Padding="24"
+                    Background="#0F1623"
+                    BorderBrush="#1F2937"
+                    BorderThickness="1"
+                    CornerRadius="14"
+                    Margin="0,0,0,16">
+                    <StackPanel Spacing="16">
+
+                        <StackPanel Orientation="Horizontal" Spacing="12">
+                            <Border
+                                Width="32" Height="32"
+                                CornerRadius="8"
+                                Background="#1E1B4B">
+                                <TextBlock
+                                    Text="1"
+                                    FontSize="14"
+                                    FontWeight="Bold"
+                                    Foreground="#818CF8"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"/>
+                            </Border>
+                            <TextBlock
+                                Text="Company Name"
+                                FontSize="18"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                VerticalAlignment="Center"/>
+                        </StackPanel>
+
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBox
+                                Grid.Column="0"
+                                Text="{Binding CompanyName}"
+                                Watermark="Enter company name..."
+                                FontSize="16"
+                                Padding="14,12"
+                                Background="#111827"
+                                BorderBrush="#1F2937"
+                                BorderThickness="1"
+                                CornerRadius="10"
+                                Foreground="White"/>
+                            <Button
+                                Grid.Column="1"
+                                Margin="8,0,0,0"
+                                Padding="14,12"
+                                Background="#1F2937"
+                                CornerRadius="10"
+                                Command="{Binding RandomNameCommand}">
+                                <TextBlock Text="🎲 Random" FontSize="13" Foreground="#6B7280"/>
+                            </Button>
+                        </Grid>
+
+                    </StackPanel>
+                </Border>
+
+                <!-- ── Step 2: Industry ──────────────────── -->
+                <Border
+                    Padding="24"
+                    Background="#0F1623"
+                    BorderBrush="#1F2937"
+                    BorderThickness="1"
+                    CornerRadius="14"
+                    Margin="0,0,0,16">
+                    <StackPanel Spacing="16">
+
+                        <StackPanel Orientation="Horizontal" Spacing="12">
+                            <Border
+                                Width="32" Height="32"
+                                CornerRadius="8"
+                                Background="#1E1B4B">
+                                <TextBlock
+                                    Text="2"
+                                    FontSize="14"
+                                    FontWeight="Bold"
+                                    Foreground="#818CF8"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"/>
+                            </Border>
+                            <TextBlock
+                                Text="Industry"
+                                FontSize="18"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                VerticalAlignment="Center"/>
+                        </StackPanel>
+
+                        <ItemsControl ItemsSource="{Binding Industries}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Button
+                                        Width="140" Height="64"
+                                        Margin="0,0,8,8"
+                                        Padding="0"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        Command="{Binding $parent[ItemsControl].DataContext.SelectIndustryCommand}"
+                                        CommandParameter="{Binding}">
+                                        <Border
+                                            HorizontalAlignment="Stretch"
+                                            VerticalAlignment="Stretch"
+                                            CornerRadius="10"
+                                            BorderThickness="1">
+                                            <Border.Background>
+                                                <SolidColorBrush Color="#111827"/>
+                                            </Border.Background>
+                                            <Border.BorderBrush>
+                                                <SolidColorBrush Color="#1F2937"/>
+                                            </Border.BorderBrush>
+                                            <StackPanel
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Spacing="4">
+                                                <TextBlock
+                                                    Text="{Binding Emoji}"
+                                                    FontSize="22"
+                                                    HorizontalAlignment="Center"/>
+                                                <TextBlock
+                                                    Text="{Binding Label}"
+                                                    FontSize="12"
+                                                    Foreground="#9CA3AF"
+                                                    HorizontalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Border>
+                                    </Button>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <Border
+                            Padding="12,8"
+                            Background="#111827"
+                            CornerRadius="8">
+                            <TextBlock
+                                Text="{Binding IndustryDescription}"
+                                FontSize="12"
+                                Foreground="#6B7280"
+                                TextWrapping="Wrap"/>
+                        </Border>
+
+                    </StackPanel>
+                </Border>
+
+                <!-- ── Step 3: Difficulty ────────────────── -->
+                <Border
+                    Padding="24"
+                    Background="#0F1623"
+                    BorderBrush="#1F2937"
+                    BorderThickness="1"
+                    CornerRadius="14"
+                    Margin="0,0,0,16">
+                    <StackPanel Spacing="16">
+
+                        <StackPanel Orientation="Horizontal" Spacing="12">
+                            <Border
+                                Width="32" Height="32"
+                                CornerRadius="8"
+                                Background="#1E1B4B">
+                                <TextBlock
+                                    Text="3"
+                                    FontSize="14"
+                                    FontWeight="Bold"
+                                    Foreground="#818CF8"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"/>
+                            </Border>
+                            <TextBlock
+                                Text="Difficulty"
+                                FontSize="18"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                VerticalAlignment="Center"/>
+                        </StackPanel>
+
+                        <ItemsControl ItemsSource="{Binding Difficulties}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Spacing="8"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Button
+                                        HorizontalAlignment="Stretch"
+                                        Padding="0"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        Command="{Binding $parent[ItemsControl].DataContext.SelectDifficultyCommand}"
+                                        CommandParameter="{Binding}">
+                                        <Border
+                                            Padding="16,12"
+                                            CornerRadius="10"
+                                            BorderThickness="1">
+                                            <Border.Background>
+                                                <SolidColorBrush Color="#111827"/>
+                                            </Border.Background>
+                                            <Border.BorderBrush>
+                                                <SolidColorBrush Color="#1F2937"/>
+                                            </Border.BorderBrush>
+                                            <Grid ColumnDefinitions="24,*,Auto">
+                                                <TextBlock
+                                                    Grid.Column="0"
+                                                    Text="{Binding DotEmoji}"
+                                                    FontSize="14"
+                                                    VerticalAlignment="Center"/>
+                                                <TextBlock
+                                                    Grid.Column="1"
+                                                    Text="{Binding Label}"
+                                                    FontSize="14"
+                                                    FontWeight="SemiBold"
+                                                    Foreground="White"
+                                                    VerticalAlignment="Center"
+                                                    Margin="8,0"/>
+                                                <TextBlock
+                                                    Grid.Column="2"
+                                                    Text="{Binding SubLabel}"
+                                                    FontSize="12"
+                                                    Foreground="#374151"
+                                                    VerticalAlignment="Center"/>
+                                            </Grid>
+                                        </Border>
+                                    </Button>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <!-- Difficulty description + capital -->
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBlock
+                                Grid.Column="0"
+                                Text="{Binding DifficultyDescription}"
+                                FontSize="12"
+                                Foreground="#6B7280"
+                                TextWrapping="Wrap"
+                                VerticalAlignment="Center"/>
+                            <Border
+                                Grid.Column="1"
+                                Padding="16,10"
+                                Background="#111827"
+                                CornerRadius="8"
+                                Margin="12,0,0,0">
+                                <StackPanel HorizontalAlignment="Center">
+                                    <TextBlock
+                                        Text="STARTING CAPITAL"
+                                        FontSize="9"
+                                        Foreground="#374151"
+                                        LetterSpacing="1"
+                                        HorizontalAlignment="Center"/>
+                                    <TextBlock
+                                        Text="{Binding CapitalDisplay}"
+                                        FontSize="22"
+                                        FontWeight="Bold"
+                                        Foreground="#10B981"
+                                        HorizontalAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+
+                    </StackPanel>
+                </Border>
+
+                <!-- Error -->
+                <Border
+                    IsVisible="{Binding HasError}"
+                    Padding="14,10"
+                    Background="#450A0A"
+                    BorderBrush="#7F1D1D"
+                    BorderThickness="1"
+                    CornerRadius="8"
+                    Margin="0,0,0,16">
+                    <TextBlock
+                        Text="{Binding ErrorMessage}"
+                        FontSize="13"
+                        Foreground="#FCA5A5"/>
+                </Border>
+
+                <!-- Confirm -->
+                <Button
+                    HorizontalAlignment="Stretch"
+                    Padding="0,16"
+                    CornerRadius="12"
+                    Command="{Binding ConfirmCommand}">
+                    <Button.Background>
+                        <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,0%">
+                            <GradientStop Color="#6366F1" Offset="0"/>
+                            <GradientStop Color="#4F46E5" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Button.Background>
+                    <TextBlock
+                        Text="Select Department →"
+                        FontSize="16"
+                        FontWeight="Bold"
+                        Foreground="White"
+                        HorizontalAlignment="Center"/>
+                </Button>
+
+            </StackPanel>
+
+        </Grid>
+    </ScrollViewer>
+
+</UserControl>

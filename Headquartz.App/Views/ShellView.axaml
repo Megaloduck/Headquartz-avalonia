@@ -1,0 +1,209 @@
+<UserControl
+    Name="ShellRoot"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="using:Headquartz.App.ViewModels"
+    x:Class="Headquartz.App.ShellView"
+    x:DataType="vm:ShellViewModel">
+
+	<Grid>
+
+		<!-- =========================================== -->
+		<!-- MAIN SHELL                                  -->
+		<!-- =========================================== -->
+		<Grid ColumnDefinitions="260,*">
+
+			<!-- SIDEBAR -->
+			<Border
+                Grid.Column="0"
+                Background="#111827"
+                BorderBrush="#1F2937"
+                BorderThickness="0,0,1,0">
+
+				<DockPanel>
+
+					<!-- Logo header -->
+					<Border
+                        DockPanel.Dock="Top"
+                        Padding="16,14"
+                        BorderBrush="#1F2937"
+                        BorderThickness="0,0,0,1">
+						<StackPanel Orientation="Horizontal" Spacing="10">
+							<Border Width="32" Height="32" CornerRadius="8">
+								<Border.Background>
+									<LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+										<GradientStop Color="#6366F1" Offset="0"/>
+										<GradientStop Color="#4338CA" Offset="1"/>
+									</LinearGradientBrush>
+								</Border.Background>
+								<TextBlock
+                                    Text="H" FontSize="16" FontWeight="Bold"
+                                    Foreground="White"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"/>
+							</Border>
+							<TextBlock
+                                Text="Headquartz"
+                                FontSize="16"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                VerticalAlignment="Center"/>
+						</StackPanel>
+					</Border>
+
+					<!-- Role chip -->
+					<Border
+                        DockPanel.Dock="Top"
+                        Padding="10,8"
+                        Margin="8,8,8,4"
+                        CornerRadius="8"
+                        Background="#1F2937">
+						<StackPanel Orientation="Horizontal" Spacing="8">
+							<Border Width="24" Height="24" CornerRadius="12" Background="#374151">
+								<TextBlock Text="&#x1F464;" FontSize="12"
+                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
+							</Border>
+							<TextBlock
+                                Text="{Binding RoleName}"
+                                FontSize="13"
+                                Foreground="#D1D5DB"
+                                VerticalAlignment="Center"/>
+						</StackPanel>
+					</Border>
+
+					<!-- Bottom: Settings -->
+					<StackPanel DockPanel.Dock="Bottom" Margin="8,0,8,8" Spacing="2">
+						<Border Height="1" Margin="0,6,0,6" Background="#1F2937"/>
+						<Button
+                            Padding="10,8"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Left"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            CornerRadius="6"
+                            Command="{Binding NavigateSettingsCommand}">
+							<StackPanel Orientation="Horizontal" Spacing="10">
+								<TextBlock Text="&#9881;" FontSize="14" Foreground="#9CA3AF" VerticalAlignment="Center"/>
+								<TextBlock Text="Settings" FontSize="13" Foreground="#9CA3AF" VerticalAlignment="Center"/>
+							</StackPanel>
+						</Button>
+					</StackPanel>
+
+					<!-- Nav sections -->
+					<ScrollViewer
+                        VerticalScrollBarVisibility="Auto"
+                        HorizontalScrollBarVisibility="Disabled">
+						<ItemsControl Margin="8,8,8,0" ItemsSource="{Binding SidebarSections}">
+							<ItemsControl.ItemTemplate>
+								<DataTemplate>
+									<StackPanel Margin="0,0,0,4">
+										<TextBlock
+                                            Text="{Binding Title}"
+                                            FontSize="11"
+                                            FontWeight="SemiBold"
+                                            Foreground="#6B7280"
+                                            Margin="10,10,10,4"/>
+										<ItemsControl ItemsSource="{Binding Items}">
+											<ItemsControl.ItemTemplate>
+												<DataTemplate>
+													<Button
+                                                        Padding="10,7"
+                                                        HorizontalAlignment="Stretch"
+                                                        HorizontalContentAlignment="Left"
+                                                        Background="Transparent"
+                                                        BorderThickness="0"
+                                                        CornerRadius="6"
+                                                        Margin="0,1"
+                                                        Command="{Binding #ShellRoot.DataContext.NavigateCommand}"
+                                                        CommandParameter="{Binding}">
+														<StackPanel Orientation="Horizontal" Spacing="10">
+															<Border
+                                                                Width="18" Height="18"
+                                                                CornerRadius="4"
+                                                                Background="#374151"
+                                                                VerticalAlignment="Center">
+																<TextBlock
+                                                                    Text="&#x25A0;"
+                                                                    FontSize="8"
+                                                                    Foreground="#9CA3AF"
+                                                                    HorizontalAlignment="Center"
+                                                                    VerticalAlignment="Center"/>
+															</Border>
+															<TextBlock
+                                                                Text="{Binding Title}"
+                                                                FontSize="13"
+                                                                Foreground="#D1D5DB"
+                                                                VerticalAlignment="Center"/>
+														</StackPanel>
+													</Button>
+												</DataTemplate>
+											</ItemsControl.ItemTemplate>
+										</ItemsControl>
+									</StackPanel>
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+						</ItemsControl>
+					</ScrollViewer>
+
+				</DockPanel>
+			</Border>
+
+			<!-- CONTENT AREA -->
+			<ContentControl
+                Grid.Column="1"
+                Content="{Binding CurrentView}"/>
+
+		</Grid>
+
+		<!-- =========================================== -->
+		<!-- NOTIFICATION OVERLAY                        -->
+		<!-- =========================================== -->
+		<ItemsControl
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top"
+            Margin="0,16,20,0"
+            Width="340"
+            IsHitTestVisible="True"
+            ItemsSource="{Binding Notifications}"
+            ZIndex="100">
+			<ItemsControl.ItemTemplate>
+				<DataTemplate>
+					<Border
+                        Margin="0,0,0,8"
+                        Padding="14,12"
+                        Background="{Binding BackgroundColor}"
+                        BorderBrush="{Binding BorderColor}"
+                        BorderThickness="1"
+                        CornerRadius="10">
+						<Grid ColumnDefinitions="*,Auto">
+							<StackPanel Grid.Column="0" Spacing="3">
+								<TextBlock
+                                    FontSize="13" FontWeight="Bold"
+                                    Text="{Binding Title}"
+                                    Foreground="White"
+                                    TextWrapping="Wrap"/>
+								<TextBlock
+                                    FontSize="12" Foreground="#D1D5DB"
+                                    Text="{Binding Message}"
+                                    TextWrapping="Wrap"/>
+							</StackPanel>
+							<Button
+                                Grid.Column="1"
+                                Margin="8,0,0,0"
+                                Padding="6,4"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                VerticalAlignment="Top"
+                                Command="{Binding #ShellRoot.DataContext.DismissNotificationCommand}"
+                                CommandParameter="{Binding}">
+								<TextBlock Text="✕" FontSize="12" Foreground="#6B7280"/>
+							</Button>
+						</Grid>
+					</Border>
+				</DataTemplate>
+			</ItemsControl.ItemTemplate>
+		</ItemsControl>
+
+	</Grid>
+
+</UserControl>

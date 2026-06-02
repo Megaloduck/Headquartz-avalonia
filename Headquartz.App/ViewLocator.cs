@@ -26,11 +26,13 @@ public class ViewLocator : IDataTemplate
             HREmployeeManagementViewModel => new HREmployeeManagementView(),
             HRRecruitmentViewModel => new HRRecruitmentView(),
             HRPayrollViewModel => new HRPayrollView(),
+            HRDevelopmentViewModel => new HRDevelopmentView(),
 
             // ── Finance ───────────────────────────────────────
             FinanceDashboardViewModel => new FinanceDashboardView(),
             FinanceBudgetAllocationViewModel => new FinanceBudgetAllocationView(),
             FinanceLoansViewModel => new FinanceLoansView(),
+            FinanceAccountReceivableViewModel => new FinanceAccountReceivableView(),
 
             // ── Sales ─────────────────────────────────────────
             SalesDashboardViewModel => new SalesDashboardView(),

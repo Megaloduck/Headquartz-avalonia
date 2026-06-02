@@ -1,0 +1,451 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             x:Class="Headquartz.App.DepartmentSelectionView"
+             Background="#080C14">
+
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <!-- ── Top bar ────────────────────────────────────── -->
+        <Border
+            Grid.Row="0"
+            Padding="28,16"
+            Background="#0D1117"
+            BorderBrush="#111827"
+            BorderThickness="0,0,0,1">
+
+            <Grid ColumnDefinitions="Auto,*,Auto">
+
+                <Button
+                    Grid.Column="0"
+                    Padding="12,8"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    CornerRadius="8"
+                    Command="{Binding GoBackCommand}">
+                    <TextBlock Text="← Back" FontSize="13" Foreground="#374151"/>
+                </Button>
+
+                <!-- Company summary chip -->
+                <StackPanel
+                    Grid.Column="1"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Center"
+                    Spacing="16">
+
+                    <StackPanel HorizontalAlignment="Center" Spacing="2">
+                        <TextBlock
+                            Text="{Binding CompanyName}"
+                            FontSize="18"
+                            FontWeight="Bold"
+                            Foreground="White"
+                            HorizontalAlignment="Center"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="12">
+                            <TextBlock Text="{Binding IndustryLabel}"  FontSize="12" Foreground="#374151"/>
+                            <TextBlock Text="·" FontSize="12" Foreground="#1F2937"/>
+                            <TextBlock Text="{Binding DifficultyLabel}" FontSize="12" Foreground="#374151"/>
+                            <TextBlock Text="·" FontSize="12" Foreground="#1F2937"/>
+                            <TextBlock Text="{Binding CapitalDisplay}"  FontSize="12" Foreground="#10B981"/>
+                        </StackPanel>
+                    </StackPanel>
+
+                </StackPanel>
+
+                <TextBlock
+                    Grid.Column="2"
+                    Text="SELECT YOUR ROLE"
+                    FontSize="11"
+                    FontWeight="Bold"
+                    Foreground="#1F2937"
+                    LetterSpacing="2"
+                    VerticalAlignment="Center"/>
+
+            </Grid>
+        </Border>
+
+        <!-- ── Main content ───────────────────────────────── -->
+        <ScrollViewer Grid.Row="1">
+            <Grid ColumnDefinitions="*,980,*" Margin="0,32,0,32">
+                <StackPanel Grid.Column="1" Spacing="28">
+
+                    <!-- Heading -->
+                    <StackPanel Spacing="6">
+                        <TextBlock
+                            Text="Choose Your Department"
+                            FontSize="28"
+                            FontWeight="Bold"
+                            Foreground="White"/>
+                        <TextBlock
+                            Text="Each role has unique responsibilities. Coordinate with your team to cover all departments."
+                            FontSize="14"
+                            Foreground="#374151"
+                            TextWrapping="Wrap"/>
+                    </StackPanel>
+
+                    <!-- Role cards grid -->
+                    <ItemsControl ItemsSource="{Binding Cards}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button
+                                    Width="230"
+                                    Height="190"
+                                    Margin="0,0,12,12"
+                                    Padding="0"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    IsEnabled="{Binding !IsTaken}"
+                                    Command="{Binding $parent[ItemsControl].DataContext.SelectCardCommand}"
+                                    CommandParameter="{Binding}">
+
+                                    <Border
+                                        HorizontalAlignment="Stretch"
+                                        VerticalAlignment="Stretch"
+                                        CornerRadius="14"
+                                        BorderThickness="1"
+                                        ClipToBounds="True">
+
+                                        <!-- Dynamic border: selected = accent, default = #1F2937 -->
+                                        <Border.BorderBrush>
+                                            <SolidColorBrush Color="#1F2937"/>
+                                        </Border.BorderBrush>
+                                        <Border.Background>
+                                            <SolidColorBrush Color="#0F1623"/>
+                                        </Border.Background>
+
+                                        <Grid RowDefinitions="4,*">
+
+                                            <!-- Top accent bar -->
+                                            <Border
+                                                Grid.Row="0"
+                                                Background="{Binding AccentColor}"
+                                                CornerRadius="14,14,0,0"/>
+
+                                            <!-- Card body -->
+                                            <StackPanel
+                                                Grid.Row="1"
+                                                Margin="16,14,16,14"
+                                                Spacing="8">
+
+                                                <!-- Emoji + dept -->
+                                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                                    <TextBlock Text="{Binding Emoji}" FontSize="22" VerticalAlignment="Center"/>
+                                                    <TextBlock
+                                                        Text="{Binding Department}"
+                                                        FontSize="10"
+                                                        FontWeight="SemiBold"
+                                                        Foreground="#374151"
+                                                        VerticalAlignment="Center"
+                                                        LetterSpacing="1"/>
+                                                </StackPanel>
+
+                                                <!-- Title -->
+                                                <TextBlock
+                                                    Text="{Binding Title}"
+                                                    FontSize="15"
+                                                    FontWeight="Bold"
+                                                    Foreground="White"
+                                                    TextWrapping="Wrap"/>
+
+                                                <!-- Responsibilities -->
+                                                <TextBlock
+                                                    Text="{Binding ResponsibilitiesSummary}"
+                                                    FontSize="11"
+                                                    Foreground="#374151"
+                                                    TextWrapping="Wrap"/>
+
+                                                <!-- Footer: difficulty + taken -->
+                                                <Grid ColumnDefinitions="*,Auto" Margin="0,4,0,0">
+                                                    <TextBlock
+                                                        Grid.Column="0"
+                                                        Text="{Binding DifficultyLabel}"
+                                                        FontSize="11"
+                                                        Foreground="#4B5563"
+                                                        VerticalAlignment="Center"/>
+
+                                                    <!-- Taken badge -->
+                                                    <Border
+                                                        Grid.Column="1"
+                                                        IsVisible="{Binding IsTaken}"
+                                                        Padding="7,3"
+                                                        Background="#1C0505"
+                                                        CornerRadius="5">
+                                                        <TextBlock
+                                                            Text="TAKEN"
+                                                            FontSize="9"
+                                                            FontWeight="Bold"
+                                                            Foreground="#7F1D1D"/>
+                                                    </Border>
+
+                                                    <!-- Selected badge -->
+                                                    <Border
+                                                        Grid.Column="1"
+                                                        IsVisible="{Binding IsSelected}"
+                                                        Padding="7,3"
+                                                        Background="#0D2414"
+                                                        CornerRadius="5">
+                                                        <TextBlock
+                                                            Text="SELECTED"
+                                                            FontSize="9"
+                                                            FontWeight="Bold"
+                                                            Foreground="#16A34A"/>
+                                                    </Border>
+
+                                                </Grid>
+
+                                            </StackPanel>
+
+                                        </Grid>
+                                    </Border>
+
+                                </Button>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <!-- Pre-meeting confirmation panel (shown after selection) -->
+                    <Border
+                        IsVisible="{Binding ShowPreMeetingPanel}"
+                        Padding="28"
+                        Background="#0F1623"
+                        BorderBrush="#1F2937"
+                        BorderThickness="1"
+                        CornerRadius="14">
+
+                        <Grid ColumnDefinitions="*,24,320">
+
+                            <!-- Left: initial meeting checklist -->
+                            <StackPanel Grid.Column="0" Spacing="16">
+
+                                <TextBlock
+                                    Text="Initial Meeting"
+                                    FontSize="20"
+                                    FontWeight="Bold"
+                                    Foreground="White"/>
+
+                                <TextBlock
+                                    Text="Before the simulation begins, confirm your team is ready."
+                                    FontSize="13"
+                                    Foreground="#4B5563"
+                                    TextWrapping="Wrap"/>
+
+                                <!-- Checklist items -->
+                                <StackPanel Spacing="10">
+
+                                    <StackPanel Orientation="Horizontal" Spacing="10">
+                                        <Border
+                                            Width="20" Height="20"
+                                            CornerRadius="10"
+                                            Background="#0D2414">
+                                            <TextBlock
+                                                Text="✓"
+                                                FontSize="11"
+                                                FontWeight="Bold"
+                                                Foreground="#16A34A"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"/>
+                                        </Border>
+                                        <TextBlock
+                                            Text="Company name configured"
+                                            FontSize="13"
+                                            Foreground="#6B7280"
+                                            VerticalAlignment="Center"/>
+                                    </StackPanel>
+
+                                    <StackPanel Orientation="Horizontal" Spacing="10">
+                                        <Border
+                                            Width="20" Height="20"
+                                            CornerRadius="10"
+                                            Background="#0D2414">
+                                            <TextBlock
+                                                Text="✓"
+                                                FontSize="11"
+                                                FontWeight="Bold"
+                                                Foreground="#16A34A"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"/>
+                                        </Border>
+                                        <TextBlock
+                                            Text="Difficulty and budget set"
+                                            FontSize="13"
+                                            Foreground="#6B7280"
+                                            VerticalAlignment="Center"/>
+                                    </StackPanel>
+
+                                    <StackPanel Orientation="Horizontal" Spacing="10">
+                                        <Border
+                                            Width="20" Height="20"
+                                            CornerRadius="10"
+                                            Background="#0D2414">
+                                            <TextBlock
+                                                Text="✓"
+                                                FontSize="11"
+                                                FontWeight="Bold"
+                                                Foreground="#16A34A"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"/>
+                                        </Border>
+                                        <TextBlock
+                                            Text="Department role selected"
+                                            FontSize="13"
+                                            Foreground="#6B7280"
+                                            VerticalAlignment="Center"/>
+                                    </StackPanel>
+
+                                    <StackPanel Orientation="Horizontal" Spacing="10">
+                                        <Border
+                                            Width="20" Height="20"
+                                            CornerRadius="10"
+                                            Background="#0D2414">
+                                            <TextBlock
+                                                Text="✓"
+                                                FontSize="11"
+                                                FontWeight="Bold"
+                                                Foreground="#16A34A"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"/>
+                                        </Border>
+                                        <TextBlock
+                                            Text="Comms channel ready"
+                                            FontSize="13"
+                                            Foreground="#6B7280"
+                                            VerticalAlignment="Center"/>
+                                    </StackPanel>
+
+                                </StackPanel>
+
+                            </StackPanel>
+
+                            <!-- Right: selected role summary + enter button -->
+                            <StackPanel Grid.Column="2" Spacing="16">
+
+                                <Border
+                                    Padding="20"
+                                    Background="#111827"
+                                    CornerRadius="12">
+                                    <StackPanel Spacing="10" HorizontalAlignment="Center">
+
+                                        <TextBlock
+                                            Text="{Binding SelectedCard.Emoji}"
+                                            FontSize="36"
+                                            HorizontalAlignment="Center"/>
+
+                                        <TextBlock
+                                            Text="{Binding SelectedCard.Title}"
+                                            FontSize="16"
+                                            FontWeight="Bold"
+                                            Foreground="White"
+                                            HorizontalAlignment="Center"/>
+
+                                        <TextBlock
+                                            Text="{Binding SelectedCard.Department}"
+                                            FontSize="12"
+                                            Foreground="#374151"
+                                            HorizontalAlignment="Center"/>
+
+                                        <Border Height="1" Background="#1F2937" Margin="0,4"/>
+
+                                        <TextBlock
+                                            Text="{Binding InitialBudgetDisplay}"
+                                            FontSize="12"
+                                            Foreground="#4B5563"
+                                            TextWrapping="Wrap"
+                                            HorizontalAlignment="Center"
+                                            TextAlignment="Center"/>
+
+                                    </StackPanel>
+                                </Border>
+
+                                <Button
+                                    HorizontalAlignment="Stretch"
+                                    Padding="0,16"
+                                    CornerRadius="10"
+                                    Command="{Binding EnterGameCommand}">
+                                    <Button.Background>
+                                        <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,0%">
+                                            <GradientStop Color="#059669" Offset="0"/>
+                                            <GradientStop Color="#047857" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Button.Background>
+                                    <TextBlock
+                                        Text="▶  Enter Simulation"
+                                        FontSize="15"
+                                        FontWeight="Bold"
+                                        Foreground="White"
+                                        HorizontalAlignment="Center"/>
+                                </Button>
+
+                            </StackPanel>
+
+                        </Grid>
+
+                    </Border>
+
+                </StackPanel>
+            </Grid>
+        </ScrollViewer>
+
+        <!-- ── Bottom action bar ──────────────────────────── -->
+        <Border
+            Grid.Row="2"
+            Padding="28,14"
+            Background="#0D1117"
+            BorderBrush="#111827"
+            BorderThickness="0,1,0,0"
+            IsVisible="{Binding HasSelection}">
+
+            <Grid ColumnDefinitions="*,Auto">
+
+                <StackPanel
+                    Grid.Column="0"
+                    Orientation="Horizontal"
+                    Spacing="12"
+                    VerticalAlignment="Center">
+                    <TextBlock
+                        Text="{Binding SelectedCard.Emoji}"
+                        FontSize="20"
+                        VerticalAlignment="Center"/>
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock
+                            Text="{Binding SelectedCard.Title}"
+                            FontSize="14"
+                            FontWeight="Bold"
+                            Foreground="White"/>
+                        <TextBlock
+                            Text="{Binding SelectedCard.Department}"
+                            FontSize="12"
+                            Foreground="#374151"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <Button
+                    Grid.Column="1"
+                    Padding="24,12"
+                    CornerRadius="10"
+                    Command="{Binding ConfirmSelectionCommand}"
+                    IsVisible="{Binding !ShowPreMeetingPanel}">
+                    <Button.Background>
+                        <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,0%">
+                            <GradientStop Color="#6366F1" Offset="0"/>
+                            <GradientStop Color="#4F46E5" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Button.Background>
+                    <TextBlock
+                        Text="Confirm Role →"
+                        FontSize="14"
+                        FontWeight="Bold"
+                        Foreground="White"/>
+                </Button>
+
+            </Grid>
+
+        </Border>
+
+    </Grid>
+
+</UserControl>

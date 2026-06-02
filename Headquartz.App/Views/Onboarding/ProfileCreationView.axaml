@@ -1,0 +1,220 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             x:Class="Headquartz.App.ProfileCreationView"
+             Background="#080C14">
+
+    <Grid ColumnDefinitions="*,480,*" RowDefinitions="*,Auto,*">
+
+        <!-- ── Ambient glow ────────────────────────────────── -->
+        <Canvas Grid.ColumnSpan="3" Grid.RowSpan="3" IsHitTestVisible="False">
+            <Ellipse Canvas.Left="-100" Canvas.Top="-100"
+                Width="500" Height="500" Opacity="0.06">
+                <Ellipse.Fill>
+                    <RadialGradientBrush>
+                        <GradientStop Color="#6366F1" Offset="0"/>
+                        <GradientStop Color="Transparent" Offset="1"/>
+                    </RadialGradientBrush>
+                </Ellipse.Fill>
+            </Ellipse>
+        </Canvas>
+
+        <!-- ── Center card ────────────────────────────────── -->
+        <StackPanel
+            Grid.Column="1" Grid.Row="1"
+            Spacing="0">
+
+            <!-- Header -->
+            <StackPanel HorizontalAlignment="Center" Spacing="6" Margin="0,0,0,36">
+                <TextBlock
+                    Text="Create Your Profile"
+                    FontSize="32"
+                    FontWeight="Bold"
+                    Foreground="White"
+                    HorizontalAlignment="Center"/>
+                <TextBlock
+                    Text="This is how other players will see you"
+                    FontSize="14"
+                    Foreground="#4B5563"
+                    HorizontalAlignment="Center"/>
+            </StackPanel>
+
+            <!-- Profile card preview -->
+            <Border
+                Margin="0,0,0,28"
+                Padding="20"
+                Background="#0F1623"
+                BorderBrush="#1F2937"
+                BorderThickness="1"
+                CornerRadius="16"
+                HorizontalAlignment="Center"
+                Width="260">
+
+                <StackPanel Spacing="12" HorizontalAlignment="Center">
+
+                    <!-- Avatar large -->
+                    <Border
+                        Width="72" Height="72"
+                        CornerRadius="36"
+                        Background="#1F2937"
+                        HorizontalAlignment="Center">
+                        <TextBlock
+                            Text="{Binding SelectedAvatar}"
+                            FontSize="40"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"/>
+                    </Border>
+
+                    <!-- Username preview -->
+                    <TextBlock
+                        Text="{Binding PreviewUsername}"
+                        FontSize="18"
+                        FontWeight="Bold"
+                        Foreground="White"
+                        HorizontalAlignment="Center"/>
+
+                    <!-- Level badge -->
+                    <Border
+                        Padding="12,4"
+                        CornerRadius="20"
+                        Background="#1F2937"
+                        HorizontalAlignment="Center">
+                        <TextBlock
+                            Text="{Binding PreviewLevel}"
+                            FontSize="12"
+                            Foreground="#6B7280"/>
+                    </Border>
+
+                </StackPanel>
+            </Border>
+
+            <!-- Form -->
+            <Border
+                Padding="28"
+                Background="#0F1623"
+                BorderBrush="#1F2937"
+                BorderThickness="1"
+                CornerRadius="16">
+
+                <StackPanel Spacing="24">
+
+                    <!-- Username field -->
+                    <StackPanel Spacing="8">
+                        <TextBlock
+                            Text="USERNAME"
+                            FontSize="11"
+                            FontWeight="Bold"
+                            Foreground="#4B5563"
+                            LetterSpacing="2"/>
+                        <TextBox
+                            Text="{Binding Username}"
+                            Watermark="Enter your username..."
+                            FontSize="15"
+                            Padding="14,12"
+                            Background="#111827"
+                            BorderBrush="#1F2937"
+                            BorderThickness="1"
+                            CornerRadius="10"
+                            Foreground="White"/>
+                    </StackPanel>
+
+                    <!-- Avatar picker -->
+                    <StackPanel Spacing="8">
+                        <TextBlock
+                            Text="CHOOSE AVATAR"
+                            FontSize="11"
+                            FontWeight="Bold"
+                            Foreground="#4B5563"
+                            LetterSpacing="2"/>
+
+                        <ItemsControl ItemsSource="{Binding Avatars}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Button
+                                        Width="48" Height="48"
+                                        Margin="4"
+                                        Padding="0"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        Command="{Binding $parent[ItemsControl].DataContext.SelectAvatarCommand}"
+                                        CommandParameter="{Binding}">
+                                        <Border
+                                            Width="44" Height="44"
+                                            CornerRadius="10">
+                                            <Border.Background>
+                                                <SolidColorBrush
+                                                    Color="{Binding IsSelected,
+                                                        Converter={x:Static BooleanConverters.IsSelected},
+                                                        ConverterParameter='#1E1B4B|#111827'}"/>
+                                            </Border.Background>
+                                            <Border.BorderBrush>
+                                                <SolidColorBrush
+                                                    Color="{Binding IsSelected,
+                                                        Converter={x:Static BooleanConverters.IsSelected},
+                                                        ConverterParameter='#6366F1|Transparent'}"/>
+                                            </Border.BorderBrush>
+                                            <Border.BorderThickness>
+                                                <Thickness Left="2" Top="2" Right="2" Bottom="2"/>
+                                            </Border.BorderThickness>
+                                            <TextBlock
+                                                Text="{Binding Emoji}"
+                                                FontSize="24"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"/>
+                                        </Border>
+                                    </Button>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                    </StackPanel>
+
+                    <!-- Error message -->
+                    <Border
+                        IsVisible="{Binding HasError}"
+                        Padding="12,10"
+                        Background="#450A0A"
+                        CornerRadius="8"
+                        BorderBrush="#7F1D1D"
+                        BorderThickness="1">
+                        <TextBlock
+                            Text="{Binding ErrorMessage}"
+                            FontSize="13"
+                            Foreground="#FCA5A5"
+                            TextWrapping="Wrap"/>
+                    </Border>
+
+                    <!-- Continue button -->
+                    <Button
+                        HorizontalAlignment="Stretch"
+                        Padding="0,14"
+                        CornerRadius="10"
+                        Command="{Binding CreateProfileCommand}">
+                        <Button.Background>
+                            <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,0%">
+                                <GradientStop Color="#6366F1" Offset="0"/>
+                                <GradientStop Color="#4F46E5" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Button.Background>
+                        <TextBlock
+                            Text="Continue →"
+                            FontSize="15"
+                            FontWeight="Bold"
+                            Foreground="White"
+                            HorizontalAlignment="Center"/>
+                    </Button>
+
+                </StackPanel>
+            </Border>
+
+        </StackPanel>
+
+    </Grid>
+
+</UserControl>

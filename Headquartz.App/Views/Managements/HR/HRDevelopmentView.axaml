@@ -1,0 +1,162 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             x:Class="Headquartz.App.HRDevelopmentView">
+
+	<ScrollViewer>
+		<StackPanel Margin="30" Spacing="20">
+
+			<TextBlock FontSize="34" FontWeight="Bold" Text="Development"/>
+			<TextBlock FontSize="13" Foreground="#6B7280"
+                Text="Invest in your workforce. Training programs improve morale and productivity across all employees."/>
+
+			<!-- KPI ROW -->
+			<ItemsControl ItemsSource="{Binding Kpis}">
+				<ItemsControl.ItemsPanel>
+					<ItemsPanelTemplate>
+						<WrapPanel/>
+					</ItemsPanelTemplate>
+				</ItemsControl.ItemsPanel>
+				<ItemsControl.ItemTemplate>
+					<DataTemplate>
+						<Border Width="200" Margin="10" Padding="20" Background="#202633" CornerRadius="12">
+							<StackPanel>
+								<TextBlock FontSize="13" Foreground="#9CA3AF" Text="{Binding Title}"/>
+								<TextBlock FontSize="26" FontWeight="Bold" Text="{Binding Value}"/>
+							</StackPanel>
+						</Border>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
+
+			<!-- STATUS MESSAGE -->
+			<Border
+                IsVisible="{Binding StatusMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                Padding="16,12" Background="#2B3242" CornerRadius="10">
+				<TextBlock Text="{Binding StatusMessage}" FontSize="13" TextWrapping="Wrap"/>
+			</Border>
+
+			<!-- TRAINING PROGRAMS -->
+			<TextBlock FontSize="22" FontWeight="Bold" Text="Training Programs" Margin="0,4,0,0"/>
+
+			<Grid ColumnDefinitions="*,16,*">
+
+				<!-- Morale Workshop -->
+				<Border Grid.Column="0" Padding="22" Background="#202633" CornerRadius="12">
+					<StackPanel Spacing="14">
+						<StackPanel Orientation="Horizontal" Spacing="10">
+							<TextBlock Text="🎉" FontSize="28"/>
+							<StackPanel>
+								<TextBlock FontSize="16" FontWeight="Bold" Text="Morale Workshop"/>
+								<TextBlock FontSize="12" Foreground="#6B7280" Text="$2,000"/>
+							</StackPanel>
+						</StackPanel>
+						<TextBlock FontSize="13" Foreground="#9CA3AF" TextWrapping="Wrap"
+                            Text="Team-building and wellness sessions to restore staff wellbeing."/>
+						<Border Padding="10,6" Background="#1E3A5F" CornerRadius="6">
+							<TextBlock FontSize="12" Foreground="#93C5FD" Text="All employees: +15 Morale"/>
+						</Border>
+						<Button
+                            HorizontalAlignment="Stretch" Padding="12,10"
+                            Background="#6366F1" CornerRadius="8"
+                            Command="{Binding RunMoraleWorkshopCommand}"
+                            Content="Run Workshop"/>
+					</StackPanel>
+				</Border>
+
+				<!-- Productivity Training -->
+				<Border Grid.Column="2" Padding="22" Background="#202633" CornerRadius="12">
+					<StackPanel Spacing="14">
+						<StackPanel Orientation="Horizontal" Spacing="10">
+							<TextBlock Text="📈" FontSize="28"/>
+							<StackPanel>
+								<TextBlock FontSize="16" FontWeight="Bold" Text="Productivity Training"/>
+								<TextBlock FontSize="12" Foreground="#6B7280" Text="$3,000"/>
+							</StackPanel>
+						</StackPanel>
+						<TextBlock FontSize="13" Foreground="#9CA3AF" TextWrapping="Wrap"
+                            Text="Skills development and workflow optimisation for the entire workforce."/>
+						<Border Padding="10,6" Background="#14532D" CornerRadius="6">
+							<TextBlock FontSize="12" Foreground="#86EFAC" Text="All employees: +10 Productivity"/>
+						</Border>
+						<Button
+                            HorizontalAlignment="Stretch" Padding="12,10"
+                            Background="#10B981" CornerRadius="8"
+                            Command="{Binding RunProductivityTrainingCommand}"
+                            Content="Run Training"/>
+					</StackPanel>
+				</Border>
+
+			</Grid>
+
+			<Grid ColumnDefinitions="*,16,*">
+
+				<!-- Stress Management -->
+				<Border Grid.Column="0" Padding="22" Background="#202633" CornerRadius="12">
+					<StackPanel Spacing="14">
+						<StackPanel Orientation="Horizontal" Spacing="10">
+							<TextBlock Text="🧘" FontSize="28"/>
+							<StackPanel>
+								<TextBlock FontSize="16" FontWeight="Bold" Text="Stress Management"/>
+								<TextBlock FontSize="12" Foreground="#6B7280" Text="$1,500"/>
+							</StackPanel>
+						</StackPanel>
+						<TextBlock FontSize="13" Foreground="#9CA3AF" TextWrapping="Wrap"
+                            Text="Mindfulness and workload balance sessions. Best value for burnout recovery."/>
+						<Border Padding="10,6" Background="#3B0764" CornerRadius="6">
+							<TextBlock FontSize="12" Foreground="#C4B5FD" Text="All employees: +8 Morale, +5 Productivity"/>
+						</Border>
+						<Button
+                            HorizontalAlignment="Stretch" Padding="12,10"
+                            Background="#8B5CF6" CornerRadius="8"
+                            Command="{Binding RunStressManagementCommand}"
+                            Content="Run Session"/>
+					</StackPanel>
+				</Border>
+
+				<!-- Leadership Program -->
+				<Border Grid.Column="2" Padding="22" Background="#202633" CornerRadius="12">
+					<StackPanel Spacing="14">
+						<StackPanel Orientation="Horizontal" Spacing="10">
+							<TextBlock Text="🏆" FontSize="28"/>
+							<StackPanel>
+								<TextBlock FontSize="16" FontWeight="Bold" Text="Leadership Program"/>
+								<TextBlock FontSize="12" Foreground="#6B7280" Text="$5,000"/>
+							</StackPanel>
+						</StackPanel>
+						<TextBlock FontSize="13" Foreground="#9CA3AF" TextWrapping="Wrap"
+                            Text="Advanced leadership for supervisors and managers. Larger boost for senior staff."/>
+						<Border Padding="10,6" Background="#78350F" CornerRadius="6">
+							<TextBlock FontSize="12" Foreground="#FDE68A" Text="Leaders: +12 / Others: +5 Morale &amp; Productivity"/>
+						</Border>
+						<Button
+                            HorizontalAlignment="Stretch" Padding="12,10"
+                            Background="#F59E0B" CornerRadius="8"
+                            Command="{Binding RunLeadershipProgramCommand}"
+                            Content="Run Program"/>
+					</StackPanel>
+				</Border>
+
+			</Grid>
+
+			<!-- TRAINING LOG -->
+			<Border Padding="20" Background="#202633" CornerRadius="12">
+				<StackPanel>
+					<TextBlock FontSize="20" FontWeight="Bold" Text="Training Log" Margin="0,0,0,12"/>
+					<TextBlock IsVisible="{Binding !Log.Count}" Text="No training sessions run yet." Foreground="#6B7280"/>
+					<ItemsControl ItemsSource="{Binding Log}">
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<Border Margin="0,3" Padding="12,8" Background="#2B3242" CornerRadius="6">
+									<TextBlock Text="{Binding}" FontSize="12" Foreground="#9CA3AF" TextWrapping="Wrap"/>
+								</Border>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+				</StackPanel>
+			</Border>
+
+		</StackPanel>
+	</ScrollViewer>
+</UserControl>

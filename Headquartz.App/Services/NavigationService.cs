@@ -34,12 +34,14 @@ public class NavigationService
             "hr/employees" => new HREmployeeManagementViewModel(_simulation),
             "hr/recruitment" => new HRRecruitmentViewModel(_simulation),
             "hr/payroll" => new HRPayrollViewModel(_simulation),
+            "hr/development" => new HRDevelopmentViewModel(_simulation),
             "hr/reports" => new DepartmentReportViewModel(_simulation, DepartmentType.HumanResources),
 
             // ── Finance ───────────────────────────────────────
             "finance/dashboard" => new FinanceDashboardViewModel(_simulation),
             "finance/budget" => new FinanceBudgetAllocationViewModel(_simulation),
             "finance/loans" => new FinanceLoansViewModel(_simulation),
+            "finance/receivable" => new FinanceAccountReceivableViewModel(_simulation),
             "finance/reports" => new DepartmentReportViewModel(_simulation, DepartmentType.Finance),
 
             // ── Sales ─────────────────────────────────────────
