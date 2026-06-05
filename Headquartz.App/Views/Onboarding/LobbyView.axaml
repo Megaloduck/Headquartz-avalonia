@@ -5,32 +5,32 @@
              x:Class="Headquartz.App.LobbyView"
              Background="#080C14">
 
-    <Grid ColumnDefinitions="*,780,*" RowDefinitions="Auto,*,Auto">
+	<Grid ColumnDefinitions="*,780,*" RowDefinitions="Auto,*,Auto">
 
-        <!-- ── Background glow ────────────────────────────── -->
-        <Canvas Grid.ColumnSpan="3" Grid.RowSpan="3" IsHitTestVisible="False">
-            <Ellipse Canvas.Left="-100" Canvas.Top="-100"
+		<!-- ── Background glow ────────────────────────────── -->
+		<Canvas Grid.ColumnSpan="3" Grid.RowSpan="3" IsHitTestVisible="False">
+			<Ellipse Canvas.Left="-100" Canvas.Top="-100"
                 Width="500" Height="500" Opacity="0.05">
-                <Ellipse.Fill>
-                    <RadialGradientBrush>
-                        <GradientStop Color="#6366F1" Offset="0"/>
-                        <GradientStop Color="Transparent" Offset="1"/>
-                    </RadialGradientBrush>
-                </Ellipse.Fill>
-            </Ellipse>
-        </Canvas>
+				<Ellipse.Fill>
+					<RadialGradientBrush>
+						<GradientStop Color="#6366F1" Offset="0"/>
+						<GradientStop Color="Transparent" Offset="1"/>
+					</RadialGradientBrush>
+				</Ellipse.Fill>
+			</Ellipse>
+		</Canvas>
 
-        <!-- ── Top bar ────────────────────────────────────── -->
-        <Border
+		<!-- ── Top bar ────────────────────────────────────── -->
+		<Border
             Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="0"
             Padding="24,16"
             Background="#0D1117"
             BorderBrush="#111827"
             BorderThickness="0,0,0,1">
-            <Grid ColumnDefinitions="*,Auto,*">
+			<Grid ColumnDefinitions="*,Auto,*">
 
-                <!-- Left: back -->
-                <Button
+				<!-- Left: back -->
+				<Button
                     Grid.Column="0"
                     HorizontalAlignment="Left"
                     Padding="12,8"
@@ -38,226 +38,224 @@
                     BorderThickness="0"
                     CornerRadius="8"
                     Command="{Binding LeaveRoomCommand}">
-                    <TextBlock Text="← Leave Room" FontSize="13" Foreground="#4B5563"/>
-                </Button>
+					<TextBlock Text="← Leave Room" FontSize="13" Foreground="#4B5563"/>
+				</Button>
 
-                <!-- Center: logo + title -->
-                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="12" HorizontalAlignment="Center">
-                    <Border Width="32" Height="32" CornerRadius="8">
-                        <Border.Background>
-                            <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
-                                <GradientStop Color="#6366F1" Offset="0"/>
-                                <GradientStop Color="#4338CA" Offset="1"/>
-                            </LinearGradientBrush>
-                        </Border.Background>
-                        <TextBlock Text="H" FontSize="16" FontWeight="Black" Foreground="White"
+				<!-- Center: logo + title -->
+				<StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="12" HorizontalAlignment="Center">
+					<Border Width="32" Height="32" CornerRadius="8">
+						<Border.Background>
+							<LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+								<GradientStop Color="#6366F1" Offset="0"/>
+								<GradientStop Color="#4338CA" Offset="1"/>
+							</LinearGradientBrush>
+						</Border.Background>
+						<TextBlock Text="H" FontSize="16" FontWeight="Black" Foreground="White"
                             HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    </Border>
-                    <TextBlock
+					</Border>
+					<TextBlock
                         Text="MULTIPLAYER LOBBY"
                         FontSize="14"
                         FontWeight="Bold"
                         Foreground="#D1D5DB"
                         LetterSpacing="3"
                         VerticalAlignment="Center"/>
-                </StackPanel>
+				</StackPanel>
 
-                <!-- Right: ping -->
-                <StackPanel
+				<!-- Right: ping -->
+				<StackPanel
                     Grid.Column="2"
                     Orientation="Horizontal"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Center"
                     Spacing="6">
-                    <Border Width="8" Height="8" CornerRadius="4" Background="#10B981"/>
-                    <TextBlock
+					<Border Width="8" Height="8" CornerRadius="4" Background="#10B981"/>
+					<TextBlock
                         Text="{Binding LocalPing, StringFormat='{}{0} ms'}"
                         FontSize="12"
                         Foreground="#4B5563"/>
-                </StackPanel>
+				</StackPanel>
 
-            </Grid>
-        </Border>
+			</Grid>
+		</Border>
 
-        <!-- ── Main content ───────────────────────────────── -->
-        <Grid
+		<!-- ── Main content ───────────────────────────────── -->
+		<Grid
             Grid.Column="1" Grid.Row="1"
             ColumnDefinitions="*,320"
             Margin="0,24,0,0">
 
-            <!-- Left: player list + room code -->
-            <StackPanel Grid.Column="0" Spacing="16" Margin="0,0,16,0">
+			<!-- Left: player list + room code -->
+			<StackPanel Grid.Column="0" Spacing="16" Margin="0,0,16,0">
 
-                <!-- Room code card -->
-                <Border
+				<!-- Room code card -->
+				<Border
                     Padding="20"
                     Background="#0F1623"
                     BorderBrush="#1F2937"
                     BorderThickness="1"
                     CornerRadius="14">
-                    <Grid ColumnDefinitions="*,Auto">
+					<Grid ColumnDefinitions="*,Auto">
 
-                        <StackPanel Grid.Column="0" Spacing="4">
-                            <TextBlock
+						<StackPanel Grid.Column="0" Spacing="4">
+							<TextBlock
                                 Text="ROOM CODE"
                                 FontSize="11"
                                 FontWeight="Bold"
                                 Foreground="#374151"
                                 LetterSpacing="2"/>
-                            <TextBlock
+							<TextBlock
                                 Text="{Binding RoomCode}"
                                 FontSize="36"
                                 FontWeight="Black"
                                 Foreground="White"
                                 LetterSpacing="8"/>
-                            <TextBlock
+							<TextBlock
                                 Text="Share this code with your team"
                                 FontSize="12"
                                 Foreground="#374151"/>
-                        </StackPanel>
+						</StackPanel>
 
-                        <Button
+						<Button
                             Grid.Column="1"
                             Padding="14,10"
                             Background="#1F2937"
                             CornerRadius="8"
                             VerticalAlignment="Center"
                             Command="{Binding CopyRoomCodeCommand}">
-                            <TextBlock Text="📋 Copy" FontSize="13" Foreground="#9CA3AF"/>
-                        </Button>
+							<TextBlock Text="📋 Copy" FontSize="13" Foreground="#9CA3AF"/>
+						</Button>
 
-                    </Grid>
-                </Border>
+					</Grid>
+				</Border>
 
-                <!-- Player list -->
-                <Border
+				<!-- Player list -->
+				<Border
                     Padding="20"
                     Background="#0F1623"
                     BorderBrush="#1F2937"
                     BorderThickness="1"
                     CornerRadius="14">
-                    <StackPanel Spacing="16">
+					<StackPanel Spacing="16">
 
-                        <StackPanel Orientation="Horizontal" Spacing="10">
-                            <TextBlock
+						<StackPanel Orientation="Horizontal" Spacing="10">
+							<TextBlock
                                 Text="PLAYERS"
                                 FontSize="11"
                                 FontWeight="Bold"
                                 Foreground="#374151"
                                 LetterSpacing="2"
                                 VerticalAlignment="Center"/>
-                            <Border
+							<Border
                                 Padding="8,2"
                                 Background="#1F2937"
                                 CornerRadius="10">
-                                <TextBlock
+								<TextBlock
                                     Text="{Binding Players.Count}"
                                     FontSize="11"
                                     Foreground="#6B7280"/>
-                            </Border>
-                        </StackPanel>
+							</Border>
+						</StackPanel>
 
-                        <ItemsControl ItemsSource="{Binding Players}">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Border
+						<ItemsControl ItemsSource="{Binding Players}">
+							<ItemsControl.ItemTemplate>
+								<DataTemplate>
+									<Border
                                         Margin="0,0,0,8"
                                         Padding="14,12"
                                         Background="#111827"
                                         CornerRadius="10">
-                                        <Grid ColumnDefinitions="40,*,Auto,60,Auto">
+										<Grid ColumnDefinitions="40,*,Auto,60,Auto">
 
-                                            <!-- Avatar -->
-                                            <Border
+											<!-- Avatar -->
+											<Border
                                                 Grid.Column="0"
                                                 Width="36" Height="36"
                                                 CornerRadius="18"
                                                 Background="#1F2937">
-                                                <TextBlock
+												<TextBlock
                                                     Text="{Binding AvatarEmoji}"
                                                     FontSize="20"
                                                     HorizontalAlignment="Center"
                                                     VerticalAlignment="Center"/>
-                                            </Border>
+											</Border>
 
-                                            <!-- Name + badges -->
-                                            <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="10,0,0,0">
-                                                <StackPanel Orientation="Horizontal" Spacing="8">
-                                                    <TextBlock
+											<!-- Name + badges -->
+											<StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="10,0,0,0">
+												<StackPanel Orientation="Horizontal" Spacing="8">
+													<TextBlock
                                                         FontSize="14"
                                                         FontWeight="SemiBold"
                                                         Foreground="White"
                                                         Text="{Binding Username}"/>
-                                                    <!-- Host badge -->
-                                                    <Border
+													<!-- Host badge -->
+													<Border
                                                         IsVisible="{Binding IsHost}"
                                                         Padding="6,2"
                                                         Background="#1E1B4B"
                                                         CornerRadius="4">
-                                                        <TextBlock
+														<TextBlock
                                                             Text="HOST"
                                                             FontSize="9"
                                                             FontWeight="Bold"
                                                             Foreground="#818CF8"/>
-                                                    </Border>
-                                                    <!-- You badge -->
-                                                    <Border
+													</Border>
+													<!-- You badge -->
+													<Border
                                                         IsVisible="{Binding IsLocalPlayer}"
                                                         Padding="6,2"
                                                         Background="#0D2414"
                                                         CornerRadius="4">
-                                                        <TextBlock
+														<TextBlock
                                                             Text="YOU"
                                                             FontSize="9"
                                                             FontWeight="Bold"
                                                             Foreground="#34D399"/>
-                                                    </Border>
-                                                </StackPanel>
-                                                <TextBlock
+													</Border>
+												</StackPanel>
+												<TextBlock
                                                     FontSize="11"
                                                     Foreground="#374151"
                                                     Text="{Binding Level, StringFormat='Level {0}'}"/>
-                                            </StackPanel>
+											</StackPanel>
 
-                                            <!-- Ping -->
-                                            <TextBlock
+											<!-- Ping -->
+											<TextBlock
                                                 Grid.Column="3"
                                                 FontSize="11"
                                                 Foreground="#374151"
                                                 VerticalAlignment="Center"
                                                 Text="{Binding PingMs, StringFormat='{}{0}ms'}"/>
 
-                                            <!-- Status -->
-                                            <Border
+											<!-- Status -->
+											<Border
                                                 Grid.Column="4"
                                                 Padding="8,4"
                                                 CornerRadius="6"
-                                                VerticalAlignment="Center">
-                                                <Border.Background>
-                                                    <SolidColorBrush Color="#111827"/>
-                                                </Border.Background>
-                                                <TextBlock
+                                                VerticalAlignment="Center"
+                                                Background="#111827">
+												<TextBlock
                                                     Text="{Binding StatusLabel}"
                                                     FontSize="11"
                                                     FontWeight="SemiBold"
                                                     Foreground="{Binding StatusColor}"/>
-                                            </Border>
+											</Border>
 
-                                        </Grid>
-                                    </Border>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+						</ItemsControl>
 
-                    </StackPanel>
-                </Border>
+					</StackPanel>
+				</Border>
 
-            </StackPanel>
+			</StackPanel>
 
-            <!-- Right: role slots + status -->
-            <StackPanel Grid.Column="1" Spacing="12">
+			<!-- Right: role slots + status -->
+			<StackPanel Grid.Column="1" Spacing="12">
 
-                <TextBlock
+				<TextBlock
                     Text="AVAILABLE ROLES"
                     FontSize="11"
                     FontWeight="Bold"
@@ -265,25 +263,25 @@
                     LetterSpacing="2"
                     Margin="0,0,0,4"/>
 
-                <ItemsControl ItemsSource="{Binding Slots}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Border
+				<ItemsControl ItemsSource="{Binding Slots}">
+					<ItemsControl.ItemTemplate>
+						<DataTemplate>
+							<Border
                                 Margin="0,0,0,6"
                                 Padding="12,10"
                                 Background="#0F1623"
                                 BorderBrush="#111827"
                                 BorderThickness="1"
                                 CornerRadius="8">
-                                <Grid ColumnDefinitions="32,*,Auto">
+								<Grid ColumnDefinitions="32,*,Auto">
 
-                                    <TextBlock
+									<TextBlock
                                         Grid.Column="0"
                                         Text="{Binding RoleEmoji}"
                                         FontSize="16"
                                         VerticalAlignment="Center"/>
 
-                                    <TextBlock
+									<TextBlock
                                         Grid.Column="1"
                                         FontSize="13"
                                         FontWeight="SemiBold"
@@ -292,89 +290,89 @@
                                         VerticalAlignment="Center"
                                         Margin="6,0"/>
 
-                                    <!-- Open indicator -->
-                                    <Border
+									<!-- Open indicator -->
+									<Border
                                         Grid.Column="2"
                                         Padding="7,2"
                                         CornerRadius="4"
                                         Background="#0D1B0D">
-                                        <TextBlock
+										<TextBlock
                                             Text="Open"
                                             FontSize="10"
                                             Foreground="#16A34A"/>
-                                    </Border>
+									</Border>
 
-                                </Grid>
-                            </Border>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
+								</Grid>
+							</Border>
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
 
-                <!-- Status message -->
-                <Border
+				<!-- Status message -->
+				<Border
                     Margin="0,8,0,0"
                     Padding="12,10"
                     Background="#0F1623"
                     BorderBrush="#1F2937"
                     BorderThickness="1"
                     CornerRadius="8">
-                    <StackPanel Orientation="Horizontal" Spacing="8">
-                        <Border Width="8" Height="8" CornerRadius="4" Background="#F59E0B" VerticalAlignment="Center"/>
-                        <TextBlock
+					<StackPanel Orientation="Horizontal" Spacing="8">
+						<Border Width="8" Height="8" CornerRadius="4" Background="#F59E0B" VerticalAlignment="Center"/>
+						<TextBlock
                             Text="{Binding StatusMessage}"
                             FontSize="12"
                             Foreground="#6B7280"
                             TextWrapping="Wrap"/>
-                    </StackPanel>
-                </Border>
+					</StackPanel>
+				</Border>
 
-            </StackPanel>
+			</StackPanel>
 
-        </Grid>
+		</Grid>
 
-        <!-- ── Bottom action bar ──────────────────────────── -->
-        <Border
+		<!-- ── Bottom action bar ──────────────────────────── -->
+		<Border
             Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="2"
             Padding="24,16"
             Background="#0D1117"
             BorderBrush="#111827"
             BorderThickness="0,1,0,0">
-            <Grid ColumnDefinitions="*,560,*">
-                <Grid Grid.Column="1" ColumnDefinitions="*,16,*">
+			<Grid ColumnDefinitions="*,560,*">
+				<Grid Grid.Column="1" ColumnDefinitions="*,16,*">
 
-                    <!-- Ready toggle -->
-                    <Button
+					<!-- Ready toggle -->
+					<Button
                         Grid.Column="0"
                         HorizontalAlignment="Stretch"
                         Padding="0,14"
                         CornerRadius="10"
                         Command="{Binding ToggleReadyCommand}">
-                        <Button.Background>
-                            <SolidColorBrush Color="#111827"/>
-                        </Button.Background>
-                        <Button.BorderBrush>
-                            <SolidColorBrush Color="#1F2937"/>
-                        </Button.BorderBrush>
-                        <Button.BorderThickness>
-                            <Thickness Left="1" Top="1" Right="1" Bottom="1"/>
-                        </Button.BorderThickness>
-                        <TextBlock
+						<Button.Background>
+							<SolidColorBrush Color="#111827"/>
+						</Button.Background>
+						<Button.BorderBrush>
+							<SolidColorBrush Color="#1F2937"/>
+						</Button.BorderBrush>
+						<Button.BorderThickness>
+							<Thickness>1</Thickness>
+						</Button.BorderThickness>
+						<TextBlock
                             FontSize="14"
                             FontWeight="Bold"
                             HorizontalAlignment="Center">
-                            <TextBlock.Text>
-                                <Binding Path="IsReady"
-                                    StringFormat="{}✓ I'm Ready"
-                                    FallbackValue="Mark as Ready"/>
-                            </TextBlock.Text>
-                            <TextBlock.Foreground>
-                                <SolidColorBrush Color="#D1D5DB"/>
-                            </TextBlock.Foreground>
-                        </TextBlock>
-                    </Button>
+							<TextBlock.Styles>
+								<Style Selector="TextBlock">
+									<Setter Property="Text" Value="{Binding IsReady, StringFormat='{}✓ I\'m Ready', FallbackValue='Mark as Ready'}"/>
+								</Style>
+							</TextBlock.Styles>
+							<TextBlock.Foreground>
+								<SolidColorBrush Color="#D1D5DB"/>
+							</TextBlock.Foreground>
+						</TextBlock>
+					</Button>
 
-                    <!-- Start game (host only) -->
-                    <Button
+					<!-- Start game (host only) -->
+					<Button
                         Grid.Column="2"
                         HorizontalAlignment="Stretch"
                         Padding="0,14"
@@ -382,24 +380,24 @@
                         IsVisible="{Binding IsHost}"
                         IsEnabled="{Binding CanStart}"
                         Command="{Binding StartGameCommand}">
-                        <Button.Background>
-                            <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,0%">
-                                <GradientStop Color="#059669" Offset="0"/>
-                                <GradientStop Color="#047857" Offset="1"/>
-                            </LinearGradientBrush>
-                        </Button.Background>
-                        <TextBlock
+						<Button.Background>
+							<LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,0%">
+								<GradientStop Color="#059669" Offset="0"/>
+								<GradientStop Color="#047857" Offset="1"/>
+							</LinearGradientBrush>
+						</Button.Background>
+						<TextBlock
                             Text="▶  Start Game"
                             FontSize="15"
                             FontWeight="Bold"
                             Foreground="White"
                             HorizontalAlignment="Center"/>
-                    </Button>
+					</Button>
 
-                </Grid>
-            </Grid>
-        </Border>
+				</Grid>
+			</Grid>
+		</Border>
 
-    </Grid>
+	</Grid>
 
 </UserControl>

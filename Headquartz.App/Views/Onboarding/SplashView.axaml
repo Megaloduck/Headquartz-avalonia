@@ -2,143 +2,144 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             x:Class="Headquartz.App.SplashView"
+             x:Class="Headquartz.App.Views.Onboarding.SplashView"
+             mc:Ignorable="d"
              Background="#080C14">
 
-    <Grid>
+	<Grid>
 
-        <!-- ── Ambient glow effects ────────────────────────── -->
-        <Canvas IsHitTestVisible="False">
+		<!-- ── Ambient glow effects ────────────────────────── -->
+		<Canvas IsHitTestVisible="False">
 
-            <!-- Top-left indigo glow -->
-            <Ellipse
+			<!-- Top-left indigo glow -->
+			<Ellipse
                 Canvas.Left="-180" Canvas.Top="-180"
                 Width="600" Height="600"
                 Opacity="0.08">
-                <Ellipse.Fill>
-                    <RadialGradientBrush>
-                        <GradientStop Color="#6366F1" Offset="0"/>
-                        <GradientStop Color="Transparent" Offset="1"/>
-                    </RadialGradientBrush>
-                </Ellipse.Fill>
-            </Ellipse>
+				<Ellipse.Fill>
+					<RadialGradientBrush>
+						<GradientStop Color="#6366F1" Offset="0"/>
+						<GradientStop Color="Transparent" Offset="1"/>
+					</RadialGradientBrush>
+				</Ellipse.Fill>
+			</Ellipse>
 
-            <!-- Bottom-right cyan glow -->
-            <Ellipse
+			<!-- Bottom-right cyan glow -->
+			<Ellipse
                 Canvas.Right="-200" Canvas.Bottom="-200"
                 Width="700" Height="700"
                 Opacity="0.06">
-                <Ellipse.Fill>
-                    <RadialGradientBrush>
-                        <GradientStop Color="#06B6D4" Offset="0"/>
-                        <GradientStop Color="Transparent" Offset="1"/>
-                    </RadialGradientBrush>
-                </Ellipse.Fill>
-            </Ellipse>
+				<Ellipse.Fill>
+					<RadialGradientBrush>
+						<GradientStop Color="#06B6D4" Offset="0"/>
+						<GradientStop Color="Transparent" Offset="1"/>
+					</RadialGradientBrush>
+				</Ellipse.Fill>
+			</Ellipse>
 
-        </Canvas>
+		</Canvas>
 
-        <!-- ── Subtle grid lines (atmosphere) ──────────────── -->
-        <Border
+		<!-- ── Subtle grid lines (atmosphere) ──────────────── -->
+		<Border
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
             Opacity="0.03">
-            <Border.Background>
-                <DrawingBrush TileMode="Tile"
-                              Viewport="0,0,40,40"
-                              ViewportUnits="Absolute">
-                    <DrawingBrush.Drawing>
-                        <GeometryDrawing>
-                            <GeometryDrawing.Pen>
-                                <Pen Brush="White" Thickness="0.5"/>
-                            </GeometryDrawing.Pen>
-                            <GeometryDrawing.Geometry>
-                                <GeometryGroup>
-                                    <LineGeometry StartPoint="40,0" EndPoint="40,40"/>
-                                    <LineGeometry StartPoint="0,40" EndPoint="40,40"/>
-                                </GeometryGroup>
-                            </GeometryDrawing.Geometry>
-                        </GeometryDrawing>
-                    </DrawingBrush.Drawing>
-                </DrawingBrush>
-            </Border.Background>
-        </Border>
+			<Border.Background>
+				<DrawingBrush TileMode="Tile"
+                              Stretch="None"
+                              DestinationRect="0,0,40,40">
+					<DrawingBrush.Drawing>
+						<GeometryDrawing>
+							<GeometryDrawing.Geometry>
+								<GeometryGroup>
+									<LineGeometry StartPoint="40,0" EndPoint="40,40"/>
+									<LineGeometry StartPoint="0,40" EndPoint="40,40"/>
+								</GeometryGroup>
+							</GeometryDrawing.Geometry>
+							<GeometryDrawing.Pen>
+								<Pen Brush="White" Thickness="0.5"/>
+							</GeometryDrawing.Pen>
+						</GeometryDrawing>
+					</DrawingBrush.Drawing>
+				</DrawingBrush>
+			</Border.Background>
+		</Border>
 
-        <!-- ── Main center content ─────────────────────────── -->
-        <StackPanel
+		<!-- ── Main center content ─────────────────────────── -->
+		<StackPanel
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             Spacing="0">
 
-            <!-- Logo block -->
-            <StackPanel
+			<!-- Logo block -->
+			<StackPanel
                 Orientation="Horizontal"
                 HorizontalAlignment="Center"
                 Spacing="18"
                 Margin="0,0,0,12">
 
-                <!-- H badge -->
-                <Border
+				<!-- H badge -->
+				<Border
                     Width="72" Height="72"
                     CornerRadius="18">
-                    <Border.Background>
-                        <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
-                            <GradientStop Color="#6366F1" Offset="0"/>
-                            <GradientStop Color="#4F46E5" Offset="1"/>
-                        </LinearGradientBrush>
-                    </Border.Background>
-                    <TextBlock
+					<Border.Background>
+						<LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+							<GradientStop Color="#6366F1" Offset="0"/>
+							<GradientStop Color="#4F46E5" Offset="1"/>
+						</LinearGradientBrush>
+					</Border.Background>
+					<TextBlock
                         Text="H"
                         FontSize="38"
                         FontWeight="Black"
                         Foreground="White"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"/>
-                </Border>
+				</Border>
 
-                <!-- Wordmark -->
-                <StackPanel VerticalAlignment="Center" Spacing="2">
-                    <TextBlock
+				<!-- Wordmark -->
+				<StackPanel VerticalAlignment="Center" Spacing="2">
+					<TextBlock
                         Text="HEADQUARTZ"
                         FontSize="42"
                         FontWeight="Black"
                         Foreground="White"
                         LetterSpacing="8"/>
-                    <TextBlock
+					<TextBlock
                         Text="Enterprise Resource Planning Simulator"
                         FontSize="13"
                         Foreground="#4B5563"
                         LetterSpacing="2"
                         HorizontalAlignment="Center"/>
-                </StackPanel>
+				</StackPanel>
 
-            </StackPanel>
+			</StackPanel>
 
-            <!-- Divider -->
-            <Border
+			<!-- Divider -->
+			<Border
                 Height="1"
                 Width="480"
                 HorizontalAlignment="Center"
                 Margin="0,28,0,28">
-                <Border.Background>
-                    <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,0%">
-                        <GradientStop Color="Transparent" Offset="0"/>
-                        <GradientStop Color="#1F2937" Offset="0.3"/>
-                        <GradientStop Color="#374151" Offset="0.5"/>
-                        <GradientStop Color="#1F2937" Offset="0.7"/>
-                        <GradientStop Color="Transparent" Offset="1"/>
-                    </LinearGradientBrush>
-                </Border.Background>
-            </Border>
+				<Border.Background>
+					<LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,0%">
+						<GradientStop Color="Transparent" Offset="0"/>
+						<GradientStop Color="#1F2937" Offset="0.3"/>
+						<GradientStop Color="#374151" Offset="0.5"/>
+						<GradientStop Color="#1F2937" Offset="0.7"/>
+						<GradientStop Color="Transparent" Offset="1"/>
+					</LinearGradientBrush>
+				</Border.Background>
+			</Border>
 
-            <!-- Loading state -->
-            <StackPanel
+			<!-- Loading state -->
+			<StackPanel
                 Width="480"
                 HorizontalAlignment="Center"
                 Spacing="16">
 
-                <!-- Progress bar -->
-                <ProgressBar
+				<!-- Progress bar -->
+				<ProgressBar
                     Value="{Binding LoadingProgress}"
                     Maximum="100"
                     Height="3"
@@ -146,20 +147,20 @@
                     Foreground="#6366F1"
                     CornerRadius="2"/>
 
-                <!-- Loading message -->
-                <TextBlock
+				<!-- Loading message -->
+				<TextBlock
                     Text="{Binding LoadingMessage}"
                     FontSize="12"
                     Foreground="#4B5563"
                     HorizontalAlignment="Center"
                     LetterSpacing="1"/>
 
-            </StackPanel>
+			</StackPanel>
 
-        </StackPanel>
+		</StackPanel>
 
-        <!-- ── Version tag ──────────────────────────────────── -->
-        <TextBlock
+		<!-- ── Version tag ──────────────────────────────────── -->
+		<TextBlock
             Text="{Binding GameVersion}"
             FontSize="11"
             Foreground="#1F2937"
@@ -167,6 +168,6 @@
             VerticalAlignment="Bottom"
             Margin="0,0,24,18"/>
 
-    </Grid>
+	</Grid>
 
 </UserControl>
