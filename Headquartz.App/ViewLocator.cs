@@ -43,6 +43,7 @@ public class ViewLocator : IDataTemplate
             FinanceDashboardViewModel => new FinanceDashboardView(),
             FinanceBudgetAllocationViewModel => new FinanceBudgetAllocationView(),
             FinanceLoansViewModel => new FinanceLoansView(),
+            FinanceAccountReceivableViewModel => new FinanceAccountReceivableView(),
 
             // ── Sales ─────────────────────────────────────────
             SalesDashboardViewModel => new SalesDashboardView(),

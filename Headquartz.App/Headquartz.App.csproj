@@ -41,10 +41,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <AvaloniaResource Update="Assets\Themes\LightTheme.axaml">
+	  <AvaloniaResource Update="Assets\Themes\DarkTheme.axaml">
 	    <SubType>Designer</SubType>
 	  </AvaloniaResource>
-	  <AvaloniaResource Update="Assets\Themes\DarkTheme.axaml">
+	  <AvaloniaResource Update="Assets\Themes\LightTheme.axaml">
 	    <SubType>Designer</SubType>
 	  </AvaloniaResource>
 	</ItemGroup>
