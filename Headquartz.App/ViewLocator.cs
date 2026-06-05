@@ -12,6 +12,18 @@ public class ViewLocator : IDataTemplate
     {
         return data switch
         {
+            // ── Root shells ───────────────────────────────────
+            ShellViewModel => new ShellView(),
+            OnboardingShellViewModel => new OnboardingShellView(),
+
+            // ── Onboarding screens ────────────────────────────
+            SplashViewModel => new SplashView(),
+            ProfileCreationViewModel => new ProfileCreationView(),
+            MainMenuViewModel => new MainMenuView(),
+            LobbyViewModel => new LobbyView(),
+            CompanySetupViewModel => new CompanySetupView(),
+            DepartmentSelectionViewModel => new DepartmentSelectionView(),
+
             // ── Main menu ─────────────────────────────────────
             CompanyViewModel => new CompanyView(),
             ForecastViewModel => new ForecastView(),
@@ -26,13 +38,11 @@ public class ViewLocator : IDataTemplate
             HREmployeeManagementViewModel => new HREmployeeManagementView(),
             HRRecruitmentViewModel => new HRRecruitmentView(),
             HRPayrollViewModel => new HRPayrollView(),
-            HRDevelopmentViewModel => new HRDevelopmentView(),
 
             // ── Finance ───────────────────────────────────────
             FinanceDashboardViewModel => new FinanceDashboardView(),
             FinanceBudgetAllocationViewModel => new FinanceBudgetAllocationView(),
             FinanceLoansViewModel => new FinanceLoansView(),
-            FinanceAccountReceivableViewModel => new FinanceAccountReceivableView(),
 
             // ── Sales ─────────────────────────────────────────
             SalesDashboardViewModel => new SalesDashboardView(),
@@ -57,7 +67,7 @@ public class ViewLocator : IDataTemplate
 
             // ── Fallback ──────────────────────────────────────
             NotFoundViewModel => new NotFoundView(),
-            _ => new TextBlock { Text = "View Not Found" }
+            _ => new TextBlock { Text = $"View not found for {data?.GetType().Name}" }
         };
     }
 

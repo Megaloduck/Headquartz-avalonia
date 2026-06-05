@@ -5,7 +5,7 @@
              x:Class="Headquartz.App.ProfileCreationView"
              Background="#080C14">
 
-	<Grid ColumnDefinitions="*,480,*" RowDefinitions="*,Auto,*">
+	<Grid ColumnDefinitions="*,auto,*" RowDefinitions="*,Auto,*">
 
 		<!-- ── Ambient glow ────────────────────────────────── -->
 		<Canvas Grid.ColumnSpan="3" Grid.RowSpan="3" IsHitTestVisible="False">
