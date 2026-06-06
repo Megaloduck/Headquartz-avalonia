@@ -9,22 +9,20 @@
 	</Application.DataTemplates>
 
 	<Application.Styles>
-		<!-- 1. Avalonia Fluent base theme -->
+		<!-- 1. Avalonia Fluent base -->
 		<FluentTheme />
 
-		<!-- 2. Shared control styles (reference DynamicResource tokens) -->
+		<!-- 2. Shared control styles (uses {DynamicResource} tokens) -->
 		<StyleInclude Source="avares://Headquartz.App/Assets/Styles/StyleResources.axaml"/>
 	</Application.Styles>
 
-	<!--
-        3. Active token dictionary — swapped at runtime by App.SetTheme().
-           Starts on Dark. ThemeService replaces this entry in
-           Application.Resources.MergedDictionaries at runtime.
-    -->
+	<!-- 3. Active token dictionary â€” change Source here to switch theme -->
 	<Application.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
 				<ResourceInclude Source="avares://Headquartz.App/Assets/Themes/DarkTheme.axaml"/>
+				<!-- To use light theme, swap the line above to:           -->
+				<ResourceInclude Source="avares://Headquartz.App/Assets/Themes/LightTheme.axaml"/>
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
 	</Application.Resources>

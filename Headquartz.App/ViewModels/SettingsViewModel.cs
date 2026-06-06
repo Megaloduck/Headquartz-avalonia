@@ -1,4 +1,5 @@
 ﻿using System;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Headquartz.App.Services;
@@ -21,11 +22,6 @@ public partial class SettingsViewModel : ViewModelBase
     [ObservableProperty] private string _companyName = "";
     [ObservableProperty] private string _statusMessage = "";
 
-    // ── Theme ─────────────────────────────────────────────────
-
-    [ObservableProperty] private bool _isDarkTheme = true;
-    [ObservableProperty] private string _themeLabel = "🌙  Dark Theme";
-
     // ── Constructor ───────────────────────────────────────────
 
     public SettingsViewModel(SimulationService simulation)
@@ -34,10 +30,6 @@ public partial class SettingsViewModel : ViewModelBase
         CompanyName = simulation.Engine.Company.Name;
         CurrentTick = simulation.Engine.Clock.Tick;
         WorldTime = simulation.Engine.Clock.WorldTime.ToString("yyyy-MM-dd HH:mm");
-
-        // Sync to current app state
-        IsDarkTheme = App.Current.IsDarkTheme;
-        ThemeLabel = IsDarkTheme ? "🌙  Dark Theme" : "☀  Light Theme";
 
         simulation.Engine.OnUpdated += RefreshTick;
     }
@@ -55,17 +47,6 @@ public partial class SettingsViewModel : ViewModelBase
 
     [RelayCommand]
     private void SetTripleSpeed() => ApplySpeed(3.0, "3× Turbo");
-
-    // ── Theme command ─────────────────────────────────────────
-
-    [RelayCommand]
-    private void ToggleTheme()
-    {
-        IsDarkTheme = !IsDarkTheme;
-        ThemeLabel = IsDarkTheme ? "🌙  Dark Theme" : "☀  Light Theme";
-        App.Current.SetTheme(IsDarkTheme);
-        StatusMessage = $"✅ Switched to {(IsDarkTheme ? "Dark" : "Light")} theme.";
-    }
 
     // ── Company name ─────────────────────────────────────────
 
@@ -91,7 +72,10 @@ public partial class SettingsViewModel : ViewModelBase
 
     private void RefreshTick()
     {
-        CurrentTick = _simulation.Engine.Clock.Tick;
-        WorldTime = _simulation.Engine.Clock.WorldTime.ToString("yyyy-MM-dd HH:mm");
+        Dispatcher.UIThread.Post(() =>
+        {
+            CurrentTick = _simulation.Engine.Clock.Tick;
+            WorldTime = _simulation.Engine.Clock.WorldTime.ToString("yyyy-MM-dd HH:mm");
+        });
     }
 }

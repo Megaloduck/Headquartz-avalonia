@@ -9,9 +9,7 @@
 
 			<TextBlock FontSize="34" FontWeight="Bold" Text="Settings"/>
 
-			<!-- ═══════════════════════════════════════════════ -->
-			<!-- SIMULATION STATUS                              -->
-			<!-- ═══════════════════════════════════════════════ -->
+			<!-- SIMULATION STATUS -->
 			<Border Padding="20"
                     Background="{DynamicResource BrushBgCard}"
                     CornerRadius="{DynamicResource RadiusLg}"
@@ -39,9 +37,7 @@
 				</Grid>
 			</Border>
 
-			<!-- ═══════════════════════════════════════════════ -->
-			<!-- SIMULATION SPEED                               -->
-			<!-- ═══════════════════════════════════════════════ -->
+			<!-- SIMULATION SPEED -->
 			<Border Padding="24"
                     Background="{DynamicResource BrushBgCard}"
                     CornerRadius="{DynamicResource RadiusLg}"
@@ -61,13 +57,12 @@
                                 Background="{DynamicResource BrushBgElevated}"
                                 Command="{Binding SetHalfSpeedCommand}">
 							<StackPanel HorizontalAlignment="Center" Spacing="4">
-								<TextBlock Text="½×" FontSize="22" FontWeight="Bold" HorizontalAlignment="Center"/>
-								<TextBlock Text="Slow"
-                                           FontSize="11"
+								<TextBlock Text="½×" FontSize="22" FontWeight="Bold"
+                                           HorizontalAlignment="Center"/>
+								<TextBlock Text="Slow" FontSize="11"
                                            Foreground="{DynamicResource BrushTextSecondary}"
                                            HorizontalAlignment="Center"/>
-								<TextBlock Text="2s / tick"
-                                           FontSize="10"
+								<TextBlock Text="2s / tick" FontSize="10"
                                            Foreground="{DynamicResource BrushTextMuted}"
                                            HorizontalAlignment="Center"/>
 							</StackPanel>
@@ -78,13 +73,12 @@
                                 Background="{DynamicResource BrushBorderStrong}"
                                 Command="{Binding SetNormalSpeedCommand}">
 							<StackPanel HorizontalAlignment="Center" Spacing="4">
-								<TextBlock Text="1×" FontSize="22" FontWeight="Bold" HorizontalAlignment="Center"/>
-								<TextBlock Text="Normal"
-                                           FontSize="11"
+								<TextBlock Text="1×" FontSize="22" FontWeight="Bold"
+                                           HorizontalAlignment="Center"/>
+								<TextBlock Text="Normal" FontSize="11"
                                            Foreground="{DynamicResource BrushTextSecondary}"
                                            HorizontalAlignment="Center"/>
-								<TextBlock Text="1s / tick"
-                                           FontSize="10"
+								<TextBlock Text="1s / tick" FontSize="10"
                                            Foreground="{DynamicResource BrushTextMuted}"
                                            HorizontalAlignment="Center"/>
 							</StackPanel>
@@ -95,13 +89,12 @@
                                 Background="{DynamicResource BrushBgElevated}"
                                 Command="{Binding SetDoubleSpeedCommand}">
 							<StackPanel HorizontalAlignment="Center" Spacing="4">
-								<TextBlock Text="2×" FontSize="22" FontWeight="Bold" HorizontalAlignment="Center"/>
-								<TextBlock Text="Fast"
-                                           FontSize="11"
+								<TextBlock Text="2×" FontSize="22" FontWeight="Bold"
+                                           HorizontalAlignment="Center"/>
+								<TextBlock Text="Fast" FontSize="11"
                                            Foreground="{DynamicResource BrushTextSecondary}"
                                            HorizontalAlignment="Center"/>
-								<TextBlock Text="0.5s / tick"
-                                           FontSize="10"
+								<TextBlock Text="0.5s / tick" FontSize="10"
                                            Foreground="{DynamicResource BrushTextMuted}"
                                            HorizontalAlignment="Center"/>
 							</StackPanel>
@@ -112,13 +105,12 @@
                                 Background="{DynamicResource BrushBgElevated}"
                                 Command="{Binding SetTripleSpeedCommand}">
 							<StackPanel HorizontalAlignment="Center" Spacing="4">
-								<TextBlock Text="3×" FontSize="22" FontWeight="Bold" HorizontalAlignment="Center"/>
-								<TextBlock Text="Turbo"
-                                           FontSize="11"
+								<TextBlock Text="3×" FontSize="22" FontWeight="Bold"
+                                           HorizontalAlignment="Center"/>
+								<TextBlock Text="Turbo" FontSize="11"
                                            Foreground="{DynamicResource BrushTextSecondary}"
                                            HorizontalAlignment="Center"/>
-								<TextBlock Text="0.33s / tick"
-                                           FontSize="10"
+								<TextBlock Text="0.33s / tick" FontSize="10"
                                            Foreground="{DynamicResource BrushTextMuted}"
                                            HorizontalAlignment="Center"/>
 							</StackPanel>
@@ -129,56 +121,43 @@
 				</StackPanel>
 			</Border>
 
-			<!-- ═══════════════════════════════════════════════ -->
-			<!-- APPEARANCE                                      -->
-			<!-- ═══════════════════════════════════════════════ -->
+			<!-- APPEARANCE (informational only) -->
 			<Border Padding="24"
                     Background="{DynamicResource BrushBgCard}"
                     CornerRadius="{DynamicResource RadiusLg}"
                     BorderBrush="{DynamicResource BrushBorderSubtle}"
                     BorderThickness="1">
-				<StackPanel Spacing="16">
+				<StackPanel Spacing="12">
 
 					<TextBlock FontSize="20" FontWeight="Bold" Text="Appearance"/>
+
 					<TextBlock FontSize="13"
                                Foreground="{DynamicResource BrushTextSecondary}"
-                               Text="Switch between Dark and Light themes. Changes apply immediately across the entire app."/>
+                               TextWrapping="Wrap"
+                               Text="Theme is configured in App.axaml. To switch, change the ResourceInclude in Application.Resources.MergedDictionaries to LightTheme.axaml or DarkTheme.axaml and relaunch."/>
 
-					<StackPanel Orientation="Horizontal" Spacing="16" VerticalAlignment="Center">
-
-						<!-- Active theme badge -->
-						<Border Padding="16,12"
-                                CornerRadius="{DynamicResource RadiusMd}"
-                                Background="{DynamicResource BrushBgElevated}"
-                                BorderBrush="{DynamicResource BrushBorderDefault}"
-                                BorderThickness="1">
-							<StackPanel Spacing="3">
+					<!-- Active theme display -->
+					<Border Padding="14,10"
+                            Background="{DynamicResource BrushBgElevated}"
+                            BorderBrush="{DynamicResource BrushBorderDefault}"
+                            BorderThickness="1"
+                            CornerRadius="{DynamicResource RadiusMd}"
+                            HorizontalAlignment="Left">
+						<StackPanel Orientation="Horizontal" Spacing="12">
+							<TextBlock Text="🌙" FontSize="20" VerticalAlignment="Center"/>
+							<StackPanel>
 								<TextBlock FontSize="11"
                                            Foreground="{DynamicResource BrushTextMuted}"
                                            Text="ACTIVE THEME"/>
-								<TextBlock FontSize="18"
-                                           FontWeight="Bold"
-                                           Text="{Binding ActiveThemeName}"/>
+								<TextBlock FontSize="15" FontWeight="Bold" Text="Dark"/>
 							</StackPanel>
-						</Border>
-
-						<!-- Toggle button — label changes with theme -->
-						<Button Padding="18,12"
-                                CornerRadius="10"
-                                Background="{DynamicResource BrushAccentPrimary}"
-                                Foreground="White"
-                                BorderThickness="0"
-                                Command="{Binding ToggleThemeCommand}"
-                                Content="{Binding ThemeToggleLabel}"/>
-
-					</StackPanel>
+						</StackPanel>
+					</Border>
 
 				</StackPanel>
 			</Border>
 
-			<!-- ═══════════════════════════════════════════════ -->
-			<!-- COMPANY                                         -->
-			<!-- ═══════════════════════════════════════════════ -->
+			<!-- COMPANY NAME -->
 			<Border Padding="24"
                     Background="{DynamicResource BrushBgCard}"
                     CornerRadius="{DynamicResource RadiusLg}"
@@ -211,7 +190,6 @@
 						</StackPanel>
 					</StackPanel>
 
-					<!-- Status message -->
 					<Border IsVisible="{Binding StatusMessage,
                                 Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
                             Padding="14,10"
