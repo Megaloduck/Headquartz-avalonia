@@ -1,0 +1,295 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+	<!-- ============================================================
+       HEADQUARTZ - SHARED CONTROL STYLES
+       References brushes/tokens via {DynamicResource} so they
+       automatically reflect whichever theme dict is active.
+       ============================================================ -->
+
+	<!-- WINDOW / ROOT                                              -->
+
+	<Style Selector="Window">
+		<Setter Property="Background" Value="{DynamicResource BrushBgBase}"/>
+		<Setter Property="Foreground" Value="{DynamicResource BrushTextPrimary}"/>
+	</Style>
+
+	<Style Selector="UserControl">
+		<Setter Property="Background" Value="Transparent"/>
+	</Style>
+
+	<!-- TEXTBLOCK                                                  -->
+
+	<Style Selector="TextBlock">
+		<Setter Property="Foreground" Value="{DynamicResource BrushTextPrimary}"/>
+	</Style>
+
+	<!-- Semantic text variants -->
+	<Style Selector="TextBlock.page-title">
+		<Setter Property="FontSize"   Value="{DynamicResource FontSizeDisplay}"/>
+		<Setter Property="FontWeight" Value="Bold"/>
+		<Setter Property="Foreground" Value="{DynamicResource BrushTextPrimary}"/>
+	</Style>
+
+	<Style Selector="TextBlock.section-header">
+		<Setter Property="FontSize"   Value="{DynamicResource FontSizeH2}"/>
+		<Setter Property="FontWeight" Value="Bold"/>
+		<Setter Property="Margin"     Value="0,0,0,16"/>
+		<Setter Property="Foreground" Value="{DynamicResource BrushTextPrimary}"/>
+	</Style>
+
+	<Style Selector="TextBlock.subsection-header">
+		<Setter Property="FontSize"   Value="{DynamicResource FontSizeH3}"/>
+		<Setter Property="FontWeight" Value="Bold"/>
+		<Setter Property="Foreground" Value="{DynamicResource BrushTextPrimary}"/>
+	</Style>
+
+	<Style Selector="TextBlock.kpi-label">
+		<Setter Property="FontSize"   Value="{DynamicResource FontSizeBase}"/>
+		<Setter Property="Foreground" Value="{DynamicResource BrushTextSecondary}"/>
+	</Style>
+
+	<Style Selector="TextBlock.kpi-value">
+		<Setter Property="FontSize"   Value="{DynamicResource FontSizeKpi}"/>
+		<Setter Property="FontWeight" Value="Bold"/>
+		<Setter Property="Foreground" Value="{DynamicResource BrushTextPrimary}"/>
+	</Style>
+
+	<Style Selector="TextBlock.caption">
+		<Setter Property="FontSize"   Value="{DynamicResource FontSizeSm}"/>
+		<Setter Property="Foreground" Value="{DynamicResource BrushTextMuted}"/>
+	</Style>
+
+	<Style Selector="TextBlock.label-upper">
+		<Setter Property="FontSize"   Value="{DynamicResource FontSizeSm}"/>
+		<Setter Property="FontWeight" Value="SemiBold"/>
+		<Setter Property="Foreground" Value="{DynamicResource BrushTextMuted}"/>
+	</Style>
+
+	<Style Selector="TextBlock.text-muted">
+		<Setter Property="Foreground" Value="{DynamicResource BrushTextMuted}"/>
+	</Style>
+
+	<Style Selector="TextBlock.text-secondary">
+		<Setter Property="Foreground" Value="{DynamicResource BrushTextSecondary}"/>
+	</Style>
+
+	<Style Selector="TextBlock.text-success">
+		<Setter Property="Foreground" Value="{DynamicResource BrushSuccess}"/>
+	</Style>
+
+	<Style Selector="TextBlock.text-danger">
+		<Setter Property="Foreground" Value="{DynamicResource BrushDanger}"/>
+	</Style>
+
+	<Style Selector="TextBlock.text-warning">
+		<Setter Property="Foreground" Value="{DynamicResource BrushWarning}"/>
+	</Style>
+
+	<Style Selector="TextBlock.text-accent">
+		<Setter Property="Foreground" Value="{DynamicResource BrushAccentPrimary}"/>
+	</Style>
+
+	<!-- BASE BUTTON                                              -->
+
+	<Style Selector="Button">
+		<Setter Property="Background"                 Value="{DynamicResource BrushBgCard}"/>
+		<Setter Property="Foreground"                 Value="{DynamicResource BrushTextPrimary}"/>
+		<Setter Property="BorderBrush"                Value="{DynamicResource BrushBorderDefault}"/>
+		<Setter Property="BorderThickness"            Value="1"/>
+		<Setter Property="CornerRadius"               Value="{DynamicResource RadiusMd}"/>
+		<Setter Property="Padding"                    Value="{DynamicResource PaddingButton}"/>
+		<Setter Property="Cursor"                     Value="Hand"/>
+		<Setter Property="HorizontalContentAlignment" Value="Center"/>
+		<Setter Property="VerticalContentAlignment"   Value="Center"/>
+	</Style>
+
+	<Style Selector="Button:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+		<Setter Property="Background"  Value="{DynamicResource BrushBgCardHover}"/>
+		<Setter Property="BorderBrush" Value="{DynamicResource BrushBorderStrong}"/>
+	</Style>
+
+	<Style Selector="Button:pressed /template/ ContentPresenter#PART_ContentPresenter">
+		<Setter Property="Opacity" Value="0.82"/>
+	</Style>
+
+	<!-- BUTTON 鈥� Primary (indigo accent) -->
+	<Style Selector="Button.primary">
+		<Setter Property="Background"      Value="{DynamicResource BrushAccentPrimary}"/>
+		<Setter Property="Foreground"      Value="White"/>
+		<Setter Property="BorderThickness" Value="0"/>
+	</Style>
+	<Style Selector="Button.primary:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+		<Setter Property="Background" Value="{DynamicResource BrushAccentPrimaryHover}"/>
+	</Style>
+
+	<!-- BUTTON 鈥� Danger (red) -->
+	<Style Selector="Button.danger">
+		<Setter Property="Background"      Value="{DynamicResource BrushBadgeDangerBg}"/>
+		<Setter Property="Foreground"      Value="{DynamicResource BrushBadgeDangerFg}"/>
+		<Setter Property="BorderThickness" Value="0"/>
+	</Style>
+	<Style Selector="Button.danger:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+		<Setter Property="Background" Value="{DynamicResource BrushAlertCriticalBg}"/>
+	</Style>
+
+	<!-- BUTTON 鈥� Ghost (transparent) -->
+	<Style Selector="Button.ghost">
+		<Setter Property="Background"      Value="Transparent"/>
+		<Setter Property="BorderThickness" Value="0"/>
+		<Setter Property="Foreground"      Value="{DynamicResource BrushTextSecondary}"/>
+	</Style>
+	<Style Selector="Button.ghost:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+		<Setter Property="Background" Value="{DynamicResource BrushBgElevated}"/>
+	</Style>
+
+	<!-- BUTTON 鈥� Success (green) -->
+	<Style Selector="Button.success">
+		<Setter Property="Background"      Value="{DynamicResource BrushSuccess}"/>
+		<Setter Property="Foreground"      Value="White"/>
+		<Setter Property="BorderThickness" Value="0"/>
+	</Style>
+
+	<!-- BUTTON 鈥� Sidebar item -->
+	<Style Selector="Button.sidebar-item">
+		<Setter Property="Background"                 Value="Transparent"/>
+		<Setter Property="BorderThickness"            Value="0"/>
+		<Setter Property="CornerRadius"               Value="{DynamicResource RadiusMd}"/>
+		<Setter Property="Padding"                    Value="10,7"/>
+		<Setter Property="HorizontalAlignment"        Value="Stretch"/>
+		<Setter Property="HorizontalContentAlignment" Value="Left"/>
+		<Setter Property="Foreground"                 Value="{DynamicResource BrushTextSecondary}"/>
+		<Setter Property="Cursor"                     Value="Hand"/>
+	</Style>
+	<Style Selector="Button.sidebar-item:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+		<Setter Property="Background" Value="{DynamicResource BrushBgElevated}"/>
+	</Style>
+
+	<!-- TEXTBOX                                                    -->
+	
+	<Style Selector="TextBox">
+		<Setter Property="Background"      Value="{DynamicResource BrushBgInput}"/>
+		<Setter Property="Foreground"      Value="{DynamicResource BrushTextPrimary}"/>
+		<Setter Property="BorderBrush"     Value="{DynamicResource BrushBorderDefault}"/>
+		<Setter Property="BorderThickness" Value="1"/>
+		<Setter Property="CornerRadius"    Value="{DynamicResource RadiusMd}"/>
+		<Setter Property="Padding"         Value="{DynamicResource PaddingInput}"/>
+		<Setter Property="CaretBrush"      Value="{DynamicResource BrushAccentPrimary}"/>
+	</Style>
+
+	<Style Selector="TextBox:focus">
+		<Setter Property="BorderBrush" Value="{DynamicResource BrushBorderFocus}"/>
+	</Style>
+
+	<!-- COMBOBOX                                                   -->
+
+	<Style Selector="ComboBox">
+		<Setter Property="Background"      Value="{DynamicResource BrushBgInput}"/>
+		<Setter Property="Foreground"      Value="{DynamicResource BrushTextPrimary}"/>
+		<Setter Property="BorderBrush"     Value="{DynamicResource BrushBorderDefault}"/>
+		<Setter Property="BorderThickness" Value="1"/>
+		<Setter Property="CornerRadius"    Value="{DynamicResource RadiusMd}"/>
+		<Setter Property="Padding"         Value="{DynamicResource PaddingInput}"/>
+	</Style>
+
+<!-- PROGRESSBAR                                                -->
+	
+	<Style Selector="ProgressBar">
+		<Setter Property="Background"   Value="{DynamicResource BrushBorderSubtle}"/>
+		<Setter Property="CornerRadius" Value="9999"/>
+		<Setter Property="Height"       Value="6"/>
+		<Setter Property="MinHeight"    Value="4"/>
+	</Style>
+
+	<!-- SCROLLVIEWER                                               -->
+	
+	<Style Selector="ScrollViewer">
+		<Setter Property="Background"                    Value="Transparent"/>
+		<Setter Property="HorizontalScrollBarVisibility" Value="Disabled"/>
+		<Setter Property="VerticalScrollBarVisibility"   Value="Auto"/>
+	</Style>
+
+	<!-- BORDER CARD CLASSES                                        -->
+
+	<!-- Primary card surface -->
+	<Style Selector="Border.card">
+		<Setter Property="Background"      Value="{DynamicResource BrushBgCard}"/>
+		<Setter Property="CornerRadius"    Value="{DynamicResource RadiusLg}"/>
+		<Setter Property="Padding"         Value="{DynamicResource PaddingCard}"/>
+		<Setter Property="BorderBrush"     Value="{DynamicResource BrushBorderSubtle}"/>
+		<Setter Property="BorderThickness" Value="1"/>
+	</Style>
+
+	<!-- Nested / inner card -->
+	<Style Selector="Border.card-inner">
+		<Setter Property="Background"      Value="{DynamicResource BrushBgNested}"/>
+		<Setter Property="CornerRadius"    Value="{DynamicResource RadiusMd}"/>
+		<Setter Property="Padding"         Value="{DynamicResource PaddingCardSm}"/>
+		<Setter Property="BorderBrush"     Value="{DynamicResource BrushBorderSubtle}"/>
+		<Setter Property="BorderThickness" Value="1"/>
+	</Style>
+
+	<!-- Alert: Critical (red) -->
+	<Style Selector="Border.alert-critical">
+		<Setter Property="Background"      Value="{DynamicResource BrushAlertCriticalBg}"/>
+		<Setter Property="CornerRadius"    Value="{DynamicResource RadiusLg}"/>
+		<Setter Property="Padding"         Value="{DynamicResource PaddingCard}"/>
+		<Setter Property="BorderBrush"     Value="{DynamicResource BrushAlertCriticalBorder}"/>
+		<Setter Property="BorderThickness" Value="1"/>
+	</Style>
+
+	<!-- Alert: Warning (amber) -->
+	<Style Selector="Border.alert-warning">
+		<Setter Property="Background"      Value="{DynamicResource BrushAlertWarningBg}"/>
+		<Setter Property="CornerRadius"    Value="{DynamicResource RadiusLg}"/>
+		<Setter Property="Padding"         Value="{DynamicResource PaddingCard}"/>
+		<Setter Property="BorderBrush"     Value="{DynamicResource BrushAlertWarningBorder}"/>
+		<Setter Property="BorderThickness" Value="1"/>
+	</Style>
+
+	<!-- Alert: Info (blue) -->
+	<Style Selector="Border.alert-info">
+		<Setter Property="Background"      Value="{DynamicResource BrushAlertInfoBg}"/>
+		<Setter Property="CornerRadius"    Value="{DynamicResource RadiusLg}"/>
+		<Setter Property="Padding"         Value="{DynamicResource PaddingCard}"/>
+		<Setter Property="BorderBrush"     Value="{DynamicResource BrushAlertInfoBorder}"/>
+		<Setter Property="BorderThickness" Value="1"/>
+	</Style>
+
+	<!-- BADGE CLASSES                                              -->
+
+	<Style Selector="Border.badge-danger">
+		<Setter Property="Background"   Value="{DynamicResource BrushBadgeDangerBg}"/>
+		<Setter Property="CornerRadius" Value="{DynamicResource RadiusSm}"/>
+		<Setter Property="Padding"      Value="6,2"/>
+	</Style>
+
+	<Style Selector="Border.badge-info">
+		<Setter Property="Background"   Value="{DynamicResource BrushBadgeInfoBg}"/>
+		<Setter Property="CornerRadius" Value="{DynamicResource RadiusSm}"/>
+		<Setter Property="Padding"      Value="6,2"/>
+	</Style>
+
+	<Style Selector="Border.badge-success">
+		<Setter Property="Background"   Value="{DynamicResource BrushBadgeSuccessBg}"/>
+		<Setter Property="CornerRadius" Value="{DynamicResource RadiusSm}"/>
+		<Setter Property="Padding"      Value="6,2"/>
+	</Style>
+
+	<Style Selector="Border.badge-warning">
+		<Setter Property="Background"   Value="{DynamicResource BrushAlertWarningBg}"/>
+		<Setter Property="CornerRadius" Value="{DynamicResource RadiusSm}"/>
+		<Setter Property="Padding"      Value="6,2"/>
+	</Style>
+
+	<!-- 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€ -->
+	<!-- DIVIDER                                                    -->
+	<!-- 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€ -->
+
+	<Style Selector="Border.divider">
+		<Setter Property="Height"      Value="1"/>
+		<Setter Property="Background"  Value="{DynamicResource BrushBorderSubtle}"/>
+		<Setter Property="Margin"      Value="0,6"/>
+	</Style>
+
+</Styles>

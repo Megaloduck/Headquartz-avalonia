@@ -1,5 +1,169 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-  <!-- Add Resources Here -->
-	
+
+	<!-- ============================================================
+       HEADQUARTZ — DARK THEME TOKENS
+       Pure resource dictionary: colors, brushes, spacing, radii.
+       Control Styles live in ThemeStyles.axaml (shared).
+       ============================================================ -->
+
+	<!-- ─────────────────────────────────────────────────────────── -->
+	<!-- COLORS                                                     -->
+	<!-- ─────────────────────────────────────────────────────────── -->
+
+	<Color x:Key="ColorBgBase">#080C14</Color>
+	<Color x:Key="ColorBgSurface">#0F1623</Color>
+	<Color x:Key="ColorBgElevated">#161D2E</Color>
+	<Color x:Key="ColorBgCard">#1A2236</Color>
+	<Color x:Key="ColorBgCardHover">#1F2A3F</Color>
+	<Color x:Key="ColorBgInput">#111827</Color>
+	<Color x:Key="ColorBgSidebar">#090E1A</Color>
+
+	<Color x:Key="ColorBorderSubtle">#1E293B</Color>
+	<Color x:Key="ColorBorderDefault">#253347</Color>
+	<Color x:Key="ColorBorderStrong">#334155</Color>
+	<Color x:Key="ColorBorderFocus">#6366F1</Color>
+
+	<Color x:Key="ColorTextPrimary">#F1F5F9</Color>
+	<Color x:Key="ColorTextSecondary">#94A3B8</Color>
+	<Color x:Key="ColorTextMuted">#4B6280</Color>
+	<Color x:Key="ColorTextDisabled">#2D3F55</Color>
+
+	<Color x:Key="ColorAccentPrimary">#6366F1</Color>
+	<Color x:Key="ColorAccentPrimaryHover">#818CF8</Color>
+	<Color x:Key="ColorAccentSecondary">#06B6D4</Color>
+
+	<Color x:Key="ColorSuccess">#10B981</Color>
+	<Color x:Key="ColorWarning">#F59E0B</Color>
+	<Color x:Key="ColorDanger">#EF4444</Color>
+	<Color x:Key="ColorInfo">#3B82F6</Color>
+
+	<!-- Alert backgrounds (dark) -->
+	<Color x:Key="ColorAlertCriticalBg">#7F1D1D</Color>
+	<Color x:Key="ColorAlertCriticalBorder">#EF4444</Color>
+	<Color x:Key="ColorAlertWarningBg">#78350F</Color>
+	<Color x:Key="ColorAlertWarningBorder">#F59E0B</Color>
+	<Color x:Key="ColorAlertInfoBg">#1E3A5F</Color>
+	<Color x:Key="ColorAlertInfoBorder">#3B82F6</Color>
+
+	<!-- Badge backgrounds (dark) -->
+	<Color x:Key="ColorBadgeDangerBg">#450A0A</Color>
+	<Color x:Key="ColorBadgeDangerFg">#FCA5A5</Color>
+	<Color x:Key="ColorBadgeInfoBg">#1E3A5F</Color>
+	<Color x:Key="ColorBadgeInfoFg">#93C5FD</Color>
+	<Color x:Key="ColorBadgeSuccessBg">#14532D</Color>
+	<Color x:Key="ColorBadgeSuccessFg">#86EFAC</Color>
+
+	<!-- Nested card background (dark) -->
+	<Color x:Key="ColorBgNested">#2B3242</Color>
+
+	<!-- Department accent colors -->
+	<Color x:Key="ColorDeptHR">#8B5CF6</Color>
+	<Color x:Key="ColorDeptFinance">#10B981</Color>
+	<Color x:Key="ColorDeptSales">#3B82F6</Color>
+	<Color x:Key="ColorDeptMarketing">#F59E0B</Color>
+	<Color x:Key="ColorDeptProduction">#EF4444</Color>
+	<Color x:Key="ColorDeptWarehouse">#F97316</Color>
+	<Color x:Key="ColorDeptLogistics">#06B6D4</Color>
+	<Color x:Key="ColorDeptChairman">#EAB308</Color>
+
+	<!-- ─────────────────────────────────────────────────────────── -->
+	<!-- BRUSHES                                                    -->
+	<!-- ─────────────────────────────────────────────────────────── -->
+
+	<SolidColorBrush x:Key="BrushBgBase"         Color="{StaticResource ColorBgBase}"/>
+	<SolidColorBrush x:Key="BrushBgSurface"      Color="{StaticResource ColorBgSurface}"/>
+	<SolidColorBrush x:Key="BrushBgElevated"     Color="{StaticResource ColorBgElevated}"/>
+	<SolidColorBrush x:Key="BrushBgCard"         Color="{StaticResource ColorBgCard}"/>
+	<SolidColorBrush x:Key="BrushBgCardHover"    Color="{StaticResource ColorBgCardHover}"/>
+	<SolidColorBrush x:Key="BrushBgInput"        Color="{StaticResource ColorBgInput}"/>
+	<SolidColorBrush x:Key="BrushBgSidebar"      Color="{StaticResource ColorBgSidebar}"/>
+	<SolidColorBrush x:Key="BrushBgNested"       Color="{StaticResource ColorBgNested}"/>
+
+	<SolidColorBrush x:Key="BrushBorderSubtle"   Color="{StaticResource ColorBorderSubtle}"/>
+	<SolidColorBrush x:Key="BrushBorderDefault"  Color="{StaticResource ColorBorderDefault}"/>
+	<SolidColorBrush x:Key="BrushBorderStrong"   Color="{StaticResource ColorBorderStrong}"/>
+	<SolidColorBrush x:Key="BrushBorderFocus"    Color="{StaticResource ColorBorderFocus}"/>
+
+	<SolidColorBrush x:Key="BrushTextPrimary"    Color="{StaticResource ColorTextPrimary}"/>
+	<SolidColorBrush x:Key="BrushTextSecondary"  Color="{StaticResource ColorTextSecondary}"/>
+	<SolidColorBrush x:Key="BrushTextMuted"      Color="{StaticResource ColorTextMuted}"/>
+	<SolidColorBrush x:Key="BrushTextDisabled"   Color="{StaticResource ColorTextDisabled}"/>
+
+	<SolidColorBrush x:Key="BrushAccentPrimary"      Color="{StaticResource ColorAccentPrimary}"/>
+	<SolidColorBrush x:Key="BrushAccentPrimaryHover" Color="{StaticResource ColorAccentPrimaryHover}"/>
+	<SolidColorBrush x:Key="BrushAccentSecondary"    Color="{StaticResource ColorAccentSecondary}"/>
+
+	<SolidColorBrush x:Key="BrushSuccess"        Color="{StaticResource ColorSuccess}"/>
+	<SolidColorBrush x:Key="BrushWarning"        Color="{StaticResource ColorWarning}"/>
+	<SolidColorBrush x:Key="BrushDanger"         Color="{StaticResource ColorDanger}"/>
+	<SolidColorBrush x:Key="BrushInfo"           Color="{StaticResource ColorInfo}"/>
+
+	<SolidColorBrush x:Key="BrushAlertCriticalBg"     Color="{StaticResource ColorAlertCriticalBg}"/>
+	<SolidColorBrush x:Key="BrushAlertCriticalBorder" Color="{StaticResource ColorAlertCriticalBorder}"/>
+	<SolidColorBrush x:Key="BrushAlertWarningBg"      Color="{StaticResource ColorAlertWarningBg}"/>
+	<SolidColorBrush x:Key="BrushAlertWarningBorder"  Color="{StaticResource ColorAlertWarningBorder}"/>
+	<SolidColorBrush x:Key="BrushAlertInfoBg"         Color="{StaticResource ColorAlertInfoBg}"/>
+	<SolidColorBrush x:Key="BrushAlertInfoBorder"     Color="{StaticResource ColorAlertInfoBorder}"/>
+
+	<SolidColorBrush x:Key="BrushBadgeDangerBg"  Color="{StaticResource ColorBadgeDangerBg}"/>
+	<SolidColorBrush x:Key="BrushBadgeDangerFg"  Color="{StaticResource ColorBadgeDangerFg}"/>
+	<SolidColorBrush x:Key="BrushBadgeInfoBg"    Color="{StaticResource ColorBadgeInfoBg}"/>
+	<SolidColorBrush x:Key="BrushBadgeInfoFg"    Color="{StaticResource ColorBadgeInfoFg}"/>
+	<SolidColorBrush x:Key="BrushBadgeSuccessBg" Color="{StaticResource ColorBadgeSuccessBg}"/>
+	<SolidColorBrush x:Key="BrushBadgeSuccessFg" Color="{StaticResource ColorBadgeSuccessFg}"/>
+
+	<SolidColorBrush x:Key="BrushDeptHR"         Color="{StaticResource ColorDeptHR}"/>
+	<SolidColorBrush x:Key="BrushDeptFinance"    Color="{StaticResource ColorDeptFinance}"/>
+	<SolidColorBrush x:Key="BrushDeptSales"      Color="{StaticResource ColorDeptSales}"/>
+	<SolidColorBrush x:Key="BrushDeptMarketing"  Color="{StaticResource ColorDeptMarketing}"/>
+	<SolidColorBrush x:Key="BrushDeptProduction" Color="{StaticResource ColorDeptProduction}"/>
+	<SolidColorBrush x:Key="BrushDeptWarehouse"  Color="{StaticResource ColorDeptWarehouse}"/>
+	<SolidColorBrush x:Key="BrushDeptLogistics"  Color="{StaticResource ColorDeptLogistics}"/>
+	<SolidColorBrush x:Key="BrushDeptChairman"   Color="{StaticResource ColorDeptChairman}"/>
+
+	<!-- Gradient brushes -->
+	<LinearGradientBrush x:Key="BrushGradientSplash" StartPoint="0%,0%" EndPoint="100%,100%">
+		<GradientStop Color="#0D1117" Offset="0"/>
+		<GradientStop Color="#080C14" Offset="0.5"/>
+		<GradientStop Color="#060A14" Offset="1"/>
+	</LinearGradientBrush>
+
+	<LinearGradientBrush x:Key="BrushGradientAccent" StartPoint="0%,0%" EndPoint="100%,0%">
+		<GradientStop Color="#6366F1" Offset="0"/>
+		<GradientStop Color="#06B6D4" Offset="1"/>
+	</LinearGradientBrush>
+
+	<!-- ─────────────────────────────────────────────────────────── -->
+	<!-- SPACING / SIZING                                           -->
+	<!-- ─────────────────────────────────────────────────────────── -->
+
+	<Thickness x:Key="PaddingCard">20</Thickness>
+	<Thickness x:Key="PaddingCardSm">14,10</Thickness>
+	<Thickness x:Key="PaddingInput">10,8</Thickness>
+	<Thickness x:Key="PaddingButton">14,9</Thickness>
+	<Thickness x:Key="PaddingButtonSm">10,6</Thickness>
+	<Thickness x:Key="PaddingSection">30</Thickness>
+
+	<CornerRadius x:Key="RadiusSm">6</CornerRadius>
+	<CornerRadius x:Key="RadiusMd">8</CornerRadius>
+	<CornerRadius x:Key="RadiusLg">12</CornerRadius>
+	<CornerRadius x:Key="RadiusXl">16</CornerRadius>
+
+	<!-- ─────────────────────────────────────────────────────────── -->
+	<!-- TYPOGRAPHY                                                 -->
+	<!-- ─────────────────────────────────────────────────────────── -->
+
+	<x:Double x:Key="FontSizeXs">10</x:Double>
+	<x:Double x:Key="FontSizeSm">11</x:Double>
+	<x:Double x:Key="FontSizeMd">12</x:Double>
+	<x:Double x:Key="FontSizeBase">13</x:Double>
+	<x:Double x:Key="FontSizeLg">14</x:Double>
+	<x:Double x:Key="FontSizeXl">16</x:Double>
+	<x:Double x:Key="FontSizeH3">18</x:Double>
+	<x:Double x:Key="FontSizeH2">22</x:Double>
+	<x:Double x:Key="FontSizeH1">28</x:Double>
+	<x:Double x:Key="FontSizeDisplay">34</x:Double>
+	<x:Double x:Key="FontSizeKpi">28</x:Double>
+
 </ResourceDictionary>
