@@ -12,16 +12,14 @@
 		<!-- 1. Avalonia Fluent base -->
 		<FluentTheme />
 
-		<!-- 2. Shared control styles (uses {DynamicResource} tokens) -->
+		<!-- 2. Shared control styles — uses {DynamicResource} tokens -->
 		<StyleInclude Source="avares://Headquartz.App/Assets/Styles/StyleResources.axaml"/>
 	</Application.Styles>
-
-	<!-- 3. Active token dictionary â€” change Source here to switch theme -->
+		<!-- 3. Shared theme styles — uses {DynamicResource} tokens -->
 	<Application.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
 				<ResourceInclude Source="avares://Headquartz.App/Assets/Themes/DarkTheme.axaml"/>
-				<!-- To use light theme, swap the line above to:           -->
 				<ResourceInclude Source="avares://Headquartz.App/Assets/Themes/LightTheme.axaml"/>
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>

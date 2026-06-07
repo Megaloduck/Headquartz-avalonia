@@ -9,35 +9,46 @@
 
 			<TextBlock FontSize="34" FontWeight="Bold" Text="Settings"/>
 
-			<!-- SIMULATION STATUS -->
+			<!-- ════════════════════════════════════════════ -->
+			<!-- SIMULATION STATUS                           -->
+			<!-- ════════════════════════════════════════════ -->
 			<Border Padding="20"
                     Background="{DynamicResource BrushBgCard}"
                     CornerRadius="{DynamicResource RadiusLg}"
                     BorderBrush="{DynamicResource BrushBorderSubtle}"
                     BorderThickness="1">
 				<Grid ColumnDefinitions="*,*,*">
+
 					<StackPanel Grid.Column="0">
 						<TextBlock FontSize="12"
                                    Foreground="{DynamicResource BrushTextMuted}"
                                    Text="CURRENT TICK"/>
-						<TextBlock FontSize="26" FontWeight="Bold" Text="{Binding CurrentTick}"/>
+						<TextBlock FontSize="26" FontWeight="Bold"
+                                   Text="{Binding CurrentTick}"/>
 					</StackPanel>
+
 					<StackPanel Grid.Column="1">
 						<TextBlock FontSize="12"
                                    Foreground="{DynamicResource BrushTextMuted}"
                                    Text="WORLD TIME"/>
-						<TextBlock FontSize="18" FontWeight="Bold" Text="{Binding WorldTime}"/>
+						<TextBlock FontSize="18" FontWeight="Bold"
+                                   Text="{Binding WorldTime}"/>
 					</StackPanel>
+
 					<StackPanel Grid.Column="2">
 						<TextBlock FontSize="12"
                                    Foreground="{DynamicResource BrushTextMuted}"
                                    Text="SPEED"/>
-						<TextBlock FontSize="22" FontWeight="Bold" Text="{Binding SpeedLabel}"/>
+						<TextBlock FontSize="22" FontWeight="Bold"
+                                   Text="{Binding SpeedLabel}"/>
 					</StackPanel>
+
 				</Grid>
 			</Border>
 
-			<!-- SIMULATION SPEED -->
+			<!-- ════════════════════════════════════════════ -->
+			<!-- SIMULATION SPEED                            -->
+			<!-- ════════════════════════════════════════════ -->
 			<Border Padding="24"
                     Background="{DynamicResource BrushBgCard}"
                     CornerRadius="{DynamicResource RadiusLg}"
@@ -45,10 +56,11 @@
                     BorderThickness="1">
 				<StackPanel Spacing="16">
 
-					<TextBlock FontSize="20" FontWeight="Bold" Text="Simulation Speed"/>
+					<TextBlock FontSize="20" FontWeight="Bold"
+                               Text="Simulation Speed"/>
 					<TextBlock FontSize="13"
                                Foreground="{DynamicResource BrushTextSecondary}"
-                               Text="Controls how fast simulation ticks advance. Useful for testing or slowing down for analysis."/>
+                               Text="Controls how fast simulation ticks advance."/>
 
 					<WrapPanel>
 
@@ -121,43 +133,89 @@
 				</StackPanel>
 			</Border>
 
-			<!-- APPEARANCE (informational only) -->
+			<!-- ════════════════════════════════════════════ -->
+			<!-- APPEARANCE — live theme toggle              -->
+			<!-- ════════════════════════════════════════════ -->
 			<Border Padding="24"
                     Background="{DynamicResource BrushBgCard}"
                     CornerRadius="{DynamicResource RadiusLg}"
                     BorderBrush="{DynamicResource BrushBorderSubtle}"
                     BorderThickness="1">
-				<StackPanel Spacing="12">
+				<StackPanel Spacing="20">
 
-					<TextBlock FontSize="20" FontWeight="Bold" Text="Appearance"/>
+					<StackPanel Spacing="4">
+						<TextBlock FontSize="20" FontWeight="Bold" Text="Appearance"/>
+						<TextBlock FontSize="13"
+                                   Foreground="{DynamicResource BrushTextSecondary}"
+                                   Text="Switch between Dark and Light themes. Changes apply instantly."/>
+					</StackPanel>
 
-					<TextBlock FontSize="13"
-                               Foreground="{DynamicResource BrushTextSecondary}"
-                               TextWrapping="Wrap"
-                               Text="Theme is configured in App.axaml. To switch, change the ResourceInclude in Application.Resources.MergedDictionaries to LightTheme.axaml or DarkTheme.axaml and relaunch."/>
+					<Grid ColumnDefinitions="Auto,*">
 
-					<!-- Active theme display -->
-					<Border Padding="14,10"
-                            Background="{DynamicResource BrushBgElevated}"
-                            BorderBrush="{DynamicResource BrushBorderDefault}"
-                            BorderThickness="1"
-                            CornerRadius="{DynamicResource RadiusMd}"
-                            HorizontalAlignment="Left">
-						<StackPanel Orientation="Horizontal" Spacing="12">
-							<TextBlock Text="🌙" FontSize="20" VerticalAlignment="Center"/>
-							<StackPanel>
+						<!-- Toggle button -->
+						<Button Grid.Column="0"
+                                Padding="20,14"
+                                CornerRadius="{DynamicResource RadiusLg}"
+                                Background="{DynamicResource BrushAccentPrimary}"
+                                BorderThickness="0"
+                                Command="{Binding ToggleThemeCommand}">
+							<StackPanel Orientation="Horizontal" Spacing="12">
+
+								<!-- Icon changes with theme -->
+								<Border Width="36" Height="36"
+                                        CornerRadius="18"
+                                        Background="#FFFFFF20">
+									<TextBlock
+                                        FontSize="18"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Text="{Binding IsDarkTheme,
+                                            FallbackValue='🌙',
+                                            TargetNullValue='🌙'}"/>
+								</Border>
+
+								<StackPanel VerticalAlignment="Center">
+									<TextBlock
+                                        FontSize="14"
+                                        FontWeight="Bold"
+                                        Foreground="White"
+                                        Text="{Binding ToggleThemeLabel}"/>
+									<TextBlock
+                                        FontSize="11"
+                                        Foreground="#C7D2FE"
+                                        Text="Click to switch"/>
+								</StackPanel>
+
+							</StackPanel>
+						</Button>
+
+						<!-- Active theme indicator -->
+						<Border Grid.Column="1"
+                                Margin="16,0,0,0"
+                                Padding="20,14"
+                                CornerRadius="{DynamicResource RadiusLg}"
+                                Background="{DynamicResource BrushBgElevated}"
+                                BorderBrush="{DynamicResource BrushBorderDefault}"
+                                BorderThickness="1"
+                                VerticalAlignment="Stretch">
+							<StackPanel VerticalAlignment="Center" Spacing="4">
 								<TextBlock FontSize="11"
                                            Foreground="{DynamicResource BrushTextMuted}"
                                            Text="ACTIVE THEME"/>
-								<TextBlock FontSize="15" FontWeight="Bold" Text="Dark"/>
+								<TextBlock FontSize="20"
+                                           FontWeight="Bold"
+                                           Text="{Binding ActiveThemeLabel}"/>
 							</StackPanel>
-						</StackPanel>
-					</Border>
+						</Border>
+
+					</Grid>
 
 				</StackPanel>
 			</Border>
 
-			<!-- COMPANY NAME -->
+			<!-- ════════════════════════════════════════════ -->
+			<!-- COMPANY NAME                                -->
+			<!-- ════════════════════════════════════════════ -->
 			<Border Padding="24"
                     Background="{DynamicResource BrushBgCard}"
                     CornerRadius="{DynamicResource RadiusLg}"

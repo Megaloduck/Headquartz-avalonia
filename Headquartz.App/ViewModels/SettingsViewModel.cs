@@ -2,6 +2,7 @@
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+
 using Headquartz.App.Services;
 
 namespace Headquartz.App.ViewModels;
@@ -22,31 +23,55 @@ public partial class SettingsViewModel : ViewModelBase
     [ObservableProperty] private string _companyName = "";
     [ObservableProperty] private string _statusMessage = "";
 
+    // ── Theme ─────────────────────────────────────────────────
+
+    [ObservableProperty] private bool _isDarkTheme;
+    [ObservableProperty] private string _activeThemeLabel = "Dark 🌙";
+    [ObservableProperty] private string _toggleThemeLabel = "Switch to Light ☀";
+
     // ── Constructor ───────────────────────────────────────────
 
     public SettingsViewModel(SimulationService simulation)
     {
         _simulation = simulation;
+
         CompanyName = simulation.Engine.Company.Name;
         CurrentTick = simulation.Engine.Clock.Tick;
-        WorldTime = simulation.Engine.Clock.WorldTime.ToString("yyyy-MM-dd HH:mm");
+        WorldTime = simulation.Engine.Clock.WorldTime
+                           .ToString("yyyy-MM-dd HH:mm");
+
+        // Sync initial state from ThemeService
+        IsDarkTheme = ThemeService.Current.IsDark;
+        RefreshThemeLabels();
+
+        // Keep VM in sync if something else calls ThemeService
+        ThemeService.Current.ThemeChanged += dark =>
+        {
+            Dispatcher.UIThread.Post(() =>
+            {
+                IsDarkTheme = dark;
+                RefreshThemeLabels();
+            });
+        };
 
         simulation.Engine.OnUpdated += RefreshTick;
     }
 
     // ── Speed commands ────────────────────────────────────────
 
-    [RelayCommand]
-    private void SetHalfSpeed() => ApplySpeed(0.5, "½× Slow");
+    [RelayCommand] private void SetHalfSpeed() => ApplySpeed(0.5, "½× Slow");
+    [RelayCommand] private void SetNormalSpeed() => ApplySpeed(1.0, "1× Normal");
+    [RelayCommand] private void SetDoubleSpeed() => ApplySpeed(2.0, "2× Fast");
+    [RelayCommand] private void SetTripleSpeed() => ApplySpeed(3.0, "3× Turbo");
+
+    // ── Theme command ─────────────────────────────────────────
 
     [RelayCommand]
-    private void SetNormalSpeed() => ApplySpeed(1.0, "1× Normal");
-
-    [RelayCommand]
-    private void SetDoubleSpeed() => ApplySpeed(2.0, "2× Fast");
-
-    [RelayCommand]
-    private void SetTripleSpeed() => ApplySpeed(3.0, "3× Turbo");
+    private void ToggleTheme()
+    {
+        ThemeService.Current.Toggle();
+        // Labels update via ThemeChanged event above
+    }
 
     // ── Company name ─────────────────────────────────────────
 
@@ -62,6 +87,12 @@ public partial class SettingsViewModel : ViewModelBase
 
     // ── Helpers ───────────────────────────────────────────────
 
+    private void RefreshThemeLabels()
+    {
+        ActiveThemeLabel = IsDarkTheme ? "Dark 🌙" : "Light ☀";
+        ToggleThemeLabel = IsDarkTheme ? "Switch to Light ☀" : "Switch to Dark 🌙";
+    }
+
     private void ApplySpeed(double multiplier, string label)
     {
         _simulation.SetTickSpeed(multiplier);
@@ -75,7 +106,8 @@ public partial class SettingsViewModel : ViewModelBase
         Dispatcher.UIThread.Post(() =>
         {
             CurrentTick = _simulation.Engine.Clock.Tick;
-            WorldTime = _simulation.Engine.Clock.WorldTime.ToString("yyyy-MM-dd HH:mm");
+            WorldTime = _simulation.Engine.Clock.WorldTime
+                              .ToString("yyyy-MM-dd HH:mm");
         });
     }
 }
