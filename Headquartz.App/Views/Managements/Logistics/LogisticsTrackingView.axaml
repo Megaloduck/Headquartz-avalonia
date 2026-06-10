@@ -1,0 +1,168 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Headquartz.App.LogisticsTrackingView">
+
+	<ScrollViewer>
+		<StackPanel Margin="30" Spacing="20">
+
+			<TextBlock FontSize="34" FontWeight="Bold" Text="Delivery Tracking"/>
+			<TextBlock FontSize="13" Foreground="#6B7280"
+                Text="Track all active shipments in real time across the delivery pipeline."/>
+
+			<!-- OVERDUE BANNER -->
+			<Border IsVisible="{Binding Overdue}"
+                    Background="#7F1D1D" CornerRadius="12" Padding="20">
+				<StackPanel Orientation="Horizontal" Spacing="12">
+					<TextBlock Text="🚚" FontSize="22" VerticalAlignment="Center"/>
+					<StackPanel>
+						<TextBlock
+                            Text="{Binding Overdue, StringFormat='{}{0} SHIPMENT(S) PAST DEADLINE'}"
+                            FontSize="16" FontWeight="Bold" Foreground="#FCA5A5"/>
+						<TextBlock Text="These deliveries are damaging reputation every tick."
+                            Foreground="#FCA5A5"/>
+					</StackPanel>
+				</StackPanel>
+			</Border>
+
+			<!-- KPIs -->
+			<ItemsControl ItemsSource="{Binding Kpis}">
+				<ItemsControl.ItemsPanel>
+					<ItemsPanelTemplate>
+						<WrapPanel/>
+					</ItemsPanelTemplate>
+				</ItemsControl.ItemsPanel>
+				<ItemsControl.ItemTemplate>
+					<DataTemplate>
+						<Border Width="200" Margin="10" Padding="20" Background="#202633" CornerRadius="12">
+							<StackPanel>
+								<TextBlock FontSize="13" Foreground="#9CA3AF" Text="{Binding Title}"/>
+								<TextBlock FontSize="26" FontWeight="Bold" Text="{Binding Value}"/>
+							</StackPanel>
+						</Border>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
+
+			<!-- SEARCH + FILTERS -->
+			<Grid ColumnDefinitions="*,16,Auto">
+
+				<TextBox Grid.Column="0"
+                    Text="{Binding SearchText}"
+                    Watermark="Search by client or product..."
+                    Padding="12,9" Background="#202633"
+                    BorderBrush="#374151" BorderThickness="1" CornerRadius="8"/>
+
+				<ItemsControl Grid.Column="2" ItemsSource="{Binding StatusFilters}">
+					<ItemsControl.ItemsPanel>
+						<ItemsPanelTemplate>
+							<StackPanel Orientation="Horizontal" Spacing="8"/>
+						</ItemsPanelTemplate>
+					</ItemsControl.ItemsPanel>
+					<ItemsControl.ItemTemplate>
+						<DataTemplate>
+							<Button Padding="14,8" CornerRadius="8" Background="#202633"
+                                Command="{Binding $parent[ItemsControl].DataContext.SetFilterCommand}"
+                                CommandParameter="{Binding}"
+                                Content="{Binding}"/>
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
+
+			</Grid>
+
+			<!-- STATUS -->
+			<Border IsVisible="{Binding StatusMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                    Padding="14,10" Background="#2B3242" CornerRadius="8">
+				<TextBlock Text="{Binding StatusMessage}" FontSize="13" TextWrapping="Wrap"/>
+			</Border>
+
+			<!-- TRACKING TABLE -->
+			<Border Padding="20" Background="#202633" CornerRadius="12">
+				<StackPanel>
+					<TextBlock FontSize="22" FontWeight="Bold" Text="Active Shipments" Margin="0,0,0,16"/>
+
+					<TextBlock IsVisible="{Binding !Shipments.Count}"
+                        Text="No shipments match this filter." Foreground="#6B7280"/>
+
+					<ItemsControl ItemsSource="{Binding Shipments}">
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<Border Margin="0,5" Padding="16" Background="#2B3242" CornerRadius="8">
+									<StackPanel Spacing="10">
+
+										<!-- Header row -->
+										<Grid ColumnDefinitions="*,130,120,Auto">
+
+											<StackPanel Grid.Column="0">
+												<StackPanel Orientation="Horizontal" Spacing="8">
+													<TextBlock FontWeight="Bold" FontSize="14"
+                                                        Text="{Binding ClientName}"
+                                                        VerticalAlignment="Center"/>
+													<Border IsVisible="{Binding IsOverdue}"
+                                                            Padding="6,2" Background="#7F1D1D"
+                                                            CornerRadius="4" VerticalAlignment="Center">
+														<TextBlock Text="OVERDUE" FontSize="9"
+                                                            FontWeight="Bold" Foreground="#FCA5A5"/>
+													</Border>
+												</StackPanel>
+												<TextBlock FontSize="12" Foreground="#6B7280"
+                                                    Text="{Binding ProductName}"/>
+											</StackPanel>
+
+											<StackPanel Grid.Column="1" VerticalAlignment="Center">
+												<TextBlock FontSize="11" Foreground="#6B7280"
+                                                    Text="Location"/>
+												<TextBlock FontSize="12" FontWeight="SemiBold"
+                                                    Text="{Binding CurrentLocation}"
+                                                    Foreground="#06B6D4"/>
+											</StackPanel>
+
+											<StackPanel Grid.Column="2" VerticalAlignment="Center">
+												<TextBlock FontSize="11" Foreground="#6B7280"
+                                                    Text="Deadline"/>
+												<TextBlock FontSize="12" Text="{Binding Deadline}"
+                                                    Foreground="#9CA3AF"/>
+											</StackPanel>
+
+											<Button Grid.Column="3"
+                                                Padding="12,7" Background="#10B981" CornerRadius="6"
+                                                VerticalAlignment="Center"
+                                                Command="{Binding $parent[ItemsControl].DataContext.MarkDeliveredCommand}"
+                                                CommandParameter="{Binding}"
+                                                Content="✓ Delivered"/>
+
+										</Grid>
+
+										<!-- Progress bar -->
+										<StackPanel Spacing="4">
+											<StackPanel Orientation="Horizontal" Spacing="8">
+												<ProgressBar
+                                                    Value="{Binding ProgressPercent}"
+                                                    Maximum="100"
+                                                    Height="7" Width="400"
+                                                    Foreground="#06B6D4"
+                                                    VerticalAlignment="Center"/>
+												<TextBlock FontSize="11" Foreground="#6B7280"
+                                                    Text="{Binding ProgressPercent, StringFormat='{}{0}%'}"
+                                                    VerticalAlignment="Center"/>
+											</StackPanel>
+											<StackPanel Orientation="Horizontal" Spacing="16">
+												<TextBlock FontSize="11" Foreground="#6B7280"
+                                                    Text="{Binding Status}"/>
+												<TextBlock FontSize="11" Foreground="#4B5563"
+                                                    Text="{Binding LastUpdated, StringFormat='Updated: {0}'}"/>
+											</StackPanel>
+										</StackPanel>
+
+									</StackPanel>
+								</Border>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+
+				</StackPanel>
+			</Border>
+
+		</StackPanel>
+	</ScrollViewer>
+</UserControl>

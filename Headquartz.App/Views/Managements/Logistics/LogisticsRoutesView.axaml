@@ -1,0 +1,151 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Headquartz.App.LogisticsRoutesView">
+
+	<ScrollViewer>
+		<StackPanel Margin="30" Spacing="20">
+
+			<TextBlock FontSize="34" FontWeight="Bold" Text="Route Planner"/>
+			<TextBlock FontSize="13" Foreground="#6B7280"
+                Text="Manage delivery routes, optimize costs, and monitor route performance."/>
+
+			<!-- KPIs -->
+			<ItemsControl ItemsSource="{Binding Kpis}">
+				<ItemsControl.ItemsPanel>
+					<ItemsPanelTemplate>
+						<WrapPanel/>
+					</ItemsPanelTemplate>
+				</ItemsControl.ItemsPanel>
+				<ItemsControl.ItemTemplate>
+					<DataTemplate>
+						<Border Width="180" Margin="8" Padding="18" Background="#202633" CornerRadius="12">
+							<StackPanel>
+								<TextBlock FontSize="13" Foreground="#9CA3AF" Text="{Binding Title}"/>
+								<TextBlock FontSize="26" FontWeight="Bold" Text="{Binding Value}"/>
+							</StackPanel>
+						</Border>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
+
+			<!-- ACTIONS -->
+			<WrapPanel>
+				<Button Padding="14" Margin="10" Background="#06B6D4" CornerRadius="8"
+                    Command="{Binding OptimizeAllRoutesCommand}"
+                    Content="🗺  Optimize All Routes ($5,000)"/>
+				<Button Padding="14" Margin="10" Background="#6366F1" CornerRadius="8"
+                    Command="{Binding AddRouteCommand}"
+                    Content="＋  Add Route ($8,000)"/>
+			</WrapPanel>
+
+			<!-- STATUS -->
+			<Border IsVisible="{Binding StatusMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                    Padding="14,10" Background="#2B3242" CornerRadius="8">
+				<TextBlock Text="{Binding StatusMessage}" FontSize="13" TextWrapping="Wrap"/>
+			</Border>
+
+			<!-- ROUTES LIST -->
+			<Border Padding="20" Background="#202633" CornerRadius="12">
+				<StackPanel>
+					<TextBlock FontSize="22" FontWeight="Bold" Text="Delivery Routes" Margin="0,0,0,16"/>
+
+					<TextBlock IsVisible="{Binding !Routes.Count}"
+                        Text="No routes configured." Foreground="#6B7280"/>
+
+					<ItemsControl ItemsSource="{Binding Routes}">
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<Border Margin="0,6" Padding="18" Background="#2B3242" CornerRadius="10">
+									<StackPanel Spacing="12">
+
+										<!-- Header -->
+										<Grid ColumnDefinitions="*,Auto,Auto,Auto">
+
+											<StackPanel Grid.Column="0">
+												<StackPanel Orientation="Horizontal" Spacing="8">
+													<TextBlock FontWeight="Bold" FontSize="16"
+                                                        Text="{Binding Name}" VerticalAlignment="Center"/>
+													<Border Padding="8,3" CornerRadius="5"
+                                                            Background="#1F2937" VerticalAlignment="Center">
+														<TextBlock FontSize="11" FontWeight="Bold"
+                                                            Text="{Binding Status}" Foreground="#9CA3AF"/>
+													</Border>
+												</StackPanel>
+												<StackPanel Orientation="Horizontal" Spacing="8">
+													<TextBlock FontSize="12" Foreground="#6B7280"
+                                                        Text="{Binding Origin}"/>
+													<TextBlock FontSize="12" Foreground="#374151"
+                                                        Text="→"/>
+													<TextBlock FontSize="12" Foreground="#06B6D4"
+                                                        Text="{Binding Destination}"/>
+													<TextBlock FontSize="12" Foreground="#4B5563"
+                                                        Text="{Binding EstimatedTime, StringFormat='· {0}'}"/>
+												</StackPanel>
+											</StackPanel>
+
+											<Button Grid.Column="1"
+                                                Margin="8,0" Padding="10,6"
+                                                Background="#0E7490" CornerRadius="6"
+                                                VerticalAlignment="Center"
+                                                Command="{Binding $parent[ItemsControl].DataContext.OptimizeRouteCommand}"
+                                                CommandParameter="{Binding}"
+                                                Content="⚡ Optimize ($1.5k)"/>
+
+											<Button Grid.Column="2"
+                                                Margin="4,0" Padding="10,6"
+                                                Background="#374151" CornerRadius="6"
+                                                VerticalAlignment="Center"
+                                                Command="{Binding $parent[ItemsControl].DataContext.SuspendRouteCommand}"
+                                                CommandParameter="{Binding}"
+                                                Content="⛔ Suspend"/>
+
+										</Grid>
+
+										<!-- Stats -->
+										<Grid ColumnDefinitions="*,*,*,*">
+
+											<StackPanel Grid.Column="0" Spacing="4">
+												<TextBlock Text="Efficiency" FontSize="11"
+                                                    Foreground="#6B7280"/>
+												<ProgressBar Value="{Binding Efficiency}" Maximum="100"
+                                                    Height="7" Foreground="#06B6D4"/>
+												<TextBlock FontSize="11" Foreground="#9CA3AF"
+                                                    Text="{Binding Efficiency, StringFormat='{}{0}%'}"/>
+											</StackPanel>
+
+											<StackPanel Grid.Column="1" Spacing="4" Margin="16,0,0,0">
+												<TextBlock Text="Active Shipments" FontSize="11"
+                                                    Foreground="#6B7280"/>
+												<TextBlock FontSize="18" FontWeight="Bold"
+                                                    Text="{Binding ActiveShipments}"/>
+											</StackPanel>
+
+											<StackPanel Grid.Column="2" Spacing="4" Margin="16,0,0,0">
+												<TextBlock Text="Cost/Shipment" FontSize="11"
+                                                    Foreground="#6B7280"/>
+												<TextBlock FontSize="18" FontWeight="Bold"
+                                                    Foreground="#EF4444"
+                                                    Text="{Binding CostPerShipment, StringFormat='${0:N0}'}"/>
+											</StackPanel>
+
+											<StackPanel Grid.Column="3" Spacing="4" Margin="16,0,0,0">
+												<TextBlock Text="Est. Time" FontSize="11"
+                                                    Foreground="#6B7280"/>
+												<TextBlock FontSize="18" FontWeight="Bold"
+                                                    Text="{Binding EstimatedTime}"/>
+											</StackPanel>
+
+										</Grid>
+
+									</StackPanel>
+								</Border>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+
+				</StackPanel>
+			</Border>
+
+		</StackPanel>
+	</ScrollViewer>
+</UserControl>

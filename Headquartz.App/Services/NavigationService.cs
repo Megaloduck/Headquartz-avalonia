@@ -77,11 +77,19 @@ public class NavigationService
             // ── Warehouse ─────────────────────────────────────
             "warehouse/dashboard" => new WarehouseDashboardViewModel(_simulation),
             "warehouse/inventory" => new WarehouseInventoryViewModel(_simulation),
+            "warehouse/stockin" => new WarehouseStockInViewModel(_simulation),
+            "warehouse/stockout" => new WarehouseStockOutViewModel(_simulation),
+            "warehouse/flow" => new WarehouseFlowViewModel(_simulation),
+            "warehouse/storage" => new WarehouseStorageViewModel(_simulation),
             "warehouse/reports" => new DepartmentReportViewModel(_simulation, DepartmentType.Warehouse),
 
             // ── Logistics ─────────────────────────────────────
             "logistics/dashboard" => new LogisticsDashboardViewModel(_simulation),
             "logistics/shipments" => new LogisticsShipmentsViewModel(_simulation),
+            "logistics/tracking" => new LogisticsTrackingViewModel(_simulation),
+            "logistics/routes" => new LogisticsRoutesViewModel(_simulation),
+            "logistics/sla" => new LogisticsSLAViewModel(_simulation),
+            "logistics/fleet" => new LogisticsFleetViewModel(_simulation),
             "logistics/reports" => new DepartmentReportViewModel(_simulation, DepartmentType.Logistics),
 
             // ── Fallback ──────────────────────────────────────

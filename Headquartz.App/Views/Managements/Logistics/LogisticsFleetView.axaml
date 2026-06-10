@@ -1,0 +1,147 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Headquartz.App.LogisticsFleetView">
+
+	<ScrollViewer>
+		<StackPanel Margin="30" Spacing="20">
+
+			<TextBlock FontSize="34" FontWeight="Bold" Text="Fleet Management"/>
+			<TextBlock FontSize="13" Foreground="#6B7280"
+                Text="Manage your delivery fleet, track vehicle condition, and schedule maintenance."/>
+
+			<!-- MAINTENANCE BANNER -->
+			<Border IsVisible="{Binding MaintenanceVehicles}"
+                    Background="#7C2D12" CornerRadius="12" Padding="20">
+				<StackPanel Orientation="Horizontal" Spacing="12">
+					<TextBlock Text="🚛" FontSize="22" VerticalAlignment="Center"/>
+					<StackPanel>
+						<TextBlock
+                            Text="{Binding MaintenanceVehicles, StringFormat='{}{0} VEHICLE(S) NEED SERVICING'}"
+                            FontSize="16" FontWeight="Bold" Foreground="#FDBA74"/>
+						<TextBlock Text="Vehicles in poor condition reduce delivery capacity and increase failure risk."
+                            Foreground="#FDBA74"/>
+					</StackPanel>
+				</StackPanel>
+			</Border>
+
+			<!-- KPIs -->
+			<ItemsControl ItemsSource="{Binding Kpis}">
+				<ItemsControl.ItemsPanel>
+					<ItemsPanelTemplate>
+						<WrapPanel/>
+					</ItemsPanelTemplate>
+				</ItemsControl.ItemsPanel>
+				<ItemsControl.ItemTemplate>
+					<DataTemplate>
+						<Border Width="180" Margin="8" Padding="18" Background="#202633" CornerRadius="12">
+							<StackPanel>
+								<TextBlock FontSize="13" Foreground="#9CA3AF" Text="{Binding Title}"/>
+								<TextBlock FontSize="26" FontWeight="Bold" Text="{Binding Value}"/>
+							</StackPanel>
+						</Border>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
+
+			<!-- ACTIONS -->
+			<WrapPanel>
+				<Button Padding="14" Margin="10" Background="#06B6D4" CornerRadius="8"
+                    Command="{Binding ServiceAllCommand}"
+                    Content="🔧  Service All Vehicles"/>
+				<Button Padding="14" Margin="10" Background="#6366F1" CornerRadius="8"
+                    Command="{Binding AddVehicleCommand}"
+                    Content="＋  Add Vehicle ($12,000)"/>
+			</WrapPanel>
+
+			<!-- STATUS -->
+			<Border IsVisible="{Binding StatusMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                    Padding="14,10" Background="#2B3242" CornerRadius="8">
+				<TextBlock Text="{Binding StatusMessage}" FontSize="13" TextWrapping="Wrap"/>
+			</Border>
+
+			<!-- FLEET LIST -->
+			<Border Padding="20" Background="#202633" CornerRadius="12">
+				<StackPanel>
+					<TextBlock FontSize="22" FontWeight="Bold" Text="Fleet" Margin="0,0,0,16"/>
+
+					<TextBlock IsVisible="{Binding !Fleet.Count}"
+                        Text="No vehicles in fleet." Foreground="#6B7280"/>
+
+					<ItemsControl ItemsSource="{Binding Fleet}">
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<Border Margin="0,6" Padding="18" Background="#2B3242" CornerRadius="10">
+									<StackPanel Spacing="12">
+
+										<!-- Header -->
+										<Grid ColumnDefinitions="*,Auto,Auto">
+
+											<StackPanel Grid.Column="0">
+												<StackPanel Orientation="Horizontal" Spacing="8">
+													<TextBlock FontWeight="Bold" FontSize="16"
+                                                        Text="{Binding Name}" VerticalAlignment="Center"/>
+													<Border Padding="8,3" CornerRadius="5"
+                                                            Background="#1F2937" VerticalAlignment="Center">
+														<TextBlock FontSize="11" Foreground="#9CA3AF"
+                                                            Text="{Binding Type}"/>
+													</Border>
+													<Border Padding="8,3" CornerRadius="5"
+                                                            Background="#0E2A4A" VerticalAlignment="Center">
+														<TextBlock FontSize="11" FontWeight="Bold"
+                                                            Foreground="#06B6D4"
+                                                            Text="{Binding Status}"/>
+													</Border>
+												</StackPanel>
+												<StackPanel Orientation="Horizontal" Spacing="16">
+													<TextBlock FontSize="12" Foreground="#6B7280"
+                                                        Text="{Binding ActiveDeliveries, StringFormat='Active deliveries: {0}'}"/>
+													<TextBlock FontSize="12" Foreground="#6B7280"
+                                                        Text="{Binding LastServiced, StringFormat='Last serviced: {0}'}"/>
+												</StackPanel>
+											</StackPanel>
+
+											<Button Grid.Column="1"
+                                                Margin="8,0" Padding="12,7"
+                                                Background="#374151" CornerRadius="6"
+                                                VerticalAlignment="Center"
+                                                Command="{Binding $parent[ItemsControl].DataContext.ServiceVehicleCommand}"
+                                                CommandParameter="{Binding}"
+                                                Content="{Binding MaintenanceCost, StringFormat='🔧 Service (${0:N0})'}"/>
+
+											<Button Grid.Column="2"
+                                                Padding="10,7"
+                                                Background="#450A0A" CornerRadius="6"
+                                                VerticalAlignment="Center"
+                                                Command="{Binding $parent[ItemsControl].DataContext.RetireVehicleCommand}"
+                                                CommandParameter="{Binding}"
+                                                Content="🗑 Retire"/>
+
+										</Grid>
+
+										<!-- Condition bar -->
+										<StackPanel Spacing="4">
+											<StackPanel Orientation="Horizontal" Spacing="8">
+												<TextBlock Text="Condition" FontSize="11"
+                                                    Foreground="#6B7280" Width="70"
+                                                    VerticalAlignment="Center"/>
+												<ProgressBar Value="{Binding Condition}" Maximum="100"
+                                                    Height="10" Width="300" Foreground="#10B981"
+                                                    VerticalAlignment="Center"/>
+												<TextBlock FontSize="12" Foreground="#9CA3AF"
+                                                    Text="{Binding Condition, StringFormat='{}{0}%'}"
+                                                    VerticalAlignment="Center"/>
+											</StackPanel>
+										</StackPanel>
+
+									</StackPanel>
+								</Border>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+
+				</StackPanel>
+			</Border>
+
+		</StackPanel>
+	</ScrollViewer>
+</UserControl>

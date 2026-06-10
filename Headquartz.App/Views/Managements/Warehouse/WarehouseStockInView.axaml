@@ -1,0 +1,186 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Headquartz.App.WarehouseStockInView">
+
+	<ScrollViewer>
+		<StackPanel Margin="30" Spacing="20">
+
+			<TextBlock FontSize="34" FontWeight="Bold" Text="Stock In"/>
+			<TextBlock FontSize="13" Foreground="#6B7280"
+                Text="Receive and log incoming inventory from suppliers."/>
+
+			<!-- KPIs -->
+			<ItemsControl ItemsSource="{Binding Kpis}">
+				<ItemsControl.ItemsPanel>
+					<ItemsPanelTemplate>
+						<WrapPanel/>
+					</ItemsPanelTemplate>
+				</ItemsControl.ItemsPanel>
+				<ItemsControl.ItemTemplate>
+					<DataTemplate>
+						<Border Width="200" Margin="10" Padding="20" Background="#202633" CornerRadius="12">
+							<StackPanel>
+								<TextBlock FontSize="13" Foreground="#9CA3AF" Text="{Binding Title}"/>
+								<TextBlock FontSize="26" FontWeight="Bold" Text="{Binding Value}"/>
+							</StackPanel>
+						</Border>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
+
+			<!-- RECEIVE FORM -->
+			<Border Padding="24" Background="#202633" CornerRadius="12">
+				<StackPanel Spacing="16">
+
+					<TextBlock FontSize="20" FontWeight="Bold" Text="Receive Shipment"/>
+
+					<Grid ColumnDefinitions="*,20,160,20,Auto">
+
+						<StackPanel Grid.Column="0" Spacing="6">
+							<TextBlock FontSize="12" Foreground="#9CA3AF" Text="ITEM"/>
+							<ComboBox
+                                ItemsSource="{Binding AvailableItems}"
+                                SelectedItem="{Binding SelectedItem}"
+                                HorizontalAlignment="Stretch"
+                                Padding="10,8"
+                                Background="#2B3242"
+                                BorderBrush="#374151"/>
+						</StackPanel>
+
+						<StackPanel Grid.Column="2" Spacing="6">
+							<TextBlock FontSize="12" Foreground="#9CA3AF" Text="QUANTITY"/>
+							<TextBox
+                                Text="{Binding OrderQuantity}"
+                                Padding="10,8"
+                                Background="#2B3242"
+                                BorderBrush="#374151"
+                                BorderThickness="1"
+                                CornerRadius="8"/>
+						</StackPanel>
+
+						<Button Grid.Column="4"
+                            Padding="18,12"
+                            Background="#10B981" CornerRadius="8"
+                            VerticalAlignment="Bottom"
+                            Command="{Binding ReceiveStockCommand}"
+                            Content="📥  Receive"/>
+
+					</Grid>
+
+					<Button Padding="14,9" Background="#374151" CornerRadius="8"
+                        HorizontalAlignment="Left"
+                        Command="{Binding RestockAllCommand}"
+                        Content="🔄  Restock All Low Items"/>
+
+					<Border IsVisible="{Binding StatusMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                            Padding="14,10" Background="#2B3242" CornerRadius="8">
+						<TextBlock Text="{Binding StatusMessage}" FontSize="13" TextWrapping="Wrap"/>
+					</Border>
+
+				</StackPanel>
+			</Border>
+
+			<!-- CURRENT STOCK LEVELS -->
+			<Border Padding="20" Background="#202633" CornerRadius="12">
+				<StackPanel>
+					<TextBlock FontSize="22" FontWeight="Bold" Text="Current Stock" Margin="0,0,0,16"/>
+
+					<ItemsControl ItemsSource="{Binding CurrentStock}">
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<Border Margin="0,5" Padding="14" Background="#2B3242" CornerRadius="8">
+									<Grid ColumnDefinitions="*,Auto">
+
+										<StackPanel Grid.Column="0" Spacing="6">
+											<StackPanel Orientation="Horizontal" Spacing="8">
+												<TextBlock FontWeight="Bold" FontSize="14"
+                                                    Text="{Binding Name}" VerticalAlignment="Center"/>
+												<Border IsVisible="{Binding IsLow}"
+                                                        Background="#7F1D1D" CornerRadius="4" Padding="6,2">
+													<TextBlock Text="LOW" FontSize="9"
+                                                        FontWeight="Bold" Foreground="#FCA5A5"/>
+												</Border>
+											</StackPanel>
+											<StackPanel Orientation="Horizontal" Spacing="8">
+												<ProgressBar Value="{Binding FillPercent}" Maximum="1.0"
+                                                    Height="6" Width="260" Foreground="#F97316"
+                                                    VerticalAlignment="Center"/>
+												<TextBlock FontSize="11" Foreground="#6B7280"
+                                                    Text="{Binding FillPercent, StringFormat='{}{0:P0}'}"/>
+											</StackPanel>
+											<StackPanel Orientation="Horizontal" Spacing="16">
+												<TextBlock FontSize="11" Foreground="#6B7280"
+                                                    Text="{Binding MinimumStock, StringFormat='Min: {0}'}"/>
+												<TextBlock FontSize="11" Foreground="#6B7280"
+                                                    Text="{Binding MaximumStock, StringFormat='Max: {0}'}"/>
+												<TextBlock FontSize="11" Foreground="#6B7280"
+                                                    Text="{Binding UnitCost, StringFormat='${0}/unit'}"/>
+											</StackPanel>
+										</StackPanel>
+
+										<StackPanel Grid.Column="1" VerticalAlignment="Center"
+                                                    HorizontalAlignment="Right" Margin="16,0,0,0">
+											<TextBlock FontSize="24" FontWeight="Bold"
+                                                Text="{Binding Quantity}" HorizontalAlignment="Right"/>
+											<TextBlock FontSize="11" Foreground="#6B7280"
+                                                Text="units" HorizontalAlignment="Right"/>
+										</StackPanel>
+
+									</Grid>
+								</Border>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+
+				</StackPanel>
+			</Border>
+
+			<!-- RECEIPT HISTORY -->
+			<Border Padding="20" Background="#202633" CornerRadius="12">
+				<StackPanel>
+					<TextBlock FontSize="22" FontWeight="Bold" Text="Receipt History" Margin="0,0,0,16"/>
+
+					<TextBlock IsVisible="{Binding !History.Count}"
+                        Text="No receipts recorded yet." Foreground="#6B7280"/>
+
+					<Grid ColumnDefinitions="*,100,80,100,120" Margin="14,0,14,8">
+						<TextBlock Grid.Column="0" Text="ITEM" FontSize="11"
+                            FontWeight="Bold" Foreground="#6B7280"/>
+						<TextBlock Grid.Column="1" Text="SUPPLIER" FontSize="11"
+                            FontWeight="Bold" Foreground="#6B7280"/>
+						<TextBlock Grid.Column="2" Text="QTY" FontSize="11"
+                            FontWeight="Bold" Foreground="#6B7280"/>
+						<TextBlock Grid.Column="3" Text="COST" FontSize="11"
+                            FontWeight="Bold" Foreground="#6B7280"/>
+						<TextBlock Grid.Column="4" Text="RECEIVED" FontSize="11"
+                            FontWeight="Bold" Foreground="#6B7280"/>
+					</Grid>
+
+					<ItemsControl ItemsSource="{Binding History}">
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<Border Margin="0,3" Padding="14,10" Background="#2B3242" CornerRadius="8">
+									<Grid ColumnDefinitions="*,100,80,100,120">
+										<TextBlock Grid.Column="0" FontWeight="SemiBold"
+                                            Text="{Binding ItemName}" VerticalAlignment="Center"/>
+										<TextBlock Grid.Column="1" FontSize="12" Foreground="#6B7280"
+                                            Text="{Binding Supplier}" VerticalAlignment="Center"/>
+										<TextBlock Grid.Column="2" FontSize="14" FontWeight="Bold"
+                                            Text="{Binding Quantity}" VerticalAlignment="Center"/>
+										<TextBlock Grid.Column="3" Foreground="#EF4444"
+                                            Text="{Binding TotalCost, StringFormat='${0:N0}'}"
+                                            VerticalAlignment="Center"/>
+										<TextBlock Grid.Column="4" FontSize="11" Foreground="#6B7280"
+                                            Text="{Binding ReceivedAt}" VerticalAlignment="Center"/>
+									</Grid>
+								</Border>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+
+				</StackPanel>
+			</Border>
+
+		</StackPanel>
+	</ScrollViewer>
+</UserControl>

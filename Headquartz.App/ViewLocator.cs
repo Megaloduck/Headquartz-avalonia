@@ -63,7 +63,7 @@ public class ViewLocator : IDataTemplate
             MarketingResearchViewModel => new MarketingResearchView(),
             MarketingPricingViewModel => new MarketingPricingView(),
             MarketingProductViewModel => new MarketingProductView(),
-            MarketingBrandingViewModel => new MarketingBrandingView(),
+            MarketingBrandingViewModel => new MarketingBrandingView(),  
 
             // ── Production ────────────────────────────────────
             ProductionDashboardViewModel => new ProductionDashboardView(),
@@ -76,10 +76,18 @@ public class ViewLocator : IDataTemplate
             // ── Warehouse ─────────────────────────────────────
             WarehouseDashboardViewModel => new WarehouseDashboardView(),
             WarehouseInventoryViewModel => new WarehouseInventoryView(),
+            WarehouseStockInViewModel => new WarehouseStockInView(),
+            WarehouseStockOutViewModel => new WarehouseStockOutView(),
+            WarehouseFlowViewModel => new WarehouseFlowView(),
+            WarehouseStorageViewModel => new WarehouseStorageView(),
 
             // ── Logistics ─────────────────────────────────────
             LogisticsDashboardViewModel => new LogisticsDashboardView(),
             LogisticsShipmentsViewModel => new LogisticsShipmentsView(),
+            LogisticsTrackingViewModel => new LogisticsTrackingView(),
+            LogisticsRoutesViewModel => new LogisticsRoutesView(),
+            LogisticsSLAViewModel => new LogisticsSLAView(),
+            LogisticsFleetViewModel => new LogisticsFleetView(),
 
             // ── Fallback ──────────────────────────────────────
             NotFoundViewModel => new NotFoundView(),
