@@ -1,0 +1,179 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Headquartz.App.MarketingCampaignsView">
+
+	<ScrollViewer>
+		<StackPanel Margin="30" Spacing="20">
+
+			<TextBlock FontSize="34" FontWeight="Bold" Text="Campaign Management"/>
+			<TextBlock FontSize="13" Foreground="#6B7280"
+                Text="Launch and track marketing campaigns to drive reputation and demand."/>
+
+			<!-- KPIs -->
+			<ItemsControl ItemsSource="{Binding Kpis}">
+				<ItemsControl.ItemsPanel>
+					<ItemsPanelTemplate>
+						<WrapPanel/>
+					</ItemsPanelTemplate>
+				</ItemsControl.ItemsPanel>
+				<ItemsControl.ItemTemplate>
+					<DataTemplate>
+						<Border Width="180" Margin="8" Padding="18" Background="#202633" CornerRadius="12">
+							<StackPanel>
+								<TextBlock FontSize="13" Foreground="#9CA3AF" Text="{Binding Title}"/>
+								<TextBlock FontSize="26" FontWeight="Bold" Text="{Binding Value}"/>
+							</StackPanel>
+						</Border>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
+
+			<!-- STATUS -->
+			<Border IsVisible="{Binding StatusMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                    Padding="14,10" Background="#2B3242" CornerRadius="8">
+				<TextBlock Text="{Binding StatusMessage}" FontSize="13" TextWrapping="Wrap"/>
+			</Border>
+
+			<!-- CAMPAIGN TYPES -->
+			<TextBlock FontSize="22" FontWeight="Bold" Text="Launch Campaign"/>
+
+			<Grid ColumnDefinitions="*,12,*">
+
+				<Border Grid.Column="0" Padding="20" Background="#202633" CornerRadius="12">
+					<StackPanel Spacing="10">
+						<StackPanel Orientation="Horizontal" Spacing="10">
+							<TextBlock Text="📱" FontSize="26"/>
+							<StackPanel>
+								<TextBlock FontSize="15" FontWeight="Bold" Text="Social Media Blitz"/>
+								<TextBlock FontSize="12" Foreground="#6B7280" Text="$3,000 · +5 Rep · 8 ticks"/>
+							</StackPanel>
+						</StackPanel>
+						<TextBlock FontSize="13" Foreground="#9CA3AF" TextWrapping="Wrap"
+                            Text="Broad digital reach. Fast reputation boost across all audiences."/>
+						<Button HorizontalAlignment="Stretch" Padding="12,9"
+                            Background="#F59E0B" CornerRadius="8"
+                            Command="{Binding LaunchSocialMediaCommand}"
+                            Content="Launch"/>
+					</StackPanel>
+				</Border>
+
+				<Border Grid.Column="2" Padding="20" Background="#202633" CornerRadius="12">
+					<StackPanel Spacing="10">
+						<StackPanel Orientation="Horizontal" Spacing="10">
+							<TextBlock Text="📧" FontSize="26"/>
+							<StackPanel>
+								<TextBlock FontSize="15" FontWeight="Bold" Text="Email Campaign"/>
+								<TextBlock FontSize="12" Foreground="#6B7280" Text="$1,500 · +3 Rep · 6 ticks"/>
+							</StackPanel>
+						</StackPanel>
+						<TextBlock FontSize="13" Foreground="#9CA3AF" TextWrapping="Wrap"
+                            Text="Targeted outreach to existing clients. Cost-effective retention tool."/>
+						<Button HorizontalAlignment="Stretch" Padding="12,9"
+                            Background="#3B82F6" CornerRadius="8"
+                            Command="{Binding LaunchEmailCampaignCommand}"
+                            Content="Launch"/>
+					</StackPanel>
+				</Border>
+
+			</Grid>
+
+			<Grid ColumnDefinitions="*,12,*">
+
+				<Border Grid.Column="0" Padding="20" Background="#202633" CornerRadius="12">
+					<StackPanel Spacing="10">
+						<StackPanel Orientation="Horizontal" Spacing="10">
+							<TextBlock Text="📰" FontSize="26"/>
+							<StackPanel>
+								<TextBlock FontSize="15" FontWeight="Bold" Text="Brand Awareness Drive"/>
+								<TextBlock FontSize="12" Foreground="#6B7280" Text="$5,000 · +8 Rep · 12 ticks"/>
+							</StackPanel>
+						</StackPanel>
+						<TextBlock FontSize="13" Foreground="#9CA3AF" TextWrapping="Wrap"
+                            Text="PR-focused campaign. Builds long-term brand equity and reputation."/>
+						<Button HorizontalAlignment="Stretch" Padding="12,9"
+                            Background="#8B5CF6" CornerRadius="8"
+                            Command="{Binding LaunchBrandAwarenessCommand}"
+                            Content="Launch"/>
+					</StackPanel>
+				</Border>
+
+				<Border Grid.Column="2" Padding="20" Background="#202633" CornerRadius="12">
+					<StackPanel Spacing="10">
+						<StackPanel Orientation="Horizontal" Spacing="10">
+							<TextBlock Text="🎪" FontSize="26"/>
+							<StackPanel>
+								<TextBlock FontSize="15" FontWeight="Bold" Text="Product Launch Event"/>
+								<TextBlock FontSize="12" Foreground="#6B7280" Text="$8,000 · +12 Rep · 10 ticks"/>
+							</StackPanel>
+						</StackPanel>
+						<TextBlock FontSize="13" Foreground="#9CA3AF" TextWrapping="Wrap"
+                            Text="High-impact launch event targeting industry leads and press."/>
+						<Button HorizontalAlignment="Stretch" Padding="12,9"
+                            Background="#EF4444" CornerRadius="8"
+                            Command="{Binding LaunchProductLaunchCommand}"
+                            Content="Launch"/>
+					</StackPanel>
+				</Border>
+
+			</Grid>
+
+			<!-- ACTIVE CAMPAIGNS -->
+			<Border Padding="20" Background="#202633" CornerRadius="12">
+				<StackPanel>
+					<TextBlock FontSize="22" FontWeight="Bold" Text="Campaign Status" Margin="0,0,0,16"/>
+
+					<TextBlock IsVisible="{Binding !Campaigns.Count}"
+                        Text="No campaigns launched yet." Foreground="#6B7280"/>
+
+					<ItemsControl ItemsSource="{Binding Campaigns}">
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<Border Margin="0,5" Padding="16" Background="#2B3242" CornerRadius="8">
+									<Grid ColumnDefinitions="*,80,100,80,Auto">
+
+										<StackPanel Grid.Column="0">
+											<TextBlock FontWeight="Bold" FontSize="14"
+                                                Text="{Binding Name}"/>
+											<StackPanel Orientation="Horizontal" Spacing="12">
+												<TextBlock FontSize="12" Foreground="#6B7280"
+                                                    Text="{Binding Type}"/>
+												<TextBlock FontSize="12" Foreground="#6B7280"
+                                                    Text="{Binding Target}"/>
+											</StackPanel>
+										</StackPanel>
+
+										<TextBlock Grid.Column="1"
+                                            Text="{Binding Budget, StringFormat='${0:N0}'}"
+                                            Foreground="#F59E0B" VerticalAlignment="Center"/>
+
+										<Border Grid.Column="2" Padding="8,3" CornerRadius="6"
+                                                Background="#1F2937" VerticalAlignment="Center"
+                                                HorizontalAlignment="Left">
+											<TextBlock FontSize="11" FontWeight="Bold"
+                                                Text="{Binding Status}" Foreground="#9CA3AF"/>
+										</Border>
+
+										<TextBlock Grid.Column="3" FontSize="12"
+                                            Foreground="#6B7280" VerticalAlignment="Center"
+                                            Text="{Binding TicksRemaining, StringFormat='⏱ {0}t'}"/>
+
+										<Button Grid.Column="4"
+                                            IsVisible="{Binding Status, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                            Padding="10,6" Background="#450A0A" CornerRadius="6"
+                                            VerticalAlignment="Center"
+                                            Command="{Binding $parent[ItemsControl].DataContext.CancelCampaignCommand}"
+                                            CommandParameter="{Binding}"
+                                            Content="✕ Cancel"/>
+
+									</Grid>
+								</Border>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+
+				</StackPanel>
+			</Border>
+
+		</StackPanel>
+	</ScrollViewer>
+</UserControl>

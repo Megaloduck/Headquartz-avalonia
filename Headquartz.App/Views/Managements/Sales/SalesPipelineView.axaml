@@ -1,0 +1,166 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Headquartz.App.SalesPipelineView">
+
+	<ScrollViewer>
+		<StackPanel Margin="30" Spacing="20">
+
+			<TextBlock FontSize="34" FontWeight="Bold" Text="Pipeline Management"/>
+			<TextBlock FontSize="13" Foreground="#6B7280"
+                Text="Track orders through each stage of the fulfillment pipeline."/>
+
+			<!-- KPIs -->
+			<ItemsControl ItemsSource="{Binding Kpis}">
+				<ItemsControl.ItemsPanel>
+					<ItemsPanelTemplate>
+						<WrapPanel/>
+					</ItemsPanelTemplate>
+				</ItemsControl.ItemsPanel>
+				<ItemsControl.ItemTemplate>
+					<DataTemplate>
+						<Border Width="180" Margin="8" Padding="18" Background="#202633" CornerRadius="12">
+							<StackPanel>
+								<TextBlock FontSize="13" Foreground="#9CA3AF" Text="{Binding Title}"/>
+								<TextBlock FontSize="26" FontWeight="Bold" Text="{Binding Value}"/>
+							</StackPanel>
+						</Border>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
+
+			<!-- PIPELINE STAGE FLOW -->
+			<Border Padding="20" Background="#202633" CornerRadius="12">
+				<StackPanel Spacing="10">
+					<TextBlock FontSize="18" FontWeight="Bold" Text="Order Flow"/>
+
+					<StackPanel Orientation="Horizontal" Spacing="0">
+
+						<Border Padding="16,10" Background="#1E3A5F" CornerRadius="8" Margin="0,0,4,0">
+							<StackPanel HorizontalAlignment="Center">
+								<TextBlock Text="📋 Pending" FontSize="12" FontWeight="Bold"
+                                    Foreground="#93C5FD" HorizontalAlignment="Center"/>
+								<TextBlock Text="{Binding PendingOrders}" FontSize="22"
+                                    FontWeight="Bold" HorizontalAlignment="Center"/>
+							</StackPanel>
+						</Border>
+
+						<TextBlock Text="→" FontSize="18" Foreground="#374151"
+                            VerticalAlignment="Center" Margin="4,0"/>
+
+						<Border Padding="16,10" Background="#1C1917" CornerRadius="8" Margin="0,0,4,0">
+							<StackPanel HorizontalAlignment="Center">
+								<TextBlock Text="🏭 Production" FontSize="12" FontWeight="Bold"
+                                    Foreground="#A8A29E" HorizontalAlignment="Center"/>
+								<TextBlock Text="{Binding InProductionOrders}" FontSize="22"
+                                    FontWeight="Bold" HorizontalAlignment="Center"/>
+							</StackPanel>
+						</Border>
+
+						<TextBlock Text="→" FontSize="18" Foreground="#374151"
+                            VerticalAlignment="Center" Margin="4,0"/>
+
+						<Border Padding="16,10" Background="#14532D" CornerRadius="8" Margin="0,0,4,0">
+							<StackPanel HorizontalAlignment="Center">
+								<TextBlock Text="📦 Ready" FontSize="12" FontWeight="Bold"
+                                    Foreground="#86EFAC" HorizontalAlignment="Center"/>
+								<TextBlock Text="{Binding ReadyOrders}" FontSize="22"
+                                    FontWeight="Bold" HorizontalAlignment="Center"/>
+							</StackPanel>
+						</Border>
+
+						<TextBlock Text="→" FontSize="18" Foreground="#374151"
+                            VerticalAlignment="Center" Margin="4,0"/>
+
+						<Border Padding="16,10" Background="#0E2A4A" CornerRadius="8" Margin="0,0,4,0">
+							<StackPanel HorizontalAlignment="Center">
+								<TextBlock Text="🚚 Shipping" FontSize="12" FontWeight="Bold"
+                                    Foreground="#06B6D4" HorizontalAlignment="Center"/>
+								<TextBlock Text="{Binding ShippingOrders}" FontSize="22"
+                                    FontWeight="Bold" HorizontalAlignment="Center"/>
+							</StackPanel>
+						</Border>
+
+						<TextBlock Text="→" FontSize="18" Foreground="#374151"
+                            VerticalAlignment="Center" Margin="4,0"/>
+
+						<Border Padding="16,10" Background="#14532D" CornerRadius="8">
+							<StackPanel HorizontalAlignment="Center">
+								<TextBlock Text="✅ Delivered" FontSize="12" FontWeight="Bold"
+                                    Foreground="#86EFAC" HorizontalAlignment="Center"/>
+								<TextBlock Text="{Binding DeliveredOrders}" FontSize="22"
+                                    FontWeight="Bold" HorizontalAlignment="Center"/>
+							</StackPanel>
+						</Border>
+
+					</StackPanel>
+				</StackPanel>
+			</Border>
+
+			<!-- PIPELINE TABLE -->
+			<Border Padding="20" Background="#202633" CornerRadius="12">
+				<StackPanel>
+					<TextBlock FontSize="22" FontWeight="Bold" Text="Active Pipeline" Margin="0,0,0,16"/>
+
+					<Grid ColumnDefinitions="*,120,130,120,110" Margin="14,0,14,8">
+						<TextBlock Grid.Column="0" Text="CLIENT / PRODUCT" FontSize="11"
+                            FontWeight="Bold" Foreground="#6B7280"/>
+						<TextBlock Grid.Column="1" Text="REVENUE" FontSize="11"
+                            FontWeight="Bold" Foreground="#6B7280"/>
+						<TextBlock Grid.Column="2" Text="STAGE" FontSize="11"
+                            FontWeight="Bold" Foreground="#6B7280"/>
+						<TextBlock Grid.Column="3" Text="DEADLINE" FontSize="11"
+                            FontWeight="Bold" Foreground="#6B7280"/>
+						<TextBlock Grid.Column="4" Text="QTY" FontSize="11"
+                            FontWeight="Bold" Foreground="#6B7280" HorizontalAlignment="Right"/>
+					</Grid>
+
+					<TextBlock IsVisible="{Binding !PipelineOrders.Count}"
+                        Text="No active orders in pipeline." Foreground="#6B7280" Margin="14,8"/>
+
+					<ItemsControl ItemsSource="{Binding PipelineOrders}">
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<Border Margin="0,3" Padding="14,12" Background="#2B3242" CornerRadius="8">
+									<Grid ColumnDefinitions="*,120,130,120,110">
+
+										<StackPanel Grid.Column="0">
+											<TextBlock FontWeight="SemiBold" Text="{Binding ClientName}"/>
+											<TextBlock FontSize="12" Foreground="#6B7280"
+                                                Text="{Binding ProductName}"/>
+										</StackPanel>
+
+										<TextBlock Grid.Column="1"
+                                            Text="{Binding Revenue, StringFormat='${0:N0}'}"
+                                            Foreground="#10B981" VerticalAlignment="Center"/>
+
+										<Border Grid.Column="2" Padding="8,3" CornerRadius="6"
+                                                Background="#1F2937" VerticalAlignment="Center"
+                                                HorizontalAlignment="Left">
+											<TextBlock FontSize="11" FontWeight="SemiBold"
+                                                Foreground="#9CA3AF" Text="{Binding Status}"/>
+										</Border>
+
+										<StackPanel Grid.Column="3" VerticalAlignment="Center">
+											<TextBlock FontSize="11" Text="{Binding Deadline}"
+                                                Foreground="#6B7280"/>
+											<TextBlock FontSize="11" FontWeight="Bold"
+                                                Text="⚠ OVERDUE" Foreground="#EF4444"
+                                                IsVisible="{Binding IsOverdue}"/>
+										</StackPanel>
+
+										<TextBlock Grid.Column="4" Text="{Binding Quantity}"
+                                            FontSize="14" FontWeight="Bold" Foreground="#9CA3AF"
+                                            HorizontalAlignment="Right" VerticalAlignment="Center"/>
+
+									</Grid>
+								</Border>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+
+				</StackPanel>
+			</Border>
+
+		</StackPanel>
+	</ScrollViewer>
+</UserControl>

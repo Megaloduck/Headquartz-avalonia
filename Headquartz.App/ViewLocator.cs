@@ -38,25 +38,40 @@ public class ViewLocator : IDataTemplate
             HREmployeeManagementViewModel => new HREmployeeManagementView(),
             HRRecruitmentViewModel => new HRRecruitmentView(),
             HRPayrollViewModel => new HRPayrollView(),
+            HRDevelopmentViewModel => new HRDevelopmentView(),
+            HRPerformanceViewModel => new HRPerformanceView(),
 
             // ── Finance ───────────────────────────────────────
             FinanceDashboardViewModel => new FinanceDashboardView(),
             FinanceBudgetAllocationViewModel => new FinanceBudgetAllocationView(),
             FinanceLoansViewModel => new FinanceLoansView(),
             FinanceAccountReceivableViewModel => new FinanceAccountReceivableView(),
+            FinanceAccountPayableViewModel => new FinanceAccountPayableView(),
+            FinanceAuditsViewModel => new FinanceAuditsView(),
 
             // ── Sales ─────────────────────────────────────────
             SalesDashboardViewModel => new SalesDashboardView(),
             SalesOrdersViewModel => new SalesOrdersView(),
             SalesLeadsViewModel => new SalesLeadsView(),
+            SalesClientsViewModel => new SalesClientsView(),
+            SalesPipelineViewModel => new SalesPipelineView(),
+            SalesIncentivesViewModel => new SalesIncentivesView(),
 
             // ── Marketing ─────────────────────────────────────
             MarketingDashboardViewModel => new MarketingDashboardView(),
+            MarketingCampaignsViewModel => new MarketingCampaignsView(),
+            MarketingResearchViewModel => new MarketingResearchView(),
+            MarketingPricingViewModel => new MarketingPricingView(),
+            MarketingProductViewModel => new MarketingProductView(),
+            MarketingBrandingViewModel => new MarketingBrandingView(),
 
             // ── Production ────────────────────────────────────
             ProductionDashboardViewModel => new ProductionDashboardView(),
             ProductionWorkOrdersViewModel => new ProductionWorkOrdersView(),
             ProductionMaintenanceViewModel => new ProductionMaintenanceView(),
+            ProductionLinesViewModel => new ProductionLinesView(),
+            ProductionResourcesViewModel => new ProductionResourcesView(),
+            ProductionQualityViewModel => new ProductionQualityView(),
 
             // ── Warehouse ─────────────────────────────────────
             WarehouseDashboardViewModel => new WarehouseDashboardView(),

@@ -1,0 +1,112 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Headquartz.App.FinanceAuditsView">
+
+	<ScrollViewer>
+		<StackPanel Margin="30" Spacing="20">
+
+			<TextBlock FontSize="34" FontWeight="Bold" Text="Audits"/>
+			<TextBlock FontSize="13" Foreground="#6B7280"
+                Text="Run periodic audits to identify financial and operational risks."/>
+
+			<!-- KPIs -->
+			<ItemsControl ItemsSource="{Binding Kpis}">
+				<ItemsControl.ItemsPanel>
+					<ItemsPanelTemplate>
+						<WrapPanel/>
+					</ItemsPanelTemplate>
+				</ItemsControl.ItemsPanel>
+				<ItemsControl.ItemTemplate>
+					<DataTemplate>
+						<Border Width="200" Margin="10" Padding="20" Background="#202633" CornerRadius="12">
+							<StackPanel>
+								<TextBlock FontSize="13" Foreground="#9CA3AF" Text="{Binding Title}"/>
+								<TextBlock FontSize="22" FontWeight="Bold" Text="{Binding Value}" TextWrapping="Wrap"/>
+							</StackPanel>
+						</Border>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
+
+			<!-- RUN AUDIT -->
+			<Border Padding="24" Background="#202633" CornerRadius="12">
+				<StackPanel Spacing="14">
+					<TextBlock FontSize="20" FontWeight="Bold" Text="Run Company Audit"/>
+					<TextBlock FontSize="13" Foreground="#6B7280" TextWrapping="Wrap"
+                        Text="An audit scans all departments for financial irregularities, operational risks, and compliance issues. Cost: $2,000."/>
+
+					<StackPanel Orientation="Horizontal" Spacing="12">
+						<Button Padding="18,12" Background="#6366F1" CornerRadius="8"
+                            Command="{Binding RunAuditCommand}"
+                            Content="🔍  Run Full Audit ($2,000)"/>
+						<Border Padding="14,10" Background="#2B3242" CornerRadius="8"
+                                VerticalAlignment="Center">
+							<TextBlock FontSize="12" Foreground="#6B7280"
+                                Text="{Binding LastAuditTick, StringFormat='Last audit: Tick {0}'}"/>
+						</Border>
+					</StackPanel>
+
+					<Border IsVisible="{Binding StatusMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                            Padding="14,10" Background="#2B3242" CornerRadius="8">
+						<TextBlock Text="{Binding StatusMessage}" FontSize="13" TextWrapping="Wrap"/>
+					</Border>
+				</StackPanel>
+			</Border>
+
+			<!-- FINDINGS -->
+			<Border Padding="20" Background="#202633" CornerRadius="12">
+				<StackPanel>
+					<TextBlock FontSize="22" FontWeight="Bold" Text="Audit Findings" Margin="0,0,0,16"/>
+
+					<TextBlock IsVisible="{Binding !Findings.Count}"
+                        Text="No findings yet. Run an audit first."
+                        Foreground="#6B7280"/>
+
+					<ItemsControl ItemsSource="{Binding Findings}">
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<Border Margin="0,5" Padding="16" Background="#2B3242" CornerRadius="8">
+									<Grid ColumnDefinitions="*,100,Auto">
+
+										<StackPanel Grid.Column="0" Spacing="4">
+											<StackPanel Orientation="Horizontal" Spacing="8">
+												<TextBlock FontWeight="Bold" FontSize="14" Text="{Binding Issue}"/>
+												<Border IsVisible="{Binding IsResolved}"
+                                                        Padding="6,2" Background="#14532D" CornerRadius="4">
+													<TextBlock Text="RESOLVED" FontSize="9"
+                                                        FontWeight="Bold" Foreground="#86EFAC"/>
+												</Border>
+											</StackPanel>
+											<TextBlock FontSize="12" Foreground="#6B7280"
+                                                Text="{Binding Department, StringFormat='Department: {0}'}"/>
+											<TextBlock FontSize="12" Foreground="#9CA3AF"
+                                                Text="{Binding Recommendation}" TextWrapping="Wrap"/>
+										</StackPanel>
+
+										<Border Grid.Column="1" Padding="8,3" CornerRadius="6"
+                                                Background="#1F2937" VerticalAlignment="Center"
+                                                HorizontalAlignment="Center">
+											<TextBlock FontSize="11" FontWeight="Bold"
+                                                Text="{Binding Severity}" Foreground="#9CA3AF"/>
+										</Border>
+
+										<Button Grid.Column="2"
+                                            IsVisible="{Binding !IsResolved}"
+                                            Padding="10,6" Background="#374151" CornerRadius="6"
+                                            VerticalAlignment="Center"
+                                            Command="{Binding $parent[ItemsControl].DataContext.ResolveFindingCommand}"
+                                            CommandParameter="{Binding}"
+                                            Content="✓ Resolve"/>
+
+									</Grid>
+								</Border>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+
+				</StackPanel>
+			</Border>
+
+		</StackPanel>
+	</ScrollViewer>
+</UserControl>	

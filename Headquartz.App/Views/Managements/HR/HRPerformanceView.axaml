@@ -1,0 +1,239 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Headquartz.App.HRPerformanceView">
+
+	<ScrollViewer>
+		<StackPanel Margin="30" Spacing="20">
+
+			<TextBlock FontSize="34" FontWeight="Bold" Text="Performance Evaluations"/>
+			<TextBlock FontSize="13" Foreground="#6B7280"
+                Text="Review employee performance, issue raises, and manage underperformers."/>
+
+			<!-- CRITICAL BANNER -->
+			<Border IsVisible="{Binding CriticalCount}"
+                    Background="#7F1D1D" CornerRadius="12" Padding="20">
+				<StackPanel Orientation="Horizontal" Spacing="12">
+					<TextBlock Text="🚨" FontSize="22" VerticalAlignment="Center"/>
+					<StackPanel>
+						<TextBlock
+                            Text="{Binding CriticalCount, StringFormat='{}{0} EMPLOYEE(S) IN CRITICAL PERFORMANCE'}"
+                            FontSize="16" FontWeight="Bold" Foreground="#FCA5A5"/>
+						<TextBlock
+                            Text="Immediate action required. Risk of resignation or team disruption."
+                            Foreground="#FCA5A5"/>
+					</StackPanel>
+				</StackPanel>
+			</Border>
+
+			<!-- KPIs -->
+			<ItemsControl ItemsSource="{Binding Kpis}">
+				<ItemsControl.ItemsPanel>
+					<ItemsPanelTemplate>
+						<WrapPanel/>
+					</ItemsPanelTemplate>
+				</ItemsControl.ItemsPanel>
+				<ItemsControl.ItemTemplate>
+					<DataTemplate>
+						<Border Width="180" Margin="8" Padding="18" Background="#202633" CornerRadius="12">
+							<StackPanel>
+								<TextBlock FontSize="13" Foreground="#9CA3AF" Text="{Binding Title}"/>
+								<TextBlock FontSize="26" FontWeight="Bold" Text="{Binding Value}"/>
+							</StackPanel>
+						</Border>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
+
+			<!-- ACTIONS + FILTER -->
+			<Grid ColumnDefinitions="Auto,*,Auto">
+
+				<Button Grid.Column="0"
+                    Padding="14,9" Background="#6366F1" CornerRadius="8"
+                    Command="{Binding ReviewAllCommand}"
+                    Content="✓  Review All"/>
+
+				<StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="10">
+					<TextBlock Text="Filter:" VerticalAlignment="Center" Foreground="#9CA3AF"/>
+					<ComboBox
+                        ItemsSource="{Binding GradeFilters}"
+                        SelectedItem="{Binding FilterGrade}"
+                        MinWidth="140"/>
+				</StackPanel>
+
+			</Grid>
+
+			<!-- STATUS -->
+			<Border IsVisible="{Binding StatusMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                    Padding="14,10" Background="#2B3242" CornerRadius="8">
+				<TextBlock Text="{Binding StatusMessage}" FontSize="13" TextWrapping="Wrap"/>
+			</Border>
+
+			<!-- PERFORMANCE GRADE SUMMARY -->
+			<Border Padding="20" Background="#202633" CornerRadius="12">
+				<StackPanel Spacing="10">
+					<TextBlock FontSize="18" FontWeight="Bold" Text="Grade Distribution"/>
+
+					<StackPanel Orientation="Horizontal" Spacing="0">
+
+						<Border Padding="16,10" Background="#14532D" CornerRadius="8" Margin="0,0,4,0">
+							<StackPanel HorizontalAlignment="Center">
+								<TextBlock Text="✅ Excellent" FontSize="12" FontWeight="Bold"
+                                    Foreground="#86EFAC" HorizontalAlignment="Center"/>
+								<TextBlock Text="{Binding ExcellentCount}" FontSize="22"
+                                    FontWeight="Bold" HorizontalAlignment="Center"/>
+							</StackPanel>
+						</Border>
+
+						<Border Padding="16,10" Background="#1E3A5F" CornerRadius="8" Margin="0,0,4,0">
+							<StackPanel HorizontalAlignment="Center">
+								<TextBlock Text="🔵 Good" FontSize="12" FontWeight="Bold"
+                                    Foreground="#93C5FD" HorizontalAlignment="Center"/>
+								<TextBlock Text="{Binding GoodCount}" FontSize="22"
+                                    FontWeight="Bold" HorizontalAlignment="Center"/>
+							</StackPanel>
+						</Border>
+
+						<Border Padding="16,10" Background="#78350F" CornerRadius="8" Margin="0,0,4,0">
+							<StackPanel HorizontalAlignment="Center">
+								<TextBlock Text="🟡 Poor" FontSize="12" FontWeight="Bold"
+                                    Foreground="#FDE68A" HorizontalAlignment="Center"/>
+								<TextBlock Text="{Binding PoorCount}" FontSize="22"
+                                    FontWeight="Bold" HorizontalAlignment="Center"/>
+							</StackPanel>
+						</Border>
+
+						<Border Padding="16,10" Background="#7F1D1D" CornerRadius="8">
+							<StackPanel HorizontalAlignment="Center">
+								<TextBlock Text="🔴 Critical" FontSize="12" FontWeight="Bold"
+                                    Foreground="#FCA5A5" HorizontalAlignment="Center"/>
+								<TextBlock Text="{Binding CriticalCount}" FontSize="22"
+                                    FontWeight="Bold" HorizontalAlignment="Center"/>
+							</StackPanel>
+						</Border>
+
+					</StackPanel>
+				</StackPanel>
+			</Border>
+
+			<!-- EMPLOYEE REVIEWS -->
+			<Border Padding="20" Background="#202633" CornerRadius="12">
+				<StackPanel>
+					<TextBlock FontSize="22" FontWeight="Bold" Text="Employee Reviews" Margin="0,0,0,16"/>
+
+					<TextBlock IsVisible="{Binding !Reviews.Count}"
+                        Text="No employees match this filter." Foreground="#6B7280"/>
+
+					<ItemsControl ItemsSource="{Binding Reviews}">
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<Border Margin="0,5" Padding="16" Background="#2B3242" CornerRadius="8">
+									<StackPanel Spacing="12">
+
+										<!-- Header row -->
+										<Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto">
+
+											<!-- Name + dept -->
+											<StackPanel Grid.Column="0">
+												<StackPanel Orientation="Horizontal" Spacing="8">
+													<TextBlock FontWeight="Bold" FontSize="14"
+                                                        Text="{Binding Name}" VerticalAlignment="Center"/>
+													<Border IsVisible="{Binding IsReviewed}"
+                                                            Padding="6,2" Background="#14532D"
+                                                            CornerRadius="4" VerticalAlignment="Center">
+														<TextBlock Text="REVIEWED" FontSize="9"
+                                                            FontWeight="Bold" Foreground="#86EFAC"/>
+													</Border>
+												</StackPanel>
+												<StackPanel Orientation="Horizontal" Spacing="12">
+													<TextBlock FontSize="12" Foreground="#6B7280"
+                                                        Text="{Binding Department}"/>
+													<TextBlock FontSize="12" Foreground="#6B7280"
+                                                        Text="{Binding Role}"/>
+													<TextBlock FontSize="12" Foreground="#6B7280"
+                                                        Text="{Binding Salary, StringFormat='${0:N0}/mo'}"/>
+												</StackPanel>
+											</StackPanel>
+
+											<!-- Grade badge -->
+											<Border Grid.Column="1"
+                                                    Margin="8,0" Padding="10,4" CornerRadius="6"
+                                                    Background="#1F2937" VerticalAlignment="Center">
+												<TextBlock FontSize="12" FontWeight="Bold"
+                                                    Text="{Binding PerformanceGrade}"
+                                                    Foreground="{Binding GradeColor}"/>
+											</Border>
+
+											<!-- Raise -->
+											<Button Grid.Column="2"
+                                                Margin="4,0" Padding="10,6"
+                                                Background="#14532D" CornerRadius="6"
+                                                VerticalAlignment="Center"
+                                                Command="{Binding $parent[ItemsControl].DataContext.GiveRaiseCommand}"
+                                                CommandParameter="{Binding}"
+                                                Content="💰 Raise"/>
+
+											<!-- PIP -->
+											<Button Grid.Column="3"
+                                                Margin="4,0" Padding="10,6"
+                                                Background="#78350F" CornerRadius="6"
+                                                VerticalAlignment="Center"
+                                                Command="{Binding $parent[ItemsControl].DataContext.PutOnPIPCommand}"
+                                                CommandParameter="{Binding}"
+                                                Content="📋 PIP"/>
+
+											<!-- Terminate -->
+											<Button Grid.Column="4"
+                                                Padding="10,6"
+                                                Background="#450A0A" CornerRadius="6"
+                                                VerticalAlignment="Center"
+                                                Command="{Binding $parent[ItemsControl].DataContext.TerminateCommand}"
+                                                CommandParameter="{Binding}"
+                                                Content="🔥 Terminate"/>
+
+										</Grid>
+
+										<!-- Morale + Productivity bars -->
+										<Grid ColumnDefinitions="*,*">
+
+											<StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8">
+												<TextBlock Text="Morale" FontSize="11"
+                                                    Foreground="#9CA3AF" Width="70"
+                                                    VerticalAlignment="Center"/>
+												<ProgressBar Value="{Binding Morale}" Maximum="100"
+                                                    Height="6" Width="140" Foreground="#8B5CF6"
+                                                    VerticalAlignment="Center"/>
+												<TextBlock FontSize="11" Foreground="#6B7280"
+                                                    Text="{Binding Morale, StringFormat='{}{0}%'}"
+                                                    VerticalAlignment="Center"/>
+											</StackPanel>
+
+											<StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+												<TextBlock Text="Productivity" FontSize="11"
+                                                    Foreground="#9CA3AF" Width="70"
+                                                    VerticalAlignment="Center"/>
+												<ProgressBar Value="{Binding Productivity}" Maximum="100"
+                                                    Height="6" Width="140" Foreground="#10B981"
+                                                    VerticalAlignment="Center"/>
+												<TextBlock FontSize="11" Foreground="#6B7280"
+                                                    Text="{Binding Productivity, StringFormat='{}{0}%'}"
+                                                    VerticalAlignment="Center"/>
+											</StackPanel>
+
+										</Grid>
+
+										<!-- Recommendation -->
+										<TextBlock FontSize="12" Foreground="#6B7280"
+                                            Text="{Binding Recommendation, StringFormat='💡 {0}'}"/>
+
+									</StackPanel>
+								</Border>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+
+				</StackPanel>
+			</Border>
+
+		</StackPanel>
+	</ScrollViewer>
+</UserControl>
