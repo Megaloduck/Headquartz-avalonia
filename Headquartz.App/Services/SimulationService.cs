@@ -1,4 +1,5 @@
-﻿using Headquartz.Simulation.Systems;
+﻿using Headquartz.Simulation;
+using Headquartz.Simulation.Systems;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -10,9 +11,14 @@ public class SimulationService
 {
     public SimulationEngine Engine { get; }
 
+    /// <summary>Default constructor — uses Manager difficulty profile.</summary>
     public SimulationService()
+        : this(SimulationProfile.Manager) { }
+
+    /// <summary>Profile-aware constructor used after onboarding completes.</summary>
+    public SimulationService(SimulationProfile profile)
     {
-        Engine = new SimulationEngine();
+        Engine = new SimulationEngine(profile);
     }
 
     public async Task StartAsync()

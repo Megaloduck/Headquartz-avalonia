@@ -23,10 +23,17 @@ namespace Headquartz.Simulation.Systems;
 /// </summary>
 public class CascadeSystem : ISimulationSystem
 {
-    public void Update(SimulationEngine engine)
+    public void Update(SimulationEngine engine) =>
+        Update(engine, cascadeMultiplier: 1.0);
+
+    /// <summary>
+    /// Profile-aware update. Pass SimulationProfile.CascadeMultiplier
+    /// to scale all stress propagation amounts.
+    /// </summary>
+    public void Update(SimulationEngine engine, double cascadeMultiplier)
     {
         UpdateDepartmentStress(engine);
-        PropagateCrossChain(engine);
+        PropagateCrossChain(engine, cascadeMultiplier);
         ApplyEfficiencyFromStress(engine);
         EmitCrisisEvents(engine);
         PruneResolvedEvents(engine);
@@ -36,8 +43,7 @@ public class CascadeSystem : ISimulationSystem
     // STRESS ACCUMULATION PER DEPARTMENT
     // =========================================================
 
-    private static void UpdateDepartmentStress(
-        SimulationEngine engine)
+    private static void UpdateDepartmentStress(SimulationEngine engine)
     {
         foreach (var dept in engine.Company.Departments)
         {
@@ -59,7 +65,6 @@ public class CascadeSystem : ISimulationSystem
                 dept.StressLevel =
                     Math.Min(100, dept.StressLevel + stressDelta);
             else
-                // Natural recovery when things are running
                 dept.StressLevel =
                     Math.Max(0, dept.StressLevel - 1);
         }
@@ -70,7 +75,8 @@ public class CascadeSystem : ISimulationSystem
     // =========================================================
 
     private static void PropagateCrossChain(
-        SimulationEngine engine)
+        SimulationEngine engine,
+        double multiplier)
     {
         var company = engine.Company;
 
@@ -80,12 +86,11 @@ public class CascadeSystem : ISimulationSystem
         var warehouse = Dept(company, DepartmentType.Warehouse);
         var logistics = Dept(company, DepartmentType.Logistics);
         var marketing = Dept(company, DepartmentType.Marketing);
-        var sales = Dept(company, DepartmentType.Sales);
 
         // HR crisis spreads to all departments
         if (hr?.StressLevel > 60)
         {
-            int spread = (hr.StressLevel - 60) / 10;
+            int spread = Scale((hr.StressLevel - 60) / 10, multiplier);
             foreach (var dept in company.Departments
                          .Where(d => d.Type != DepartmentType.HumanResources))
                 dept.StressLevel =
@@ -95,7 +100,7 @@ public class CascadeSystem : ISimulationSystem
         // Finance crisis spreads to all departments
         if (finance?.StressLevel > 70)
         {
-            int spread = (finance.StressLevel - 70) / 10;
+            int spread = Scale((finance.StressLevel - 70) / 10, multiplier);
             foreach (var dept in company.Departments
                          .Where(d => d.Type != DepartmentType.Finance))
                 dept.StressLevel =
@@ -105,33 +110,29 @@ public class CascadeSystem : ISimulationSystem
         // Production → Warehouse
         if (production?.StressLevel > 60 && warehouse != null)
             warehouse.StressLevel =
-                Math.Min(100, warehouse.StressLevel + 5);
+                Math.Min(100, warehouse.StressLevel + Scale(5, multiplier));
 
         // Warehouse → Logistics
         if (warehouse?.StressLevel > 60 && logistics != null)
             logistics.StressLevel =
-                Math.Min(100, logistics.StressLevel + 5);
+                Math.Min(100, logistics.StressLevel + Scale(5, multiplier));
 
         // Logistics failure → reputation drain
         if (logistics?.StressLevel > 75)
             company.Reputation =
-                Math.Max(0, company.Reputation - 1);
+                Math.Max(0, company.Reputation - Scale(1, multiplier));
 
         // Low Marketing efficiency → reputation decay
         if (marketing?.Efficiency < 30)
             company.Reputation =
-                Math.Max(0, company.Reputation - 1);
-
-        // Sales stress → reduce order generation weight
-        // (handled in SimulationEngine.GenerateRandomOrders via Reputation)
+                Math.Max(0, company.Reputation - Scale(1, multiplier));
     }
 
     // =========================================================
     // EFFICIENCY FROM STRESS
     // =========================================================
 
-    private static void ApplyEfficiencyFromStress(
-        SimulationEngine engine)
+    private static void ApplyEfficiencyFromStress(SimulationEngine engine)
     {
         foreach (var dept in engine.Company.Departments)
         {
@@ -150,8 +151,7 @@ public class CascadeSystem : ISimulationSystem
     // CRISIS EVENT EMISSION
     // =========================================================
 
-    private static void EmitCrisisEvents(
-        SimulationEngine engine)
+    private static void EmitCrisisEvents(SimulationEngine engine)
     {
         foreach (var dept in engine.Company.Departments)
         {
@@ -172,10 +172,8 @@ public class CascadeSystem : ISimulationSystem
     // CLEANUP OLD EVENTS
     // =========================================================
 
-    private static void PruneResolvedEvents(
-        SimulationEngine engine)
+    private static void PruneResolvedEvents(SimulationEngine engine)
     {
-        // Tick down remaining ticks on active events
         foreach (var ev in engine.Company.Events
                      .Where(e => !e.IsResolved))
         {
@@ -184,19 +182,22 @@ public class CascadeSystem : ISimulationSystem
                 ev.IsResolved = true;
         }
 
-        // Remove old resolved events to keep list lean
         if (engine.Company.Events.Count > 100)
             engine.Company.Events
                 .RemoveAll(e => e.IsResolved);
     }
 
     // =========================================================
-    // HELPER
+    // HELPERS
     // =========================================================
 
-    private static Department? Dept(
-        Company company,
-        DepartmentType type) =>
-        company.Departments
-            .FirstOrDefault(d => d.Type == type);
+    private static Department? Dept(Company company, DepartmentType type) =>
+        company.Departments.FirstOrDefault(d => d.Type == type);
+
+    /// <summary>
+    /// Applies the difficulty multiplier to a stress amount,
+    /// ensuring a minimum of 1 so propagation never disappears.
+    /// </summary>
+    private static int Scale(int amount, double multiplier) =>
+        Math.Max(1, (int)Math.Round(amount * multiplier));
 }

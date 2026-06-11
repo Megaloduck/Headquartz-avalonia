@@ -3,7 +3,6 @@ using Headquartz.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Headquartz.App.Services;
 
@@ -104,8 +103,11 @@ public class OnboardingFlowService
         NavigateTo(OnboardingScreen.CompanySetup);
     }
 
-    public void ConfirmCompanySetup(string name, IndustryType industry,
-        GameDifficulty difficulty, decimal capital)
+    public void ConfirmCompanySetup(
+        string name,
+        IndustryType industry,
+        GameDifficulty difficulty,
+        decimal capital)
     {
         if (SessionConfig == null) return;
 
@@ -119,7 +121,6 @@ public class OnboardingFlowService
 
     public void SelectDepartment(PlayerRole role)
     {
-        // Mark local player's role in the session
         var local = SessionConfig?.Players
             .FirstOrDefault(p => p.IsLocalPlayer);
 

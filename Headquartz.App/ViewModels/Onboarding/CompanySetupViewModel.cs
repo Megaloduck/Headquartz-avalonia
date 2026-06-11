@@ -1,13 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
 using System.Collections.ObjectModel;
+
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+
 using Headquartz.App.Models.Onboarding;
 using Headquartz.App.Services;
 using Headquartz.App.ViewModels;
+using Headquartz.Domain.Enums;
 
 namespace Headquartz.App.ViewModels;
 
@@ -145,7 +145,11 @@ public partial class CompanySetupViewModel : ViewModelBase
             return;
         }
 
-        _flow.ConfirmCompanySetup(name, SelectedIndustry, SelectedDifficulty, InitialCapital);
+        _flow.ConfirmCompanySetup(
+            name,
+            SelectedIndustry,
+            SelectedDifficulty,
+            InitialCapital);
     }
 
     [RelayCommand]
@@ -184,10 +188,10 @@ public partial class CompanySetupViewModel : ViewModelBase
     {
         var items = new[]
         {
-            (GameDifficulty.Trainee,    "🟢", "Trainee",   "$150k start"),
-            (GameDifficulty.Manager,    "🟡", "Manager",   "$100k start"),
-            (GameDifficulty.Director,   "🟠", "Director",  "$60k start"),
-            (GameDifficulty.Chairman,   "🔴", "Chairman",  "$30k start"),
+            (GameDifficulty.Trainee,  "🟢", "Trainee",  "$150k start"),
+            (GameDifficulty.Manager,  "🟡", "Manager",  "$100k start"),
+            (GameDifficulty.Director, "🟠", "Director", "$60k start"),
+            (GameDifficulty.Chairman, "🔴", "Chairman", "$30k start"),
         };
 
         foreach (var (diff, dot, label, sub) in items)

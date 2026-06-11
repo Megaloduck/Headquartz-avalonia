@@ -16,19 +16,42 @@ public class SimulationEngine
     public EventBus Events { get; }
     public CommandProcessor Commands { get; }
 
-    private volatile int _tickDelayMs = 1_000;
+    /// <summary>
+    /// The difficulty profile driving event frequency,
+    /// cascade severity, and tick timing.
+    /// </summary>
+    public SimulationProfile Profile { get; }
+
+    private volatile int _tickDelayMs;
     private readonly List<ISimulationSystem> _systems = [];
     private readonly EventSystem _eventSystem;
+    private readonly CascadeSystem _cascadeSystem;
 
     public event Action? OnUpdated;
 
+    // =========================================================
+    // CONSTRUCTORS
+    // =========================================================
+
+    /// <summary>
+    /// Default constructor — uses Manager (medium) difficulty profile.
+    /// </summary>
     public SimulationEngine()
+        : this(SimulationProfile.Manager) { }
+
+    /// <summary>
+    /// Profile-aware constructor used by RootViewModel after onboarding.
+    /// </summary>
+    public SimulationEngine(SimulationProfile profile)
     {
+        Profile = profile;
+        _tickDelayMs = profile.TickDelayMs;
+
         Company = new Company
         {
             Id = Guid.NewGuid(),
             Name = "Headquartz Industries",
-            Cash = 100_000,
+            Cash = profile.InitialCapital,
             Reputation = 50,
         };
 
@@ -40,8 +63,8 @@ public class SimulationEngine
         SeedInventory();
 
         Clock = new SimulationClock();
-        // tick delay set via SetTickSpeed (default 1 000 ms)
         _eventSystem = new EventSystem();
+        _cascadeSystem = new CascadeSystem();
 
         RegisterEventHandlers();
         RegisterSystems();
@@ -67,7 +90,7 @@ public class SimulationEngine
     public void SetTickSpeed(double multiplier)
     {
         double safe = Math.Max(0.1, multiplier);
-        _tickDelayMs = (int)(1_000 / safe);
+        _tickDelayMs = (int)(Profile.TickDelayMs / safe);
     }
 
     public CompanySnapshot CreateSnapshot() => new()
@@ -101,6 +124,7 @@ public class SimulationEngine
         AssignEmployeesToTasks();
         ProcessTasks();
         GenerateRandomEvents();
+        RunCascade();
         CleanupCompletedTasks();
 
         OnUpdated?.Invoke();
@@ -119,7 +143,8 @@ public class SimulationEngine
         _systems.Add(new ProductionSystem());
         _systems.Add(new MarketingSystem());
         _systems.Add(new LogisticsSystem());
-        _systems.Add(new CascadeSystem());      // must run last
+        // CascadeSystem is NOT in _systems — called directly so we can
+        // pass the profile multiplier without changing ISimulationSystem.
     }
 
     // =========================================================
@@ -152,14 +177,12 @@ public class SimulationEngine
 
         if (Company.Cash < payroll)
         {
-            // Payroll failure — publish before deducting
             Events.Publish(new PayrollFailedEvent
             {
                 TotalPayroll = payroll,
                 Shortfall = payroll - Company.Cash,
             });
 
-            // Still deduct what we have (go into deficit)
             Company.Cash -= payroll;
             Company.Expenses += payroll;
         }
@@ -199,7 +222,6 @@ public class SimulationEngine
     {
         foreach (var order in Company.Orders)
         {
-            // Skip terminal states
             if (order.Status is OrderStatus.Delivered or
                                 OrderStatus.Cancelled)
                 continue;
@@ -220,12 +242,11 @@ public class SimulationEngine
     }
 
     // =========================================================
-    // ORDER GENERATION — reputation-driven demand
+    // ORDER GENERATION
     // =========================================================
 
     private void GenerateRandomOrders()
     {
-        // Base 10% + up to 50% more from reputation
         double chance = 0.10 + (Company.Reputation / 100.0) * 0.50;
 
         if (Random.Shared.NextDouble() > chance) return;
@@ -235,7 +256,6 @@ public class SimulationEngine
 
     private void GenerateOrder()
     {
-        // Deadline scales with reputation: good rep = tighter deadlines
         int deadlineDays = Random.Shared.Next(5, 14);
 
         var order = new SalesOrder
@@ -266,7 +286,6 @@ public class SimulationEngine
         var departments = Enum.GetValues<DepartmentType>();
         var department = departments[Random.Shared.Next(departments.Length)];
 
-        // Don't generate tasks for non-operational departments
         var dept = Company.Departments
             .FirstOrDefault(d => d.Type == department);
 
@@ -330,7 +349,6 @@ public class SimulationEngine
             if (task.Status == CompanyTaskStatus.Completed) continue;
             if (task.AssignedEmployees <= 0) continue;
 
-            // Productivity of assigned employees affects task speed
             var deptEmployees = Company.Employees
                 .Where(e => e.Department == task.Department && e.IsAssigned)
                 .ToList();
@@ -339,7 +357,6 @@ public class SimulationEngine
                 ? deptEmployees.Average(e => e.Productivity) / 100.0
                 : 0.5;
 
-            // Minimum 1 tick of progress even at low productivity
             if (Random.Shared.NextDouble() < Math.Max(0.2, avgProductivity))
             {
                 task.Status = CompanyTaskStatus.InProgress;
@@ -367,14 +384,30 @@ public class SimulationEngine
     }
 
     // =========================================================
-    // RANDOM EVENTS
+    // RANDOM EVENTS — profile-driven
     // =========================================================
 
     private void GenerateRandomEvents()
     {
-        if (Random.Shared.NextDouble() < 0.95) return;
+        // Roll against the profile's event frequency.
+        // The old hard-coded 0.95 guard is replaced by the profile value.
+        if (Random.Shared.NextDouble() >= Profile.EventFrequency) return;
 
-        _eventSystem.Update(Company);
+        _eventSystem.Update(
+            Company,
+            eventFrequency: 1.0,          // already gated above
+            severityBias: Profile.SeverityBias);
+    }
+
+    // =========================================================
+    // CASCADE — profile-driven
+    // =========================================================
+
+    // Called explicitly in Update() so we can pass the multiplier.
+    // (Cascade is removed from _systems to avoid the parameterless call.)
+    private void RunCascade()
+    {
+        _cascadeSystem.Update(this, Profile.CascadeMultiplier);
     }
 
     // =========================================================
@@ -390,8 +423,6 @@ public class SimulationEngine
 
     private void HandleOrderFailed(OrderFailedEvent e)
     {
-        // Reputation already penalised in SalesSystem
-        // Add a visible company event for dashboards
         Company.Events.Add(new CompanyEvent
         {
             Title = "Order Cancelled",
@@ -412,14 +443,12 @@ public class SimulationEngine
 
     private void HandlePayrollProcessed(PayrollProcessedEvent e)
     {
-        // Successful payroll boosts morale
         foreach (var emp in Company.Employees)
             emp.Morale = Math.Clamp(emp.Morale + 1, 0, 100);
     }
 
     private void HandlePayrollFailed(PayrollFailedEvent e)
     {
-        // Severe morale crash across all employees
         foreach (var emp in Company.Employees)
             emp.Morale = Math.Clamp(emp.Morale - 15, 0, 100);
 
@@ -428,8 +457,7 @@ public class SimulationEngine
         Company.Events.Add(new CompanyEvent
         {
             Title = "Payroll Failed",
-            Description =
-                $"Could not cover payroll. Shortfall: ${e.Shortfall:N0}",
+            Description = $"Could not cover payroll. Shortfall: ${e.Shortfall:N0}",
             Severity = Domain.Enums.EventSeverity.Critical,
             Department = Domain.Enums.DepartmentType.Finance,
             RemainingTicks = 30,
@@ -448,7 +476,6 @@ public class SimulationEngine
 
         Company.Cash += Random.Shared.Next(1_000, 5_000);
 
-        // Free up assigned employees
         foreach (var emp in Company.Employees
                      .Where(e2 => e2.Department == e.Task.Department))
             emp.IsAssigned = false;
@@ -461,8 +488,7 @@ public class SimulationEngine
         Company.Events.Add(new CompanyEvent
         {
             Title = "Employee Resigned",
-            Description =
-                $"{e.Employee.Name} ({e.Employee.Department}) left due to low morale.",
+            Description = $"{e.Employee.Name} ({e.Employee.Department}) left due to low morale.",
             Severity = Domain.Enums.EventSeverity.High,
             Department = e.Employee.Department,
             RemainingTicks = 25,
@@ -474,8 +500,7 @@ public class SimulationEngine
         Company.Events.Add(new CompanyEvent
         {
             Title = "Cash Crisis",
-            Description =
-                $"Company cash is critically low: ${e.CashBalance:N0}",
+            Description = $"Company cash is critically low: ${e.CashBalance:N0}",
             Severity = Domain.Enums.EventSeverity.Critical,
             Department = Domain.Enums.DepartmentType.Finance,
             RemainingTicks = 40,
@@ -487,8 +512,7 @@ public class SimulationEngine
         Company.Events.Add(new CompanyEvent
         {
             Title = "Department Crisis",
-            Description =
-                $"{e.Department} is at critical stress ({e.StressLevel}%).",
+            Description = $"{e.Department} is at critical stress ({e.StressLevel}%).",
             Severity = Domain.Enums.EventSeverity.High,
             Department = e.Department,
             RemainingTicks = 30,

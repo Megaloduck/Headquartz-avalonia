@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 using Headquartz.Domain.Enums;
 
@@ -35,13 +34,11 @@ public enum IndustryType
     Media
 }
 
-public enum GameDifficulty
-{
-    Trainee,
-    Manager,
-    Director,
-    Chairman
-}
+// GameDifficulty has been moved to Headquartz.Domain.Enums.GameDifficulty.
+// It is re-exported here as a using alias so existing code in this namespace
+// compiles without changes.
+// If any file in App.Models.Onboarding references GameDifficulty directly,
+// it will resolve via the Domain using above.
 
 public class GameSessionConfig
 {

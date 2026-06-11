@@ -1,8 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\Headquartz.Domain\Headquartz.Domain.csproj" />
-    <ProjectReference Include="..\Headquartz.Shared\Headquartz.Shared.csproj" />
+	  <ProjectReference Include="..\Headquartz.Domain\Headquartz.Domain.csproj" />
+	  
+	  <ProjectReference Include="..\Headquartz.Shared\Headquartz.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>
