@@ -2,53 +2,76 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:conv="using:Headquartz.App.Converters"
+             mc:Ignorable="d" d:DesignWidth="1100" d:DesignHeight="800"
              x:Class="Headquartz.App.SettingsView">
+
+	<UserControl.Styles>
+		<Style Selector="Button.active">
+			<Setter Property="BorderBrush" Value="{DynamicResource BrushAccentPrimary}"/>
+			<Setter Property="BorderThickness" Value="2"/>
+		</Style>
+	</UserControl.Styles>
+
 
 	<ScrollViewer>
 		<StackPanel Margin="30" Spacing="20">
 
-			<TextBlock FontSize="34" FontWeight="Bold" Text="Settings"/>
+			<StackPanel Spacing="2">
+				<TextBlock FontSize="34" FontWeight="Bold" Text="Settings"/>
+				<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextMuted}"
+                    Text="System preferences, simulation controls, and company configuration."/>
+			</StackPanel>
 
-			<!-- ════════════════════════════════════════════ -->
-			<!-- SIMULATION STATUS                           -->
-			<!-- ════════════════════════════════════════════ -->
+			<!-- ═══════════════════════════════════════════ -->
+			<!-- GAME INFO SUMMARY ROW                       -->
+			<!-- ═══════════════════════════════════════════ -->
 			<Border Padding="20"
                     Background="{DynamicResource BrushBgCard}"
                     CornerRadius="{DynamicResource RadiusLg}"
                     BorderBrush="{DynamicResource BrushBorderSubtle}"
                     BorderThickness="1">
-				<Grid ColumnDefinitions="*,*,*">
+				<Grid ColumnDefinitions="*,*,*,*,*">
 
-					<StackPanel Grid.Column="0">
-						<TextBlock FontSize="12"
-                                   Foreground="{DynamicResource BrushTextMuted}"
-                                   Text="CURRENT TICK"/>
-						<TextBlock FontSize="26" FontWeight="Bold"
-                                   Text="{Binding CurrentTick}"/>
+					<StackPanel Grid.Column="0" Spacing="2">
+						<TextBlock FontSize="11" Foreground="{DynamicResource BrushTextMuted}"
+                            Text="CURRENT TICK" LetterSpacing="0.5"/>
+						<TextBlock FontSize="24" FontWeight="Bold" Text="{Binding CurrentTick}"/>
 					</StackPanel>
 
-					<StackPanel Grid.Column="1">
-						<TextBlock FontSize="12"
-                                   Foreground="{DynamicResource BrushTextMuted}"
-                                   Text="WORLD TIME"/>
-						<TextBlock FontSize="18" FontWeight="Bold"
-                                   Text="{Binding WorldTime}"/>
+					<StackPanel Grid.Column="1" Spacing="2">
+						<TextBlock FontSize="11" Foreground="{DynamicResource BrushTextMuted}"
+                            Text="WORLD TIME" LetterSpacing="0.5"/>
+						<TextBlock FontSize="16" FontWeight="Bold" Text="{Binding WorldTime}"/>
 					</StackPanel>
 
-					<StackPanel Grid.Column="2">
-						<TextBlock FontSize="12"
-                                   Foreground="{DynamicResource BrushTextMuted}"
-                                   Text="SPEED"/>
-						<TextBlock FontSize="22" FontWeight="Bold"
-                                   Text="{Binding SpeedLabel}"/>
+					<StackPanel Grid.Column="2" Spacing="2">
+						<TextBlock FontSize="11" Foreground="{DynamicResource BrushTextMuted}"
+                            Text="CASH" LetterSpacing="0.5"/>
+						<TextBlock FontSize="20" FontWeight="Bold"
+                            Foreground="{DynamicResource BrushSuccess}"
+                            Text="{Binding CompanyCash, StringFormat='${0:N0}'}"/>
+					</StackPanel>
+
+					<StackPanel Grid.Column="3" Spacing="2">
+						<TextBlock FontSize="11" Foreground="{DynamicResource BrushTextMuted}"
+                            Text="REPUTATION" LetterSpacing="0.5"/>
+						<TextBlock FontSize="20" FontWeight="Bold"
+                            Text="{Binding Reputation, StringFormat='{}{0}/100'}"/>
+					</StackPanel>
+
+					<StackPanel Grid.Column="4" Spacing="2">
+						<TextBlock FontSize="11" Foreground="{DynamicResource BrushTextMuted}"
+                            Text="SPEED" LetterSpacing="0.5"/>
+						<TextBlock FontSize="20" FontWeight="Bold" Text="{Binding SpeedLabel}"/>
 					</StackPanel>
 
 				</Grid>
 			</Border>
 
-			<!-- ════════════════════════════════════════════ -->
-			<!-- SIMULATION SPEED                            -->
-			<!-- ════════════════════════════════════════════ -->
+			<!-- ═══════════════════════════════════════════ -->
+			<!-- APPEARANCE                                  -->
+			<!-- ═══════════════════════════════════════════ -->
 			<Border Padding="24"
                     Background="{DynamicResource BrushBgCard}"
                     CornerRadius="{DynamicResource RadiusLg}"
@@ -56,17 +79,113 @@
                     BorderThickness="1">
 				<StackPanel Spacing="16">
 
-					<TextBlock FontSize="20" FontWeight="Bold"
-                               Text="Simulation Speed"/>
-					<TextBlock FontSize="13"
-                               Foreground="{DynamicResource BrushTextSecondary}"
-                               Text="Controls how fast simulation ticks advance."/>
+					<TextBlock FontSize="20" FontWeight="Bold" Text="Appearance"/>
+					<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}"
+                        Text="Switch between dark and light interface themes. Changes apply immediately across the app."/>
+
+					<StackPanel Orientation="Horizontal" Spacing="12">
+
+						<!-- Dark option -->
+						<Button
+                            Width="180" Padding="16,14"
+                            CornerRadius="{DynamicResource RadiusMd}"
+                            BorderThickness="1"
+                            BorderBrush="{DynamicResource BrushBorderDefault}"
+                            Background="{DynamicResource BrushBgElevated}"
+                            Classes.active="{Binding IsDarkTheme}"
+                            Command="{Binding SetDarkThemeCommand}">
+							<StackPanel Spacing="8">
+								<Grid ColumnDefinitions="*,Auto">
+									<Path Grid.Column="0"
+                                        Data="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"
+                                        Stroke="{DynamicResource BrushTextSecondary}"
+                                        StrokeThickness="1.5" Fill="Transparent"
+                                        Width="20" Height="20" Stretch="Uniform"
+                                        HorizontalAlignment="Left"/>
+									<Border Grid.Column="1"
+                                        IsVisible="{Binding IsDarkTheme}"
+                                        Width="18" Height="18" CornerRadius="9"
+                                        Background="{DynamicResource BrushAccentPrimary}">
+										<Path Data="M5 13l4 4L19 7"
+                                            Stroke="White" StrokeThickness="2"
+                                            Fill="Transparent"
+                                            Width="10" Height="10" Stretch="Uniform"
+                                            HorizontalAlignment="Center" VerticalAlignment="Center"/>
+									</Border>
+								</Grid>
+								<TextBlock Text="Dark" FontSize="14" FontWeight="SemiBold"
+                                    Foreground="{DynamicResource BrushTextPrimary}"
+                                    HorizontalAlignment="Left"/>
+								<TextBlock Text="Bloomberg terminal style" FontSize="11"
+                                    Foreground="{DynamicResource BrushTextMuted}"
+                                    HorizontalAlignment="Left"/>
+							</StackPanel>
+						</Button>
+
+						<!-- Light option -->
+						<Button
+                            Width="180" Padding="16,14"
+                            CornerRadius="{DynamicResource RadiusMd}"
+                            BorderThickness="1"
+                            BorderBrush="{DynamicResource BrushBorderDefault}"
+                            Background="{DynamicResource BrushBgElevated}"
+                            Classes.active="{Binding !IsDarkTheme}"
+                            Command="{Binding SetLightThemeCommand}">
+							<StackPanel Spacing="8">
+								<Grid ColumnDefinitions="*,Auto">
+									<Path Grid.Column="0"
+                                        Data="M12 17a5 5 0 100-10 5 5 0 000 10zm0-13v2m0 12v2M5 12H3m18 0h-2m-2.05-7.07L17.3 6.28M6.7 17.72l-1.35 1.35M4.93 4.93L6.28 6.28M17.72 17.72l1.35 1.35"
+                                        Stroke="{DynamicResource BrushTextSecondary}"
+                                        StrokeThickness="1.5" Fill="Transparent"
+                                        Width="20" Height="20" Stretch="Uniform"
+                                        HorizontalAlignment="Left"/>
+									<Border Grid.Column="1"
+                                        IsVisible="{Binding !IsDarkTheme}"
+                                        Width="18" Height="18" CornerRadius="9"
+                                        Background="{DynamicResource BrushAccentPrimary}">
+										<Path Data="M5 13l4 4L19 7"
+                                            Stroke="White" StrokeThickness="2"
+                                            Fill="Transparent"
+                                            Width="10" Height="10" Stretch="Uniform"
+                                            HorizontalAlignment="Center" VerticalAlignment="Center"/>
+									</Border>
+								</Grid>
+								<TextBlock Text="Light" FontSize="14" FontWeight="SemiBold"
+                                    Foreground="{DynamicResource BrushTextPrimary}"
+                                    HorizontalAlignment="Left"/>
+								<TextBlock Text="Clean operations dashboard" FontSize="11"
+                                    Foreground="{DynamicResource BrushTextMuted}"
+                                    HorizontalAlignment="Left"/>
+							</StackPanel>
+						</Button>
+
+					</StackPanel>
+
+				</StackPanel>
+			</Border>
+
+			<!-- ═══════════════════════════════════════════ -->
+			<!-- SIMULATION SPEED                            -->
+			<!-- ═══════════════════════════════════════════ -->
+			<Border Padding="24"
+                    Background="{DynamicResource BrushBgCard}"
+                    CornerRadius="{DynamicResource RadiusLg}"
+                    BorderBrush="{DynamicResource BrushBorderSubtle}"
+                    BorderThickness="1">
+				<StackPanel Spacing="16">
+
+					<TextBlock FontSize="20" FontWeight="Bold" Text="Simulation Speed"/>
+					<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}"
+                        Text="Controls how fast simulation ticks advance. Useful for testing or slowing down for analysis."/>
 
 					<WrapPanel>
 
 						<Button Width="140" Padding="16,12" Margin="0,0,8,8"
-                                CornerRadius="10"
+                                CornerRadius="{DynamicResource RadiusMd}"
+                                BorderThickness="1"
+                                BorderBrush="{DynamicResource BrushBorderDefault}"
                                 Background="{DynamicResource BrushBgElevated}"
+                                Classes.active="{Binding IsHalfSpeed}"
                                 Command="{Binding SetHalfSpeedCommand}">
 							<StackPanel HorizontalAlignment="Center" Spacing="4">
 								<TextBlock Text="½×" FontSize="22" FontWeight="Bold"
@@ -81,8 +200,11 @@
 						</Button>
 
 						<Button Width="140" Padding="16,12" Margin="0,0,8,8"
-                                CornerRadius="10"
-                                Background="{DynamicResource BrushBorderStrong}"
+                                CornerRadius="{DynamicResource RadiusMd}"
+                                BorderThickness="1"
+                                BorderBrush="{DynamicResource BrushBorderDefault}"
+                                Background="{DynamicResource BrushBgElevated}"
+                                Classes.active="{Binding IsNormalSpeed}"
                                 Command="{Binding SetNormalSpeedCommand}">
 							<StackPanel HorizontalAlignment="Center" Spacing="4">
 								<TextBlock Text="1×" FontSize="22" FontWeight="Bold"
@@ -97,8 +219,11 @@
 						</Button>
 
 						<Button Width="140" Padding="16,12" Margin="0,0,8,8"
-                                CornerRadius="10"
+                                CornerRadius="{DynamicResource RadiusMd}"
+                                BorderThickness="1"
+                                BorderBrush="{DynamicResource BrushBorderDefault}"
                                 Background="{DynamicResource BrushBgElevated}"
+                                Classes.active="{Binding IsDoubleSpeed}"
                                 Command="{Binding SetDoubleSpeedCommand}">
 							<StackPanel HorizontalAlignment="Center" Spacing="4">
 								<TextBlock Text="2×" FontSize="22" FontWeight="Bold"
@@ -113,8 +238,11 @@
 						</Button>
 
 						<Button Width="140" Padding="16,12" Margin="0,0,8,8"
-                                CornerRadius="10"
+                                CornerRadius="{DynamicResource RadiusMd}"
+                                BorderThickness="1"
+                                BorderBrush="{DynamicResource BrushBorderDefault}"
                                 Background="{DynamicResource BrushBgElevated}"
+                                Classes.active="{Binding IsTripleSpeed}"
                                 Command="{Binding SetTripleSpeedCommand}">
 							<StackPanel HorizontalAlignment="Center" Spacing="4">
 								<TextBlock Text="3×" FontSize="22" FontWeight="Bold"
@@ -133,89 +261,9 @@
 				</StackPanel>
 			</Border>
 
-			<!-- ════════════════════════════════════════════ -->
-			<!-- APPEARANCE — live theme toggle              -->
-			<!-- ════════════════════════════════════════════ -->
-			<Border Padding="24"
-                    Background="{DynamicResource BrushBgCard}"
-                    CornerRadius="{DynamicResource RadiusLg}"
-                    BorderBrush="{DynamicResource BrushBorderSubtle}"
-                    BorderThickness="1">
-				<StackPanel Spacing="20">
-
-					<StackPanel Spacing="4">
-						<TextBlock FontSize="20" FontWeight="Bold" Text="Appearance"/>
-						<TextBlock FontSize="13"
-                                   Foreground="{DynamicResource BrushTextSecondary}"
-                                   Text="Switch between Dark and Light themes. Changes apply instantly."/>
-					</StackPanel>
-
-					<Grid ColumnDefinitions="Auto,*">
-
-						<!-- Toggle button -->
-						<Button Grid.Column="0"
-                                Padding="20,14"
-                                CornerRadius="{DynamicResource RadiusLg}"
-                                Background="{DynamicResource BrushAccentPrimary}"
-                                BorderThickness="0"
-                                Command="{Binding ToggleThemeCommand}">
-							<StackPanel Orientation="Horizontal" Spacing="12">
-
-								<!-- Icon changes with theme -->
-								<Border Width="36" Height="36"
-                                        CornerRadius="18"
-                                        Background="#FFFFFF20">
-									<TextBlock
-                                        FontSize="18"
-                                        HorizontalAlignment="Center"
-                                        VerticalAlignment="Center"
-                                        Text="{Binding IsDarkTheme,
-                                            FallbackValue='🌙',
-                                            TargetNullValue='🌙'}"/>
-								</Border>
-
-								<StackPanel VerticalAlignment="Center">
-									<TextBlock
-                                        FontSize="14"
-                                        FontWeight="Bold"
-                                        Foreground="White"
-                                        Text="{Binding ToggleThemeLabel}"/>
-									<TextBlock
-                                        FontSize="11"
-                                        Foreground="#C7D2FE"
-                                        Text="Click to switch"/>
-								</StackPanel>
-
-							</StackPanel>
-						</Button>
-
-						<!-- Active theme indicator -->
-						<Border Grid.Column="1"
-                                Margin="16,0,0,0"
-                                Padding="20,14"
-                                CornerRadius="{DynamicResource RadiusLg}"
-                                Background="{DynamicResource BrushBgElevated}"
-                                BorderBrush="{DynamicResource BrushBorderDefault}"
-                                BorderThickness="1"
-                                VerticalAlignment="Stretch">
-							<StackPanel VerticalAlignment="Center" Spacing="4">
-								<TextBlock FontSize="11"
-                                           Foreground="{DynamicResource BrushTextMuted}"
-                                           Text="ACTIVE THEME"/>
-								<TextBlock FontSize="20"
-                                           FontWeight="Bold"
-                                           Text="{Binding ActiveThemeLabel}"/>
-							</StackPanel>
-						</Border>
-
-					</Grid>
-
-				</StackPanel>
-			</Border>
-
-			<!-- ════════════════════════════════════════════ -->
-			<!-- COMPANY NAME                                -->
-			<!-- ════════════════════════════════════════════ -->
+			<!-- ═══════════════════════════════════════════ -->
+			<!-- COMPANY                                     -->
+			<!-- ═══════════════════════════════════════════ -->
 			<Border Padding="24"
                     Background="{DynamicResource BrushBgCard}"
                     CornerRadius="{DynamicResource RadiusLg}"
@@ -226,41 +274,63 @@
 					<TextBlock FontSize="20" FontWeight="Bold" Text="Company"/>
 
 					<StackPanel Spacing="8">
-						<TextBlock FontSize="13"
-                                   Foreground="{DynamicResource BrushTextSecondary}"
+						<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}"
                                    Text="COMPANY NAME"/>
 						<StackPanel Orientation="Horizontal" Spacing="12">
 							<TextBox Text="{Binding CompanyName}"
-                                     Watermark="Company name..."
+                                     PlaceholderText="Company name..."
                                      MinWidth="300"
                                      Padding="10,8"
                                      Background="{DynamicResource BrushBgInput}"
                                      BorderThickness="1"
                                      BorderBrush="{DynamicResource BrushBorderDefault}"
-                                     CornerRadius="8"/>
+                                     CornerRadius="{DynamicResource RadiusMd}"/>
 							<Button Padding="14,8"
                                     Background="{DynamicResource BrushAccentPrimary}"
                                     Foreground="White"
                                     BorderThickness="0"
-                                    CornerRadius="8"
+                                    CornerRadius="{DynamicResource RadiusMd}"
                                     Command="{Binding ApplyCompanyNameCommand}"
                                     Content="Apply"/>
 						</StackPanel>
 					</StackPanel>
 
-					<Border IsVisible="{Binding StatusMessage,
+					<Border IsVisible="{Binding CompanyStatus,
                                 Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
                             Padding="14,10"
                             Background="{DynamicResource BrushBgElevated}"
-                            BorderBrush="{DynamicResource BrushBorderDefault}"
+                            BorderBrush="{Binding CompanyHasError,
+                                Converter={x:Static conv:BoolToErrorBrushConverter.Instance}}"
                             BorderThickness="1"
-                            CornerRadius="8">
-						<TextBlock Text="{Binding StatusMessage}"
+                            CornerRadius="{DynamicResource RadiusMd}">
+						<TextBlock Text="{Binding CompanyStatus}"
                                    FontSize="13"
                                    TextWrapping="Wrap"/>
 					</Border>
 
 				</StackPanel>
+			</Border>
+
+			<!-- ═══════════════════════════════════════════ -->
+			<!-- ABOUT                                       -->
+			<!-- ═══════════════════════════════════════════ -->
+			<Border Padding="24"
+                    Background="{DynamicResource BrushBgCard}"
+                    CornerRadius="{DynamicResource RadiusLg}"
+                    BorderBrush="{DynamicResource BrushBorderSubtle}"
+                    BorderThickness="1">
+				<Grid ColumnDefinitions="*,Auto">
+					<StackPanel Grid.Column="0" Spacing="4">
+						<TextBlock FontSize="16" FontWeight="Bold" Text="Headquartz"/>
+						<TextBlock FontSize="12" Foreground="{DynamicResource BrushTextMuted}"
+                            Text="Cooperative real-time business simulation."/>
+					</StackPanel>
+					<TextBlock Grid.Column="1"
+                        Text="{Binding GameVersion}"
+                        FontSize="12"
+                        Foreground="{DynamicResource BrushTextMuted}"
+                        VerticalAlignment="Center"/>
+				</Grid>
 			</Border>
 
 		</StackPanel>

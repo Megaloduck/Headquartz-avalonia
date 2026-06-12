@@ -48,7 +48,7 @@
 
 				<TextBox Grid.Column="0"
                     Text="{Binding SearchText}"
-                    Watermark="Search by client or product..."
+                    PlaceholderText="Search by client or product..."
                     Padding="12,9" Background="#202633"
                     BorderBrush="#374151" BorderThickness="1" CornerRadius="8"/>
 

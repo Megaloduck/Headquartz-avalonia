@@ -3,79 +3,322 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:vm="using:Headquartz.App.ViewModels"
+    xmlns:conv="using:Headquartz.App.Converters"
     x:Class="Headquartz.App.ShellView"
     x:DataType="vm:ShellViewModel">
 
-	<Grid>
+	<Grid RowDefinitions="Auto,*">
 
-		<!-- =========================================== -->
-		<!-- MAIN SHELL                                  -->
-		<!-- =========================================== -->
-		<Grid ColumnDefinitions="260,*">
+		<!-- ═══════════════════════════════════════════════ -->
+		<!-- TOP BAR                                         -->
+		<!-- ═══════════════════════════════════════════════ -->
+		<Border
+            Grid.Row="0"
+            Height="48"
+            Background="{DynamicResource BrushBgSurface}"
+            BorderBrush="{DynamicResource BrushBorderSubtle}"
+            BorderThickness="0,0,0,1"
+            ZIndex="10">
 
-			<!-- SIDEBAR -->
+			<Grid ColumnDefinitions="260,*,Auto">
+
+				<!-- Left: Logo block (aligns with sidebar width) -->
+				<Border
+                    Grid.Column="0"
+                    Padding="16,0"
+                    BorderBrush="{DynamicResource BrushBorderSubtle}"
+                    BorderThickness="0,0,1,0"
+                    PointerPressed="OnTitleBarPointerPressed">
+					<StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center"
+                                IsHitTestVisible="False">
+						<Border Width="28" Height="28" CornerRadius="7">
+							<Border.Background>
+								<LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+									<GradientStop Color="#6366F1" Offset="0"/>
+									<GradientStop Color="#4338CA" Offset="1"/>
+								</LinearGradientBrush>
+							</Border.Background>
+							<TextBlock
+                                Text="H"
+                                FontSize="14"
+                                FontWeight="Bold"
+                                Foreground="White"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"/>
+						</Border>
+						<TextBlock
+                            Text="Headquartz"
+                            FontSize="14"
+                            FontWeight="SemiBold"
+                            Foreground="{DynamicResource BrushTextPrimary}"
+                            VerticalAlignment="Center"/>
+					</StackPanel>
+				</Border>
+
+				<!-- Center: Breadcrumb + Company Name (also draggable) -->
+				<Grid Grid.Column="1" ColumnDefinitions="*,Auto,*"
+                      PointerPressed="OnTitleBarPointerPressed">
+
+					<!-- Breadcrumb (left-aligned in center column) -->
+					<StackPanel
+                        Grid.Column="0"
+                        Orientation="Horizontal"
+                        Spacing="6"
+                        VerticalAlignment="Center"
+                        Margin="20,0,0,0">
+						<TextBlock
+                            Text="{Binding SectionLabel}"
+                            FontSize="13"
+                            Foreground="{DynamicResource BrushTextMuted}"/>
+						<Path
+                            Data="M9 18l6-6-6-6"
+                            Stroke="{DynamicResource BrushTextMuted}"
+                            StrokeThickness="1.5"
+                            Width="12" Height="12"
+                            Stretch="Uniform"
+                            VerticalAlignment="Center"/>
+						<TextBlock
+                            Text="{Binding PageTitle}"
+                            FontSize="13"
+                            FontWeight="Medium"
+                            Foreground="{DynamicResource BrushTextPrimary}"/>
+					</StackPanel>
+
+					<!-- Company Name (centered) -->
+					<TextBlock
+                        Grid.Column="1"
+                        Text="{Binding CompanyName}"
+                        FontSize="13"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource BrushTextSecondary}"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"/>
+
+				</Grid>
+
+				<!-- Right: Role chip + Theme toggle + Window controls -->
+				<StackPanel
+                    Grid.Column="2"
+                    Orientation="Horizontal"
+                    Spacing="8"
+                    VerticalAlignment="Center"
+                    Margin="0,0,12,0">
+
+					<!-- Role chip -->
+					<Border
+                        Padding="10,5"
+                        Background="{DynamicResource BrushBgElevated}"
+                        BorderBrush="{DynamicResource BrushBorderDefault}"
+                        BorderThickness="1"
+                        CornerRadius="6">
+						<StackPanel Orientation="Horizontal" Spacing="6">
+							<Path
+                                Data="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z"
+                                Stroke="{DynamicResource BrushTextMuted}"
+                                StrokeThickness="1.5"
+                                Fill="Transparent"
+                                Width="13" Height="13"
+                                Stretch="Uniform"
+                                VerticalAlignment="Center"/>
+							<TextBlock
+                                Text="{Binding RoleName}"
+                                FontSize="12"
+                                Foreground="{DynamicResource BrushTextSecondary}"
+                                VerticalAlignment="Center"/>
+						</StackPanel>
+					</Border>
+
+					<!-- Theme toggle -->
+					<Button
+                        Width="32" Height="32"
+                        Padding="0"
+                        Background="{DynamicResource BrushBgElevated}"
+                        BorderBrush="{DynamicResource BrushBorderDefault}"
+                        BorderThickness="1"
+                        CornerRadius="6"
+                        ToolTip.Tip="Toggle Theme"
+                        Command="{Binding ToggleThemeCommand}">
+						<!-- Sun icon (visible in dark mode) -->
+						<Path
+                            Data="M12 17a5 5 0 100-10 5 5 0 000 10zm0-13v2m0 12v2M5 12H3m18 0h-2m-2.05-7.07L17.3 6.28M6.7 17.72l-1.35 1.35M4.93 4.93L6.28 6.28M17.72 17.72l1.35 1.35"
+                            Stroke="{DynamicResource BrushTextSecondary}"
+                            StrokeThickness="1.5"
+                            Fill="Transparent"
+                            Width="14" Height="14"
+                            Stretch="Uniform"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"/>
+					</Button>
+
+					<!-- ── Window controls ───────────────── -->
+					<Border Width="1" Height="20" Background="{DynamicResource BrushBorderSubtle}" Margin="4,0"/>
+
+					<!-- Minimize -->
+					<Button
+                        Width="32" Height="32"
+                        Padding="0"
+                        Background="#F59E0B"
+                        BorderThickness="0"
+                        CornerRadius="6"
+                        ToolTip.Tip="Minimize"
+                        Click="OnMinimizeClick">
+						<Path
+                            Data="M5 12h14"
+                            Stroke="#78350F"
+                            StrokeThickness="2"
+                            StrokeLineCap="Round"
+                            Width="12" Height="12"
+                            Stretch="Uniform"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"/>
+					</Button>
+
+					<!-- Maximize / Restore -->
+					<Button
+                        Width="32" Height="32"
+                        Padding="0"
+                        Background="#10B981"
+                        BorderThickness="0"
+                        CornerRadius="6"
+                        ToolTip.Tip="Maximize"
+                        Click="OnMaximizeClick">
+						<Path
+                            Name="MaximizeIcon"
+                            Data="M5 5h14v14H5z"
+                            Stroke="#064E3B"
+                            StrokeThickness="2"
+                            Fill="Transparent"
+                            Width="11" Height="11"
+                            Stretch="Uniform"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"/>
+					</Button>
+
+					<!-- Close -->
+					<Button
+                        Width="32" Height="32"
+                        Padding="0"
+                        Background="#EF4444"
+                        BorderThickness="0"
+                        CornerRadius="6"
+                        ToolTip.Tip="Close"
+                        Click="OnCloseClick">
+						<Path
+                            Data="M18 6L6 18M6 6l12 12"
+                            Stroke="#7F1D1D"
+                            StrokeThickness="2"
+                            StrokeLineCap="Round"
+                            Width="12" Height="12"
+                            Stretch="Uniform"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"/>
+					</Button>
+
+				</StackPanel>
+
+			</Grid>
+		</Border>
+
+		<!-- ═══════════════════════════════════════════════ -->
+		<!-- BODY: SIDEBAR + CONTENT                         -->
+		<!-- ═══════════════════════════════════════════════ -->
+		<Grid Grid.Row="1" ColumnDefinitions="260,*">
+
+			<!-- ─────────────────────────────────────────── -->
+			<!-- SIDEBAR                                      -->
+			<!-- ─────────────────────────────────────────── -->
 			<Border
                 Grid.Column="0"
-                Background="#111827"
-                BorderBrush="#1F2937"
+                Background="{DynamicResource BrushBgSurface}"
+                BorderBrush="{DynamicResource BrushBorderSubtle}"
                 BorderThickness="0,0,1,0">
 
 				<DockPanel>
 
-					<!-- Logo header -->
+					<!-- ── Bottom tick widget ────────────── -->
 					<Border
-                        DockPanel.Dock="Top"
-                        Padding="16,14"
-                        BorderBrush="#1F2937"
-                        BorderThickness="0,0,0,1">
-						<StackPanel Orientation="Horizontal" Spacing="10">
-							<Border Width="32" Height="32" CornerRadius="8">
-								<Border.Background>
-									<LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
-										<GradientStop Color="#6366F1" Offset="0"/>
-										<GradientStop Color="#4338CA" Offset="1"/>
-									</LinearGradientBrush>
-								</Border.Background>
-								<TextBlock
-                                    Text="H" FontSize="16" FontWeight="Bold"
-                                    Foreground="White"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"/>
-							</Border>
+                        DockPanel.Dock="Bottom"
+                        Margin="10,0,10,10"
+                        Padding="12,10"
+                        Background="{DynamicResource BrushBgElevated}"
+                        BorderBrush="{DynamicResource BrushBorderSubtle}"
+                        BorderThickness="1"
+                        CornerRadius="8">
+						<StackPanel Spacing="8">
+
+							<!-- Date -->
 							<TextBlock
-                                Text="Headquartz"
-                                FontSize="16"
-                                FontWeight="Bold"
-                                Foreground="White"
-                                VerticalAlignment="Center"/>
+                                Text="{Binding WorldDate}"
+                                FontSize="12"
+                                FontWeight="SemiBold"
+                                Foreground="{DynamicResource BrushTextPrimary}"/>
+
+							<!-- Tick status -->
+							<StackPanel Spacing="4">
+								<StackPanel Orientation="Horizontal" Spacing="6">
+									<Path
+                                        Data="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"
+                                        Stroke="{DynamicResource BrushTextMuted}"
+                                        StrokeThickness="1.5"
+                                        Fill="Transparent"
+                                        Width="11" Height="11"
+                                        Stretch="Uniform"
+                                        VerticalAlignment="Center"/>
+									<TextBlock
+                                        Text="Tick status"
+                                        FontSize="11"
+                                        Foreground="{DynamicResource BrushTextMuted}"/>
+								</StackPanel>
+								<ProgressBar
+                                    Value="{Binding TickDayProgress}"
+                                    Maximum="1.0"
+                                    Height="5"
+                                    Foreground="#6366F1"
+                                    Background="{DynamicResource BrushBorderSubtle}"
+                                    CornerRadius="3"/>
+							</StackPanel>
+
+							<!-- Work hours -->
+							<StackPanel Spacing="4">
+								<StackPanel Orientation="Horizontal" Spacing="6">
+									<Path
+                                        Data="M12 22a10 10 0 100-20 10 10 0 000 20zm0-14v4l3 3"
+                                        Stroke="{DynamicResource BrushTextMuted}"
+                                        StrokeThickness="1.5"
+                                        Fill="Transparent"
+                                        Width="11" Height="11"
+                                        Stretch="Uniform"
+                                        VerticalAlignment="Center"/>
+									<TextBlock
+                                        Text="Work hours"
+                                        FontSize="11"
+                                        Foreground="{DynamicResource BrushTextMuted}"/>
+								</StackPanel>
+								<ProgressBar
+                                    Value="{Binding WorkWeekProgress}"
+                                    Maximum="1.0"
+                                    Height="5"
+                                    Foreground="#06B6D4"
+                                    Background="{DynamicResource BrushBorderSubtle}"
+                                    CornerRadius="3"/>
+							</StackPanel>
+
 						</StackPanel>
 					</Border>
 
-					<!-- Role chip -->
-					<Border
-                        DockPanel.Dock="Top"
-                        Padding="10,8"
-                        Margin="8,8,8,4"
-                        CornerRadius="8"
-                        Background="#1F2937">
-						<StackPanel Orientation="Horizontal" Spacing="8">
-							<Border Width="24" Height="24" CornerRadius="12" Background="#374151">
-								<TextBlock Text="&#x1F464;" FontSize="12"
-                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
-							</Border>
-							<TextBlock
-                                Text="{Binding RoleName}"
-                                FontSize="13"
-                                Foreground="#D1D5DB"
-                                VerticalAlignment="Center"/>
-						</StackPanel>
-					</Border>
+					<!-- ── Bottom: Settings + Log out ────── -->
+					<StackPanel
+                        DockPanel.Dock="Bottom"
+                        Margin="8,0,8,4"
+                        Spacing="1">
+						<Border
+                            Height="1"
+                            Background="{DynamicResource BrushBorderSubtle}"
+                            Margin="4,4,4,4"/>
 
-					<!-- Bottom: Settings -->
-					<StackPanel DockPanel.Dock="Bottom" Margin="8,0,8,8" Spacing="2">
-						<Border Height="1" Margin="0,6,0,6" Background="#1F2937"/>
+						<!-- Settings -->
 						<Button
-                            Padding="10,8"
+                            Padding="10,7"
                             HorizontalAlignment="Stretch"
                             HorizontalContentAlignment="Left"
                             Background="Transparent"
@@ -83,26 +326,70 @@
                             CornerRadius="6"
                             Command="{Binding NavigateSettingsCommand}">
 							<StackPanel Orientation="Horizontal" Spacing="10">
-								<TextBlock Text="&#9881;" FontSize="14" Foreground="#9CA3AF" VerticalAlignment="Center"/>
-								<TextBlock Text="Settings" FontSize="13" Foreground="#9CA3AF" VerticalAlignment="Center"/>
+								<Path
+                                    Data="M12 15a3 3 0 100-6 3 3 0 000 6zm6.93-3c.04-.32.07-.65.07-1s-.03-.68-.07-1l2.16-1.68a.5.5 0 00.12-.64l-2.05-3.55a.5.5 0 00-.61-.22l-2.55 1.03A7.47 7.47 0 0014.5 3.5l-.38-2.71A.49.49 0 0013.63.5h-4.1a.49.49 0 00-.49.43L8.66 3.65a7.47 7.47 0 00-1.9.83L4.21 3.45a.5.5 0 00-.61.22L1.55 7.22a.49.49 0 00.12.64L3.83 9.54A7.76 7.76 0 003.76 11c0 .35.03.68.07 1L1.67 13.68a.5.5 0 00-.12.64l2.05 3.55a.5.5 0 00.61.22l2.55-1.03c.59.32 1.22.59 1.9.83l.38 2.71c.06.25.28.43.54.43h4.1c.26 0 .48-.18.54-.43l.38-2.71a7.47 7.47 0 001.9-.83l2.55 1.03a.5.5 0 00.61-.22l2.05-3.55a.5.5 0 00-.12-.64L18.93 12z"
+                                    Stroke="{DynamicResource BrushTextMuted}"
+                                    StrokeThickness="1"
+                                    Fill="Transparent"
+                                    Width="15" Height="15"
+                                    Stretch="Uniform"
+                                    VerticalAlignment="Center"/>
+								<TextBlock
+                                    Text="Settings"
+                                    FontSize="13"
+                                    Foreground="{DynamicResource BrushTextSecondary}"
+                                    VerticalAlignment="Center"/>
+							</StackPanel>
+						</Button>
+
+						<!-- Log out -->
+						<Button
+                            Padding="10,7"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Left"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            CornerRadius="6">
+							<StackPanel Orientation="Horizontal" Spacing="10">
+								<Path
+                                    Data="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"
+                                    Stroke="{DynamicResource BrushTextMuted}"
+                                    StrokeThickness="1.5"
+                                    Fill="Transparent"
+                                    Width="15" Height="15"
+                                    Stretch="Uniform"
+                                    VerticalAlignment="Center"/>
+								<TextBlock
+                                    Text="Log out"
+                                    FontSize="13"
+                                    Foreground="{DynamicResource BrushTextSecondary}"
+                                    VerticalAlignment="Center"/>
 							</StackPanel>
 						</Button>
 					</StackPanel>
 
-					<!-- Nav sections -->
+					<!-- ── Nav sections ───────────────────── -->
 					<ScrollViewer
                         VerticalScrollBarVisibility="Auto"
                         HorizontalScrollBarVisibility="Disabled">
-						<ItemsControl Margin="8,8,8,0" ItemsSource="{Binding SidebarSections}">
+
+						<ItemsControl
+                            Margin="8,8,8,0"
+                            ItemsSource="{Binding SidebarSections}">
 							<ItemsControl.ItemTemplate>
 								<DataTemplate>
 									<StackPanel Margin="0,0,0,4">
+
+										<!-- Section label -->
 										<TextBlock
                                             Text="{Binding Title}"
-                                            FontSize="11"
+                                            FontSize="10"
                                             FontWeight="SemiBold"
-                                            Foreground="#6B7280"
-                                            Margin="10,10,10,4"/>
+                                            Foreground="{DynamicResource BrushTextMuted}"
+                                            Margin="10,10,10,3"
+                                            LetterSpacing="0.5"/>
+
+										<!-- Nav items -->
 										<ItemsControl ItemsSource="{Binding Items}">
 											<ItemsControl.ItemTemplate>
 												<DataTemplate>
@@ -116,53 +403,83 @@
                                                         Margin="0,1"
                                                         Command="{Binding #ShellRoot.DataContext.NavigateCommand}"
                                                         CommandParameter="{Binding}">
-														<StackPanel Orientation="Horizontal" Spacing="10">
+
+														<Grid ColumnDefinitions="18,*,Auto">
+
+															<!-- Icon via Path -->
+															<Path
+                                                                Grid.Column="0"
+                                                                Data="{Binding Icon,
+                                                                    Converter={x:Static conv:IconPathConverter.Instance}}"
+                                                                Stroke="{DynamicResource BrushTextMuted}"
+                                                                StrokeThickness="1.5"
+                                                                Fill="Transparent"
+                                                                Width="15" Height="15"
+                                                                Stretch="Uniform"
+                                                                VerticalAlignment="Center"/>
+
+															<!-- Label -->
+															<TextBlock
+                                                                Grid.Column="1"
+                                                                Text="{Binding Title}"
+                                                                FontSize="13"
+                                                                Foreground="{DynamicResource BrushTextSecondary}"
+                                                                VerticalAlignment="Center"
+                                                                Margin="10,0,0,0"/>
+
+															<!-- Notification badge -->
 															<Border
-                                                                Width="18" Height="18"
-                                                                CornerRadius="4"
-                                                                Background="#374151"
+                                                                Grid.Column="2"
+                                                                IsVisible="{Binding HasNotification}"
+                                                                MinWidth="18"
+                                                                Height="18"
+                                                                Padding="4,0"
+                                                                Background="#EF4444"
+                                                                CornerRadius="9"
                                                                 VerticalAlignment="Center">
 																<TextBlock
-                                                                    Text="&#x25A0;"
-                                                                    FontSize="8"
-                                                                    Foreground="#9CA3AF"
+                                                                    Text="{Binding NotificationCount}"
+                                                                    FontSize="10"
+                                                                    FontWeight="Bold"
+                                                                    Foreground="White"
                                                                     HorizontalAlignment="Center"
                                                                     VerticalAlignment="Center"/>
 															</Border>
-															<TextBlock
-                                                                Text="{Binding Title}"
-                                                                FontSize="13"
-                                                                Foreground="#D1D5DB"
-                                                                VerticalAlignment="Center"/>
-														</StackPanel>
+
+														</Grid>
 													</Button>
 												</DataTemplate>
 											</ItemsControl.ItemTemplate>
 										</ItemsControl>
+
 									</StackPanel>
 								</DataTemplate>
 							</ItemsControl.ItemTemplate>
 						</ItemsControl>
+
 					</ScrollViewer>
 
 				</DockPanel>
 			</Border>
 
-			<!-- CONTENT AREA -->
+			<!-- ─────────────────────────────────────────── -->
+			<!-- CONTENT AREA                                 -->
+			<!-- ─────────────────────────────────────────── -->
 			<ContentControl
                 Grid.Column="1"
                 Content="{Binding CurrentView}"/>
 
 		</Grid>
 
-		<!-- =========================================== -->
-		<!-- NOTIFICATION OVERLAY                        -->
-		<!-- =========================================== -->
+		<!-- ═══════════════════════════════════════════════ -->
+		<!-- NOTIFICATION OVERLAY (bubble toasts, top-right) -->
+		<!-- ═══════════════════════════════════════════════ -->
 		<ItemsControl
+            Grid.Row="1"
             HorizontalAlignment="Right"
             VerticalAlignment="Top"
-            Margin="0,16,20,0"
-            Width="340"
+            Margin="0,12,16,0"
+            Width="320"
             IsHitTestVisible="True"
             ItemsSource="{Binding Notifications}"
             ZIndex="100">
@@ -196,7 +513,13 @@
                                 VerticalAlignment="Top"
                                 Command="{Binding #ShellRoot.DataContext.DismissNotificationCommand}"
                                 CommandParameter="{Binding}">
-								<TextBlock Text="✕" FontSize="12" Foreground="#6B7280"/>
+								<Path
+                                    Data="M18 6L6 18M6 6l12 12"
+                                    Stroke="#9CA3AF"
+                                    StrokeThickness="1.5"
+                                    Fill="Transparent"
+                                    Width="10" Height="10"
+                                    Stretch="Uniform"/>
 							</Button>
 						</Grid>
 					</Border>

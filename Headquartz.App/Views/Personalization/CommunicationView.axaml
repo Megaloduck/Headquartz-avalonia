@@ -97,7 +97,7 @@
 				<TextBox
                     Grid.Column="0"
                     Text="{Binding NewMessage}"
-                    Watermark="Type a message to your team..."
+                    PlaceholderText="Type a message to your team..."
                     Background="Transparent"
                     BorderThickness="0"
                     FontSize="14"

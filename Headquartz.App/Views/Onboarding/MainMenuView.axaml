@@ -191,7 +191,7 @@
                                 <TextBox
                                     Grid.Column="0"
                                     Text="{Binding JoinRoomCode}"
-                                    Watermark="e.g. HQ4J2X"
+                                    PlaceholderText="e.g. HQ4J2X"
                                     MaxLength="6"
                                     FontSize="20"
                                     FontWeight="Bold"

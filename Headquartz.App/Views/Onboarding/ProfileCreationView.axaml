@@ -113,7 +113,7 @@
                                 LetterSpacing="2"/>
 							<TextBox
                                 Text="{Binding Username}"
-                                Watermark="Enter your username..."
+                                PlaceholderText="Enter your username..."
                                 FontSize="15"
                                 Padding="14,12"
                                 Background="#111827"

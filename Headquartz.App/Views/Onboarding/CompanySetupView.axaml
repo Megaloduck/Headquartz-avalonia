@@ -68,7 +68,7 @@
                             <TextBox
                                 Grid.Column="0"
                                 Text="{Binding CompanyName}"
-                                Watermark="Enter company name..."
+                                PlaceholderText="Enter company name..."
                                 FontSize="16"
                                 Padding="14,12"
                                 Background="#111827"

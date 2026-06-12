@@ -1,130 +1,79 @@
-﻿using System;
-using System.Collections.Generic;
-
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
+using Avalonia.Markup.Xaml.Styling;
 using Avalonia.Styling;
+using System;
+using System.Linq;
 
 namespace Headquartz.App.Services;
 
 /// <summary>
-/// Manages the active Headquartz colour theme at runtime.
+/// Handles runtime dark/light theme switching.
 ///
-/// Strategy — avoids InvalidCastException and NullReferenceException:
-///   A single "wrapper" ResourceDictionary is inserted once into
-///   Application.Resources.MergedDictionaries and never removed.
-///   Switching theme clears that wrapper and refills it with the
-///   entries from the desired palette — no Remove/Insert cycle on
-///   MergedDictionaries, which is what caused both previous crashes.
+/// Strategy: App.axaml holds a single permanent <ResourceInclude> wrapper
+/// whose Source is swapped at runtime. We never add/remove from
+/// MergedDictionaries (that crashes Avalonia) — we only mutate the
+/// Source property of the existing ResourceInclude entry.
 /// </summary>
 public class ThemeService
 {
     // ── Singleton ─────────────────────────────────────────────
 
-    private static ThemeService? _instance;
-    public static ThemeService Current => _instance ??= new ThemeService();
+    public static ThemeService Instance { get; } = new();
 
     // ── State ─────────────────────────────────────────────────
 
-    public bool IsDark { get; private set; } = true;
+    private bool _isDark = true;
+
+    public bool IsDark => _isDark;
 
     public event Action<bool>? ThemeChanged;
 
-    // Wrapper dict that lives permanently in MergedDictionaries
-    private readonly ResourceDictionary _wrapper = new();
+    // ── URIs ──────────────────────────────────────────────────
 
-    // Raw key→value snapshots loaded once at startup
-    private Dictionary<object, object?> _darkEntries = new();
-    private Dictionary<object, object?> _lightEntries = new();
+    private static readonly Uri DarkUri =
+        new("avares://Headquartz.App/Assets/Themes/DarkTheme.axaml");
 
-    // ── Initialisation ────────────────────────────────────────
-
-    /// <summary>
-    /// Call once from App.OnFrameworkInitializationCompleted(),
-    /// after AvaloniaXamlLoader.Load(this) has run.
-    /// </summary>
-    public void Initialize()
-    {
-        // Load both palettes into plain dictionaries
-        _darkEntries = LoadEntries(
-            "avares://Headquartz.App/Assets/Themes/DarkTheme.axaml");
-        _lightEntries = LoadEntries(
-            "avares://Headquartz.App/Assets/Themes/LightTheme.axaml");
-
-        var appResources = Application.Current!.Resources;
-
-        // Remove any ResourceInclude entries that the XAML seeded
-        // (the static <ResourceInclude> in App.axaml) so we don't
-        // have duplicate keys.
-        for (int i = appResources.MergedDictionaries.Count - 1; i >= 0; i--)
-        {
-            appResources.MergedDictionaries.RemoveAt(i);
-        }
-
-        // Insert our permanent wrapper — this is the only
-        // MergedDictionaries operation we ever do.
-        appResources.MergedDictionaries.Add(_wrapper);
-
-        // Populate wrapper with dark theme
-        ApplyEntries(_darkEntries);
-        IsDark = true;
-    }
+    private static readonly Uri LightUri =
+        new("avares://Headquartz.App/Assets/Themes/LightTheme.axaml");
 
     // ── Public API ────────────────────────────────────────────
 
-    public void SetDark() => Apply(true);
-    public void SetLight() => Apply(false);
-    public void Toggle() => Apply(!IsDark);
-
-    public void Apply(bool dark)
+    public void Toggle()
     {
-        if (IsDark == dark) return;
-
-        IsDark = dark;
-        ApplyEntries(dark ? _darkEntries : _lightEntries);
-
-        // Keep Fluent built-in controls (scrollbars etc.) in sync
-        Application.Current!.RequestedThemeVariant =
-            dark ? ThemeVariant.Dark : ThemeVariant.Light;
-
-        ThemeChanged?.Invoke(IsDark);
+        _isDark = !_isDark;
+        Apply();
     }
 
-    // ── Internals ─────────────────────────────────────────────
-
-    /// <summary>
-    /// Replaces the wrapper's contents in-place.
-    /// Because the wrapper object itself never leaves
-    /// MergedDictionaries, Avalonia never loses the owner reference
-    /// and the NullReferenceException cannot occur.
-    /// </summary>
-    private void ApplyEntries(Dictionary<object, object?> entries)
+    public void SetDark(bool dark)
     {
-        _wrapper.Clear();
-
-        foreach (var (key, value) in entries)
-            _wrapper.Add(key, value);
+        if (_isDark == dark) return;
+        _isDark = dark;
+        Apply();
     }
 
-    /// <summary>
-    /// Loads a ResourceDictionary from an avares:// URI and
-    /// snapshots its flat key→value pairs into a plain Dictionary.
-    /// </summary>
-    private static Dictionary<object, object?> LoadEntries(string uri)
+    // ── Internal ──────────────────────────────────────────────
+
+    private void Apply()
     {
-        var loaded = AvaloniaXamlLoader.Load(new Uri(uri));
+        var app = Application.Current;
+        if (app is null) return;
 
-        if (loaded is not ResourceDictionary rd)
-            throw new InvalidOperationException(
-                $"Expected ResourceDictionary at {uri}, " +
-                $"got {loaded?.GetType().Name}");
+        var merged = app.Resources.MergedDictionaries;
 
-        var result = new Dictionary<object, object?>();
+        // Find the first ResourceInclude that points to either theme file.
+        // This is the permanent wrapper we installed in App.axaml.
+        var themeInclude = merged
+            .OfType<ResourceInclude>()
+            .FirstOrDefault(r =>
+                r.Source == DarkUri ||
+                r.Source == LightUri);
 
-        foreach (var key in rd.Keys)
-            result[key] = rd[key];
+        if (themeInclude is not null)
+        {
+            themeInclude.Source = _isDark ? DarkUri : LightUri;
+        }
 
-        return result;
+        ThemeChanged?.Invoke(_isDark);
     }
 }

@@ -47,7 +47,7 @@
 			<Grid ColumnDefinitions="*,Auto">
 				<TextBox Grid.Column="0"
                     Text="{Binding SearchText}"
-                    Watermark="Search clients..."
+                    PlaceholderText="Search clients..."
                     Padding="12,9"
                     Background="#202633"
                     BorderBrush="#374151"

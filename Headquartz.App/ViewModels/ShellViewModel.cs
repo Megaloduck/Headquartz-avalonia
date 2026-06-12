@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.Linq;
-
-using Avalonia.Threading;
-
+﻿using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-
 using Headquartz.App.Models;
 using Headquartz.App.Services;
 using Headquartz.Domain.Enums;
+using Microsoft.AspNetCore.Components.Web;
+using System;
+using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace Headquartz.App.ViewModels;
 
@@ -20,29 +18,51 @@ public partial class ShellViewModel : ViewModelBase
     private readonly NotificationService _notifications;
 
     // =========================================================
-    // SPLASH STATE
+    // THEME
     // =========================================================
 
-    private bool _roleSelected;
+    [ObservableProperty]
+    private bool _isDarkTheme = true;
 
-    public bool RoleSelected
+    [RelayCommand]
+    private void ToggleTheme()
     {
-        get => _roleSelected;
-        set
-        {
-            SetProperty(ref _roleSelected, value);
-            OnPropertyChanged(nameof(SplashVisible));
-        }
+        ThemeService.Instance.Toggle();
+        IsDarkTheme = ThemeService.Instance.IsDark;
     }
 
-    /// <summary>
-    /// Inverse of RoleSelected — drives the splash screen visibility.
-    /// Avalonia non-compiled bindings do not support the ! operator,
-    /// so we expose this computed property explicitly.
-    /// </summary>
-    public bool SplashVisible => !_roleSelected;
+    // =========================================================
+    // TOP BAR
+    // =========================================================
 
-    public ObservableCollection<RoleCardModel> RoleCards { get; } = [];
+    /// <summary>Current page title shown in the top bar.</summary>
+    [ObservableProperty]
+    private string _pageTitle = "Company Overview";
+
+    /// <summary>Current section label (e.g. "Overview", "Managements").</summary>
+    [ObservableProperty]
+    private string _sectionLabel = "Overview";
+
+    [ObservableProperty]
+    private string _companyName = "Company Name";
+
+    // =========================================================
+    // BOTTOM TICK WIDGET
+    // =========================================================
+
+    [ObservableProperty]
+    private string _worldDate = "";
+
+    /// <summary>0-1 progress of the current tick within the day (8 ticks/day).</summary>
+    [ObservableProperty]
+    private double _tickDayProgress;
+
+    /// <summary>0-1 progress of work hours within the current week (40 ticks/week).</summary>
+    [ObservableProperty]
+    private double _workWeekProgress;
+
+    [ObservableProperty]
+    private long _currentTick;
 
     // =========================================================
     // SHELL STATE
@@ -72,11 +92,7 @@ public partial class ShellViewModel : ViewModelBase
     // CONSTRUCTORS
     // =========================================================
 
-    /// <summary>
-    /// Called by RootViewModel after onboarding completes.
-    /// Receives pre-configured simulation and the local player's role,
-    /// so the splash screen is skipped and the shell goes straight to gameplay.
-    /// </summary>
+    /// <summary>Post-onboarding constructor — role already chosen.</summary>
     public ShellViewModel(SimulationService simulation, PlayerRole startingRole)
     {
         _simulation = simulation;
@@ -87,21 +103,21 @@ public partial class ShellViewModel : ViewModelBase
         _notifications.NotificationFired += OnNotificationFired;
 
         _simulation.Engine.OnUpdated += () =>
+            Dispatcher.UIThread.Post(RefreshTickWidget);
+
+        _simulation.Engine.OnUpdated += () =>
             Dispatcher.UIThread.Post(PruneOldNotifications);
 
-        BuildRoleCards();
+        IsDarkTheme = ThemeService.Instance.IsDark;
+        CompanyName = _simulation.Engine.Company.Name;
 
-        // Skip splash — role already chosen during onboarding
         CurrentRole = startingRole;
         LoadSidebar();
         _navigation.Navigate("company", startingRole);
-        RoleSelected = true;
+        RefreshTickWidget();
     }
 
-    /// <summary>
-    /// Parameterless constructor for design-time / standalone use.
-    /// Shows the splash role-selection screen.
-    /// </summary>
+    /// <summary>Parameterless — design-time / standalone use.</summary>
     public ShellViewModel()
     {
         _simulation = new SimulationService();
@@ -115,9 +131,92 @@ public partial class ShellViewModel : ViewModelBase
         _notifications.NotificationFired += OnNotificationFired;
 
         _simulation.Engine.OnUpdated += () =>
+            Dispatcher.UIThread.Post(RefreshTickWidget);
+
+        _simulation.Engine.OnUpdated += () =>
             Dispatcher.UIThread.Post(PruneOldNotifications);
 
-        BuildRoleCards();
+        IsDarkTheme = ThemeService.Instance.IsDark;
+        CompanyName = _simulation.Engine.Company.Name;
+        RefreshTickWidget();
+    }
+
+    // =========================================================
+    // TICK WIDGET REFRESH
+    // =========================================================
+
+    private void RefreshTickWidget()
+    {
+        var clock = _simulation.Engine.Clock;
+        CurrentTick = clock.Tick;
+        CompanyName = _simulation.Engine.Company.Name;
+
+        // Display date — skip time portion
+        WorldDate = clock.WorldTime.ToString("dd MMMM yyyy");
+
+        // Tick within current day (8 ticks = 1 day)
+        long tickOfDay = clock.Tick % 8;
+        TickDayProgress = tickOfDay / 8.0;
+
+        // Ticks within current work week (40 ticks = 1 week)
+        long tickOfWeek = clock.Tick % 40;
+        WorkWeekProgress = tickOfWeek / 40.0;
+
+        // Update notification badges on sidebar items
+        RefreshNotificationBadges();
+    }
+
+    // =========================================================
+    // NOTIFICATION BADGES
+    // =========================================================
+
+    private void RefreshNotificationBadges()
+    {
+        var company = _simulation.Engine.Company;
+
+        foreach (var section in SidebarSections)
+        {
+            foreach (var item in section.Items)
+            {
+                item.NotificationCount = item.Route switch
+                {
+                    "hr/dashboard" or "hr/employees" =>
+                        company.Employees.Count(e => e.Morale <= 15),
+
+                    "hr/payroll" =>
+                        company.Cash < company.Employees.Sum(e => e.Salary) ? 1 : 0,
+
+                    "finance/dashboard" =>
+                        company.Cash < 0 ? 1 : 0,
+
+                    "finance/loans" =>
+                        company.Loans.Count(l => !l.IsRepaid),
+
+                    "sales/dashboard" or "sales/orders" =>
+                        company.Orders.Count(o =>
+                            o.DeliveryDeadline.HasValue &&
+                            _simulation.Engine.Clock.WorldTime > o.DeliveryDeadline.Value &&
+                            o.Status is not Domain.Enums.OrderStatus.Delivered
+                                     and not Domain.Enums.OrderStatus.Cancelled),
+
+                    "production/dashboard" or "production/workorders" =>
+                        company.Tasks.Count(t =>
+                            t.Department == Domain.Enums.DepartmentType.Production &&
+                            t.IsBlocked),
+
+                    "warehouse/dashboard" or "warehouse/inventory" =>
+                        company.Inventory.Count(i => i.Quantity < i.MinimumStock),
+
+                    "logistics/dashboard" or "logistics/shipments" =>
+                        company.Orders.Count(o =>
+                            o.DeliveryDeadline.HasValue &&
+                            _simulation.Engine.Clock.WorldTime > o.DeliveryDeadline.Value &&
+                            o.Status == Domain.Enums.OrderStatus.Shipping),
+
+                    _ => 0,
+                };
+            }
+        }
     }
 
     // =========================================================
@@ -129,7 +228,6 @@ public partial class ShellViewModel : ViewModelBase
         Dispatcher.UIThread.Post(() =>
         {
             Notifications.Insert(0, notification);
-
             while (Notifications.Count > 4)
                 Notifications.RemoveAt(Notifications.Count - 1);
         });
@@ -144,114 +242,8 @@ public partial class ShellViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void DismissNotification(NotificationModel n)
-    {
+    private void DismissNotification(NotificationModel n) =>
         Notifications.Remove(n);
-    }
-
-    // =========================================================
-    // SPLASH — ROLE SELECTION
-    // =========================================================
-
-    [RelayCommand]
-    private void SelectRole(RoleCardModel card)
-    {
-        CurrentRole = card.Role;
-        LoadSidebar();
-        _navigation.Navigate("company", card.Role);
-        RoleSelected = true;
-    }
-
-    [RelayCommand]
-    private void BackToRoleSelect()
-    {
-        RoleSelected = false;
-    }
-
-    [RelayCommand]
-    private void NavigateSettings()
-    {
-        _navigation.Navigate("settings", CurrentRole);
-        if (!RoleSelected) RoleSelected = true;
-    }
-
-    private void BuildRoleCards()
-    {
-        RoleCards.Clear();
-
-        RoleCards.Add(new RoleCardModel
-        {
-            Role = PlayerRole.HumanResourcesManager,
-            Title = "HR Manager",
-            Department = "Human Resources",
-            Description = "Hiring, morale, training & payroll",
-            Emoji = "👥",
-            AccentColor = "#8B5CF6",
-        });
-        RoleCards.Add(new RoleCardModel
-        {
-            Role = PlayerRole.FinanceManager,
-            Title = "Finance Manager",
-            Department = "Finance",
-            Description = "Budgets, cash flow & audits",
-            Emoji = "💰",
-            AccentColor = "#10B981",
-        });
-        RoleCards.Add(new RoleCardModel
-        {
-            Role = PlayerRole.SalesManager,
-            Title = "Sales Manager",
-            Department = "Sales",
-            Description = "Revenue, clients & pipeline",
-            Emoji = "📈",
-            AccentColor = "#3B82F6",
-        });
-        RoleCards.Add(new RoleCardModel
-        {
-            Role = PlayerRole.MarketingManager,
-            Title = "Marketing Manager",
-            Department = "Marketing",
-            Description = "Campaigns, branding & research",
-            Emoji = "📣",
-            AccentColor = "#F59E0B",
-        });
-        RoleCards.Add(new RoleCardModel
-        {
-            Role = PlayerRole.ProductionManager,
-            Title = "Production Manager",
-            Department = "Production",
-            Description = "Manufacturing, lines & quality",
-            Emoji = "🏭",
-            AccentColor = "#EF4444",
-        });
-        RoleCards.Add(new RoleCardModel
-        {
-            Role = PlayerRole.WarehouseManager,
-            Title = "Warehouse Manager",
-            Department = "Warehouse",
-            Description = "Inventory, stock & storage",
-            Emoji = "📦",
-            AccentColor = "#F97316",
-        });
-        RoleCards.Add(new RoleCardModel
-        {
-            Role = PlayerRole.LogisticsManager,
-            Title = "Logistics Manager",
-            Department = "Logistics",
-            Description = "Shipments, routes & fleet",
-            Emoji = "🚚",
-            AccentColor = "#06B6D4",
-        });
-        RoleCards.Add(new RoleCardModel
-        {
-            Role = PlayerRole.Chairman,
-            Title = "Board Chairman",
-            Department = "Management",
-            Description = "Oversee all departments",
-            Emoji = "🏛️",
-            AccentColor = "#EAB308",
-        });
-    }
 
     // =========================================================
     // NAVIGATION
@@ -261,11 +253,29 @@ public partial class ShellViewModel : ViewModelBase
     private void Navigate(SidebarItem item)
     {
         _navigation.Navigate(item.Route, CurrentRole);
+        UpdateBreadcrumb(item);
+    }
+
+    [RelayCommand]
+    private void NavigateSettings()
+    {
+        _navigation.Navigate("settings", CurrentRole);
+        PageTitle = "Settings";
+        SectionLabel = "System";
     }
 
     private void HandleViewChanged()
     {
         CurrentView = _navigation.CurrentView;
+    }
+
+    private void UpdateBreadcrumb(SidebarItem item)
+    {
+        PageTitle = item.Title;
+
+        SectionLabel = SidebarSections
+            .FirstOrDefault(s => s.Items.Contains(item))
+            ?.Title ?? "";
     }
 
     // =========================================================

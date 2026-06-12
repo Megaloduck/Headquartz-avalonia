@@ -39,7 +39,7 @@
 						<StackPanel Orientation="Horizontal" Spacing="10">
 							<TextBox
                                 Text="{Binding EmployeeName}"
-                                Watermark="Enter name..."
+                                PlaceholderText="Enter name..."
                                 MinWidth="280"
                                 Padding="10,8"
                                 Background="#2B3242"
@@ -87,7 +87,7 @@
 						<TextBlock FontSize="13" Foreground="#9CA3AF" Text="MONTHLY SALARY ($)"/>
 						<TextBox
                             Text="{Binding Salary}"
-                            Watermark="e.g. 2500"
+                            PlaceholderText="e.g. 2500"
                             MaxWidth="200"
                             HorizontalAlignment="Left"
                             Padding="10,8"
