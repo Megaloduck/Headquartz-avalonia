@@ -12,7 +12,7 @@ public sealed record SimulationProfile
     // ── Tick timing ───────────────────────────────────────────
 
     /// <summary>Real-world milliseconds between simulation ticks.</summary>
-    public int TickDelayMs { get; init; } = 8_000;
+    public int TickDelayMs { get; init; } =5_000;
 
     // ── Event system ──────────────────────────────────────────
 
@@ -46,7 +46,7 @@ public sealed record SimulationProfile
 
     public static SimulationProfile Trainee => new()
     {
-        TickDelayMs = 8_000,
+        TickDelayMs = 4_000,
         EventFrequency = 0.08,
         SeverityBias = -0.3,   // skews toward Low / Medium
         CascadeMultiplier = 0.5,
@@ -55,7 +55,7 @@ public sealed record SimulationProfile
 
     public static SimulationProfile Manager => new()
     {
-        TickDelayMs = 8_000,
+        TickDelayMs = 4_000,
         EventFrequency = 0.15,
         SeverityBias = 0.0,    // balanced
         CascadeMultiplier = 1.0,
@@ -64,7 +64,7 @@ public sealed record SimulationProfile
 
     public static SimulationProfile Director => new()
     {
-        TickDelayMs = 8_000,
+        TickDelayMs = 5_000,
         EventFrequency = 0.25,
         SeverityBias = 0.3,    // skews toward High / Critical
         CascadeMultiplier = 1.5,
@@ -73,7 +73,7 @@ public sealed record SimulationProfile
 
     public static SimulationProfile Chairman => new()
     {
-        TickDelayMs = 8_000,
+        TickDelayMs =5_000,
         EventFrequency = 0.40,
         SeverityBias = 0.6,    // mostly Critical
         CascadeMultiplier = 2.5,

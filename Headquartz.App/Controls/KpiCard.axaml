@@ -8,7 +8,7 @@
         Width="250"
         Margin="10"
         Padding="20"
-        Background="#202633"
+        Background="{DynamicResource BrushBgCard}"
         CornerRadius="12">
 
 		<StackPanel>
