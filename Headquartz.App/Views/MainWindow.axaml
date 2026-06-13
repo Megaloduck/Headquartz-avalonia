@@ -8,14 +8,7 @@
     x:Class="Headquartz.App.Views.MainWindow"
     Width="1200"
     Height="675"
-    MinWidth="960"
-    MinHeight="600"
-    Title="Headquartz"
-    ExtendClientAreaToDecorationsHint="True"
-
-    ExtendClientAreaTitleBarHeightHint="-1"
-    Background="Transparent"
-    TransparencyLevelHint="None">
+    Title="Headquartz">
 
 	<ContentControl Content="{Binding ActiveShell}"/>
 
