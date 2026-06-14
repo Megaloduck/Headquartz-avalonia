@@ -1,0 +1,80 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="using:Headquartz.App.Controls"
+             mc:Ignorable="d" d:DesignWidth="260" d:DesignHeight="120"
+             x:Class="Headquartz.App.Controls.TickStatusCard"
+             x:Name="Root">
+
+	<!--
+        Time-hierarchy widget:
+          - Tick status bar  : 8 pills = 1 tick   (1 pill = 1 second)
+          - Work hours bar   : 8 pills = 1 work hour (1 pill = 1 tick)
+
+        Bind TickSecondsElapsed / WorkHourTicksElapsed (0-8) from your
+        SimulationClock, e.g.:
+
+            TickSecondsElapsed   = (int)(elapsedMsInCurrentTick / 1000)  -> 0..7
+            WorkHourTicksElapsed = (int)(Clock.Tick % 8)                 -> 0..7
+
+        (Both are clamped to 0-8 internally.)
+    -->
+
+	<Border
+        Background="{DynamicResource BrushBgCard}"
+        BorderBrush="{DynamicResource BrushBorderSubtle}"
+        BorderThickness="1"
+        CornerRadius="{DynamicResource RadiusLg}"
+        Padding="{DynamicResource PaddingCard}">
+
+		<StackPanel Spacing="14">
+
+			<!-- DATE HEADER -->
+			<TextBlock
+                Text="{Binding DateLabel, ElementName=Root}"
+                FontSize="{DynamicResource FontSizeXl}"
+                FontWeight="Bold"
+                Foreground="{DynamicResource BrushTextPrimary}"/>
+
+			<!-- TICK STATUS -->
+			<StackPanel Spacing="6">
+				<StackPanel Orientation="Horizontal" Spacing="6">
+					<TextBlock Text="🔄" FontSize="{DynamicResource FontSizeBase}" VerticalAlignment="Center"/>
+					<TextBlock
+                        Text="Tick status"
+                        FontSize="{DynamicResource FontSizeBase}"
+                        Foreground="{DynamicResource BrushTextSecondary}"
+                        VerticalAlignment="Center"/>
+				</StackPanel>
+
+				<controls:SegmentedProgressBar
+                    SegmentCount="8"
+                    FilledCount="{Binding TickSecondsElapsed, ElementName=Root}"
+                    FilledBrush="{DynamicResource BrushSuccess}"
+                    EmptyBrush="{DynamicResource BrushBorderSubtle}"/>
+			</StackPanel>
+
+			<!-- WORK HOURS -->
+			<StackPanel Spacing="6">
+				<StackPanel Orientation="Horizontal" Spacing="6">
+					<TextBlock Text="🕐" FontSize="{DynamicResource FontSizeBase}" VerticalAlignment="Center"/>
+					<TextBlock
+                        Text="Work hours"
+                        FontSize="{DynamicResource FontSizeBase}"
+                        Foreground="{DynamicResource BrushTextSecondary}"
+                        VerticalAlignment="Center"/>
+				</StackPanel>
+
+				<controls:SegmentedProgressBar
+                    SegmentCount="8"
+                    FilledCount="{Binding WorkHourTicksElapsed, ElementName=Root}"
+                    FilledBrush="{DynamicResource BrushInfo}"
+                    EmptyBrush="{DynamicResource BrushBorderSubtle}"/>
+			</StackPanel>
+
+		</StackPanel>
+
+	</Border>
+
+</UserControl>

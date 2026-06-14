@@ -1,0 +1,38 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="220" d:DesignHeight="10"
+             x:Class="Headquartz.App.Controls.SegmentedProgressBar"
+             x:Name="Root">
+
+	<!--
+        Renders SegmentCount pill-shaped bars in a single row.
+        The first FilledCount pills use FilledBrush, the rest use EmptyBrush.
+
+        Usage:
+          <controls:SegmentedProgressBar
+              SegmentCount="8"
+              FilledCount="{Binding TickSecondsElapsed}"
+              FilledBrush="#34A853"
+              EmptyBrush="#E0E0E0"/>
+    -->
+
+	<ItemsControl ItemsSource="{Binding Segments, ElementName=Root}">
+		<ItemsControl.ItemsPanel>
+			<ItemsPanelTemplate>
+				<UniformGrid Rows="1"/>
+			</ItemsPanelTemplate>
+		</ItemsControl.ItemsPanel>
+		<ItemsControl.ItemTemplate>
+			<DataTemplate>
+				<Border
+                    Height="8"
+                    Margin="1,0"
+                    CornerRadius="4"
+                    Background="{Binding Brush}"/>
+			</DataTemplate>
+		</ItemsControl.ItemTemplate>
+	</ItemsControl>
+
+</UserControl>

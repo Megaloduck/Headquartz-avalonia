@@ -46,7 +46,7 @@ public sealed record SimulationProfile
 
     public static SimulationProfile Trainee => new()
     {
-        TickDelayMs = 4_000,
+        TickDelayMs = 5_000,
         EventFrequency = 0.08,
         SeverityBias = -0.3,   // skews toward Low / Medium
         CascadeMultiplier = 0.5,
@@ -55,7 +55,7 @@ public sealed record SimulationProfile
 
     public static SimulationProfile Manager => new()
     {
-        TickDelayMs = 4_000,
+        TickDelayMs = 5_000,
         EventFrequency = 0.15,
         SeverityBias = 0.0,    // balanced
         CascadeMultiplier = 1.0,
