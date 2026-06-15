@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:vm="using:Headquartz.App.ViewModels"
     xmlns:conv="using:Headquartz.App.Converters"
+    xmlns:controls="using:Headquartz.App.Controls"
     x:Class="Headquartz.App.ShellView"
     x:DataType="vm:ShellViewModel">
 
@@ -168,76 +169,14 @@
 
                 <DockPanel>
 
-                    <!-- ── Bottom tick widget ────────────── -->
-                    <Border
+                    <!-- ── Tick Status Card ──────────────── -->
+                    <controls:TickStatusCard
                         DockPanel.Dock="Bottom"
-                        Margin="10,0,10,10"
-                        Padding="12,10"
-                        Background="{DynamicResource BrushBgElevated}"
-                        BorderBrush="{DynamicResource BrushBorderSubtle}"
-                        BorderThickness="1"
-                        CornerRadius="8">
-                        <StackPanel Spacing="8">
-
-                            <!-- Date -->
-                            <TextBlock
-                                Text="{Binding WorldDate}"
-                                FontSize="12"
-                                FontWeight="SemiBold"
-                                Foreground="{DynamicResource BrushTextPrimary}"/>
-
-                            <!-- Tick status -->
-                            <StackPanel Spacing="4">
-                                <StackPanel Orientation="Horizontal" Spacing="6">
-                                    <Path
-                                        Data="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"
-                                        Stroke="{DynamicResource BrushTextMuted}"
-                                        StrokeThickness="1.5"
-                                        Fill="Transparent"
-                                        Width="11" Height="11"
-                                        Stretch="Uniform"
-                                        VerticalAlignment="Center"/>
-                                    <TextBlock
-                                        Text="Tick status"
-                                        FontSize="11"
-                                        Foreground="{DynamicResource BrushTextMuted}"/>
-                                </StackPanel>
-                                <ProgressBar
-                                    Value="{Binding TickDayProgress}"
-                                    Maximum="1.0"
-                                    Height="5"
-                                    Foreground="#6366F1"
-                                    Background="{DynamicResource BrushBorderSubtle}"
-                                    CornerRadius="3"/>
-                            </StackPanel>
-
-                            <!-- Work hours -->
-                            <StackPanel Spacing="4">
-                                <StackPanel Orientation="Horizontal" Spacing="6">
-                                    <Path
-                                        Data="M12 22a10 10 0 100-20 10 10 0 000 20zm0-14v4l3 3"
-                                        Stroke="{DynamicResource BrushTextMuted}"
-                                        StrokeThickness="1.5"
-                                        Fill="Transparent"
-                                        Width="11" Height="11"
-                                        Stretch="Uniform"
-                                        VerticalAlignment="Center"/>
-                                    <TextBlock
-                                        Text="Work hours"
-                                        FontSize="11"
-                                        Foreground="{DynamicResource BrushTextMuted}"/>
-                                </StackPanel>
-                                <ProgressBar
-                                    Value="{Binding WorkWeekProgress}"
-                                    Maximum="1.0"
-                                    Height="5"
-                                    Foreground="#06B6D4"
-                                    Background="{DynamicResource BrushBorderSubtle}"
-                                    CornerRadius="3"/>
-                            </StackPanel>
-
-                        </StackPanel>
-                    </Border>
+                        Margin="8,0,8,8"
+                        DateLabel="{Binding DateLabel}"
+                        TicksPerWorkHour="{Binding TicksPerWorkHour}"
+                        TicksElapsedInWorkHour="{Binding TicksElapsedInWorkHour}"
+                        WorkHoursElapsedInDay="{Binding WorkHoursElapsedInDay}"/>
 
                     <!-- ── Bottom: Settings + Log out ────── -->
                     <StackPanel

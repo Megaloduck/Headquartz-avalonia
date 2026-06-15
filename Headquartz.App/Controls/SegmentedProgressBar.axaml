@@ -27,9 +27,9 @@
 		<ItemsControl.ItemTemplate>
 			<DataTemplate>
 				<Border
-                    Height="8"
+                    Height="5"
                     Margin="1,0"
-                    CornerRadius="4"
+                    CornerRadius="3"
                     Background="{Binding Brush}"/>
 			</DataTemplate>
 		</ItemsControl.ItemTemplate>

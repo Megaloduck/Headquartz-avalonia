@@ -4,7 +4,6 @@ using CommunityToolkit.Mvvm.Input;
 using Headquartz.App.Models;
 using Headquartz.App.Services;
 using Headquartz.Domain.Enums;
-using Microsoft.AspNetCore.Components.Web;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -35,34 +34,42 @@ public partial class ShellViewModel : ViewModelBase
     // TOP BAR
     // =========================================================
 
-    /// <summary>Current page title shown in the top bar.</summary>
-    [ObservableProperty]
-    private string _pageTitle = "Company Overview";
-
-    /// <summary>Current section label (e.g. "Overview", "Managements").</summary>
-    [ObservableProperty]
-    private string _sectionLabel = "Overview";
-
-    [ObservableProperty]
-    private string _companyName = "Company Name";
+    [ObservableProperty] private string _pageTitle = "Company Overview";
+    [ObservableProperty] private string _sectionLabel = "Overview";
+    [ObservableProperty] private string _companyName = "Company Name";
 
     // =========================================================
-    // BOTTOM TICK WIDGET
+    // TICK STATUS CARD
     // =========================================================
 
-    [ObservableProperty]
-    private string _worldDate = "";
+    /// <summary>Formatted in-game date shown as card header, e.g. "22 September 2026".</summary>
+    [ObservableProperty] private string _dateLabel = "";
 
-    /// <summary>0-1 progress of the current tick within the day (8 ticks/day).</summary>
-    [ObservableProperty]
-    private double _tickDayProgress;
+    /// <summary>
+    /// How many ticks make one work hour — sourced from SimulationProfile.
+    ///   Trainee=4  Manager=5  Director=6  Chairman=7
+    /// Drives the tick bar's segment count.
+    /// </summary>
+    [ObservableProperty] private int _ticksPerWorkHour = 5;
 
-    /// <summary>0-1 progress of work hours within the current week (40 ticks/week).</summary>
-    [ObservableProperty]
-    private double _workWeekProgress;
+    /// <summary>
+    /// Ticks completed in the current work hour (0 .. TicksPerWorkHour).
+    /// Fills one green pill per completed tick.
+    /// </summary>
+    [ObservableProperty] private int _ticksElapsedInWorkHour;
 
-    [ObservableProperty]
-    private long _currentTick;
+    /// <summary>
+    /// Work hours completed in the current day (0 .. 8).
+    /// Fills one cyan pill per completed work hour.
+    /// </summary>
+    [ObservableProperty] private int _workHoursElapsedInDay;
+
+    // =========================================================
+    // LEGACY TICK WIDGET (kept for any other bindings)
+    // =========================================================
+
+    [ObservableProperty] private string _worldDate = "";
+    [ObservableProperty] private long _currentTick;
 
     // =========================================================
     // SHELL STATE
@@ -92,7 +99,7 @@ public partial class ShellViewModel : ViewModelBase
     // CONSTRUCTORS
     // =========================================================
 
-    /// <summary>Post-onboarding constructor — role already chosen.</summary>
+    /// <summary>Post-onboarding constructor — role and profile already chosen.</summary>
     public ShellViewModel(SimulationService simulation, PlayerRole startingRole)
     {
         _simulation = simulation;
@@ -110,6 +117,9 @@ public partial class ShellViewModel : ViewModelBase
 
         IsDarkTheme = ThemeService.Instance.IsDark;
         CompanyName = _simulation.Engine.Company.Name;
+
+        // Read TicksPerWorkHour once from the profile — it never changes at runtime.
+        TicksPerWorkHour = _simulation.Engine.Profile.TicksPerWorkHour;
 
         CurrentRole = startingRole;
         LoadSidebar();
@@ -138,6 +148,8 @@ public partial class ShellViewModel : ViewModelBase
 
         IsDarkTheme = ThemeService.Instance.IsDark;
         CompanyName = _simulation.Engine.Company.Name;
+        TicksPerWorkHour = _simulation.Engine.Profile.TicksPerWorkHour;
+
         RefreshTickWidget();
     }
 
@@ -148,21 +160,28 @@ public partial class ShellViewModel : ViewModelBase
     private void RefreshTickWidget()
     {
         var clock = _simulation.Engine.Clock;
+        var profile = _simulation.Engine.Profile;
+
         CurrentTick = clock.Tick;
         CompanyName = _simulation.Engine.Company.Name;
 
-        // Display date — skip time portion
-        WorldDate = clock.WorldTime.ToString("dd MMMM yyyy");
+        // In-game date header (no time portion)
+        DateLabel = clock.WorldTime.ToString("dd MMMM yyyy");
+        WorldDate = DateLabel; // keep legacy binding in sync
 
-        // Tick within current day (8 ticks = 1 day)
-        long tickOfDay = clock.Tick % 8;
-        TickDayProgress = tickOfDay / 8.0;
+        // ── Tick bar ─────────────────────────────────────────
+        // Each pill = 1 completed tick within the current work hour.
+        // After TicksPerWorkHour ticks the pill count wraps back to 0.
+        TicksElapsedInWorkHour = (int)(clock.Tick % profile.TicksPerWorkHour);
 
-        // Ticks within current work week (40 ticks = 1 week)
-        long tickOfWeek = clock.Tick % 40;
-        WorkWeekProgress = tickOfWeek / 40.0;
+        // ── Work hours bar ────────────────────────────────────
+        // Each pill = 1 completed work hour within the current day.
+        // A full day = WorkHoursPerDay * TicksPerWorkHour ticks.
+        int ticksPerDay = profile.TicksPerWorkHour * profile.WorkHoursPerDay;
+        long tickOfDay = clock.Tick % ticksPerDay;
+        WorkHoursElapsedInDay = (int)(tickOfDay / profile.TicksPerWorkHour);
 
-        // Update notification badges on sidebar items
+        // Update notification badges
         RefreshNotificationBadges();
     }
 
@@ -272,7 +291,6 @@ public partial class ShellViewModel : ViewModelBase
     private void UpdateBreadcrumb(SidebarItem item)
     {
         PageTitle = item.Title;
-
         SectionLabel = SidebarSections
             .FirstOrDefault(s => s.Items.Contains(item))
             ?.Title ?? "";

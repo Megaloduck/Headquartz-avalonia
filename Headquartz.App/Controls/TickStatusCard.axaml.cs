@@ -5,56 +5,78 @@ using Avalonia.Markup.Xaml;
 namespace Headquartz.App.Controls;
 
 /// <summary>
-/// Displays the current date plus two 8-segment "pill" bars representing
-/// the simulation's time hierarchy:
+/// Displays the current in-game date plus two segmented pill bars:
 ///
-///     1 tick      = 8 seconds   → TickSecondsElapsed   (0-8)
-///     1 work hour = 8 ticks      → WorkHourTicksElapsed (0-8)
-///     1 day       = 8 work hours
+///   Tick bar (green)  — SegmentCount = TicksPerWorkHour (4/5/6/7 by difficulty)
+///                       1 pill fills per completed simulation tick (5 real seconds)
+///                       Resets when a work hour completes.
 ///
-/// This control is purely presentational — drive the two "elapsed" values
-/// from your SimulationClock (see <see cref="FromTickProgress"/> below for
-/// a quick way to compute them).
+///   Work hours (cyan) — SegmentCount always 8 (WorkHoursPerDay)
+///                       1 pill fills per completed work hour
+///                       Resets when a day completes.
+///
+/// All three "Elapsed" properties are driven by ShellViewModel which reads
+/// SimulationProfile.TicksPerWorkHour and SimulationClock.Tick.
 /// </summary>
 public partial class TickStatusCard : UserControl
 {
+    // ── DateLabel ─────────────────────────────────────────────
+
     public static readonly StyledProperty<string> DateLabelProperty =
-        AvaloniaProperty.Register<TickStatusCard, string>(
-            nameof(DateLabel), string.Empty);
+        AvaloniaProperty.Register<TickStatusCard, string>(nameof(DateLabel), string.Empty);
 
-    public static readonly StyledProperty<int> TickSecondsElapsedProperty =
-        AvaloniaProperty.Register<TickStatusCard, int>(
-            nameof(TickSecondsElapsed), 0);
-
-    public static readonly StyledProperty<int> WorkHourTicksElapsedProperty =
-        AvaloniaProperty.Register<TickStatusCard, int>(
-            nameof(WorkHourTicksElapsed), 0);
-
-    /// <summary>Header text, e.g. "22 September 2026".</summary>
     public string DateLabel
     {
         get => GetValue(DateLabelProperty);
         set => SetValue(DateLabelProperty, value);
     }
 
-    /// <summary>
-    /// 0-8. How many of the 8 "second" pills in the current tick are filled.
-    /// 8 = the tick just completed / is about to roll over.
-    /// </summary>
-    public int TickSecondsElapsed
-    {
-        get => GetValue(TickSecondsElapsedProperty);
-        set => SetValue(TickSecondsElapsedProperty, value);
-    }
+    // ── TicksPerWorkHour (drives tick bar segment count) ─────
+
+    public static readonly StyledProperty<int> TicksPerWorkHourProperty =
+        AvaloniaProperty.Register<TickStatusCard, int>(nameof(TicksPerWorkHour), 5);
 
     /// <summary>
-    /// 0-8. How many of the 8 "tick" pills in the current work hour are filled.
+    /// Number of ticks that make one work hour: 4/5/6/7 by difficulty.
+    /// Controls how many pills the tick bar has.
     /// </summary>
-    public int WorkHourTicksElapsed
+    public int TicksPerWorkHour
     {
-        get => GetValue(WorkHourTicksElapsedProperty);
-        set => SetValue(WorkHourTicksElapsedProperty, value);
+        get => GetValue(TicksPerWorkHourProperty);
+        set => SetValue(TicksPerWorkHourProperty, value);
     }
+
+    // ── TicksElapsedInWorkHour (tick bar fill) ───────────────
+
+    public static readonly StyledProperty<int> TicksElapsedInWorkHourProperty =
+        AvaloniaProperty.Register<TickStatusCard, int>(nameof(TicksElapsedInWorkHour), 0);
+
+    /// <summary>
+    /// How many ticks have elapsed in the current work hour (0 .. TicksPerWorkHour).
+    /// Each completed tick lights up one green pill.
+    /// </summary>
+    public int TicksElapsedInWorkHour
+    {
+        get => GetValue(TicksElapsedInWorkHourProperty);
+        set => SetValue(TicksElapsedInWorkHourProperty, value);
+    }
+
+    // ── WorkHoursElapsedInDay (work hours bar fill) ──────────
+
+    public static readonly StyledProperty<int> WorkHoursElapsedInDayProperty =
+        AvaloniaProperty.Register<TickStatusCard, int>(nameof(WorkHoursElapsedInDay), 0);
+
+    /// <summary>
+    /// How many work hours have elapsed in the current day (0 .. 8).
+    /// Each completed work hour lights up one cyan pill.
+    /// </summary>
+    public int WorkHoursElapsedInDay
+    {
+        get => GetValue(WorkHoursElapsedInDayProperty);
+        set => SetValue(WorkHoursElapsedInDayProperty, value);
+    }
+
+    // ─────────────────────────────────────────────────────────
 
     public TickStatusCard()
     {
@@ -64,25 +86,5 @@ public partial class TickStatusCard : UserControl
     private void InitializeComponent()
     {
         AvaloniaXamlLoader.Load(this);
-    }
-
-    /// <summary>
-    /// Convenience helper for computing both pill values from a tick counter
-    /// and a sub-tick second counter, given the 8/8 hierarchy described above.
-    ///
-    /// Example (inside your ViewModel's refresh):
-    ///   var (secs, hourTicks) = TickStatusCard.FromTickProgress(
-    ///       Clock.Tick, secondsIntoCurrentTick);
-    ///   TickSecondsElapsed = secs;
-    ///   WorkHourTicksElapsed = hourTicks;
-    /// </summary>
-    public static (int TickSecondsElapsed, int WorkHourTicksElapsed) FromTickProgress(
-        long totalTicks,
-        int secondsIntoCurrentTick)
-    {
-        int secs = secondsIntoCurrentTick % 8;
-        int hourTicks = (int)(totalTicks % 8);
-
-        return (secs, hourTicks);
     }
 }

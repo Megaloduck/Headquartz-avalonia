@@ -3,72 +3,92 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:controls="using:Headquartz.App.Controls"
-             mc:Ignorable="d" d:DesignWidth="260" d:DesignHeight="120"
+             mc:Ignorable="d" d:DesignWidth="240" d:DesignHeight="110"
              x:Class="Headquartz.App.Controls.TickStatusCard"
              x:Name="Root">
 
 	<!--
-        Time-hierarchy widget:
-          - Tick status bar  : 8 pills = 1 tick   (1 pill = 1 second)
-          - Work hours bar   : 8 pills = 1 work hour (1 pill = 1 tick)
+        Time hierarchy widget — values driven by SimulationProfile:
 
-        Bind TickSecondsElapsed / WorkHourTicksElapsed (0-8) from your
-        SimulationClock, e.g.:
+          Tick bar   : SegmentCount = TicksPerWorkHour (4/5/6/7)
+                       FilledCount  = TicksElapsedInWorkHour
+                       1 pill lights up every tick (= 5 real seconds)
 
-            TickSecondsElapsed   = (int)(elapsedMsInCurrentTick / 1000)  -> 0..7
-            WorkHourTicksElapsed = (int)(Clock.Tick % 8)                 -> 0..7
-
-        (Both are clamped to 0-8 internally.)
+          Work hours : SegmentCount = 8  (always — WorkHoursPerDay)
+                       FilledCount  = WorkHoursElapsedInDay
+                       1 pill lights up every TicksPerWorkHour ticks
     -->
 
 	<Border
-        Background="{DynamicResource BrushBgCard}"
+        Background="{DynamicResource BrushBgElevated}"
         BorderBrush="{DynamicResource BrushBorderSubtle}"
         BorderThickness="1"
-        CornerRadius="{DynamicResource RadiusLg}"
-        Padding="{DynamicResource PaddingCard}">
+        CornerRadius="{DynamicResource RadiusMd}"
+        Padding="12,10">
 
-		<StackPanel Spacing="14">
+		<StackPanel Spacing="10">
 
 			<!-- DATE HEADER -->
 			<TextBlock
                 Text="{Binding DateLabel, ElementName=Root}"
-                FontSize="{DynamicResource FontSizeXl}"
+                FontSize="{DynamicResource FontSizeLg}"
                 FontWeight="Bold"
                 Foreground="{DynamicResource BrushTextPrimary}"/>
 
-			<!-- TICK STATUS -->
-			<StackPanel Spacing="6">
+			<!-- TICK STATUS BAR -->
+			<StackPanel Spacing="5">
 				<StackPanel Orientation="Horizontal" Spacing="6">
-					<TextBlock Text="🔄" FontSize="{DynamicResource FontSizeBase}" VerticalAlignment="Center"/>
+					<Path
+                        Data="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"
+                        Stroke="{DynamicResource BrushTextMuted}"
+                        StrokeThickness="1.5"
+                        Fill="Transparent"
+                        Width="11" Height="11"
+                        Stretch="Uniform"
+                        VerticalAlignment="Center"/>
 					<TextBlock
                         Text="Tick status"
-                        FontSize="{DynamicResource FontSizeBase}"
-                        Foreground="{DynamicResource BrushTextSecondary}"
+                        FontSize="{DynamicResource FontSizeSm}"
+                        Foreground="{DynamicResource BrushTextMuted}"
                         VerticalAlignment="Center"/>
 				</StackPanel>
 
+				<!--
+                    SegmentCount = TicksPerWorkHour (dynamic: 4/5/6/7)
+                    FilledCount  = how many ticks completed in current work hour
+                -->
 				<controls:SegmentedProgressBar
-                    SegmentCount="8"
-                    FilledCount="{Binding TickSecondsElapsed, ElementName=Root}"
+                    SegmentCount="{Binding TicksPerWorkHour, ElementName=Root}"
+                    FilledCount="{Binding TicksElapsedInWorkHour, ElementName=Root}"
                     FilledBrush="{DynamicResource BrushSuccess}"
                     EmptyBrush="{DynamicResource BrushBorderSubtle}"/>
 			</StackPanel>
 
-			<!-- WORK HOURS -->
-			<StackPanel Spacing="6">
+			<!-- WORK HOURS BAR -->
+			<StackPanel Spacing="5">
 				<StackPanel Orientation="Horizontal" Spacing="6">
-					<TextBlock Text="🕐" FontSize="{DynamicResource FontSizeBase}" VerticalAlignment="Center"/>
+					<Path
+                        Data="M12 22a10 10 0 100-20 10 10 0 000 20zm0-14v4l3 3"
+                        Stroke="{DynamicResource BrushTextMuted}"
+                        StrokeThickness="1.5"
+                        Fill="Transparent"
+                        Width="11" Height="11"
+                        Stretch="Uniform"
+                        VerticalAlignment="Center"/>
 					<TextBlock
                         Text="Work hours"
-                        FontSize="{DynamicResource FontSizeBase}"
-                        Foreground="{DynamicResource BrushTextSecondary}"
+                        FontSize="{DynamicResource FontSizeSm}"
+                        Foreground="{DynamicResource BrushTextMuted}"
                         VerticalAlignment="Center"/>
 				</StackPanel>
 
+				<!--
+                    SegmentCount = 8 (always — WorkHoursPerDay)
+                    FilledCount  = how many work hours completed in current day
+                -->
 				<controls:SegmentedProgressBar
                     SegmentCount="8"
-                    FilledCount="{Binding WorkHourTicksElapsed, ElementName=Root}"
+                    FilledCount="{Binding WorkHoursElapsedInDay, ElementName=Root}"
                     FilledBrush="{DynamicResource BrushInfo}"
                     EmptyBrush="{DynamicResource BrushBorderSubtle}"/>
 			</StackPanel>
