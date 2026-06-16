@@ -13,14 +13,14 @@ namespace Headquartz.App.Controls;
 /// A horizontal row of pill-shaped segments (default 8).
 ///
 /// Supports two fill modes via <see cref="FilledCount"/> (whole pills)
-/// and <see cref="PartialFillRatio"/> (0.0–1.0 opacity on the next pill),
+/// and <see cref="PartialFillRatio"/> (0.0–1.0 fill width on the next pill),
 /// so callers can animate a smooth in-progress indicator:
 ///
 ///   FilledCount       = number of fully completed pills
 ///   PartialFillRatio  = how far the NEXT pill is filled (0 = empty, 1 = full)
 ///
-/// The pill at index FilledCount gets an interpolated brush opacity equal to
-/// PartialFillRatio; everything past that index uses EmptyBrush.
+/// The pill at index FilledCount gets a fill width equal to PartialFillRatio;
+/// everything past that index uses EmptyBrush as background.
 /// </summary>
 public partial class SegmentedProgressBar : UserControl
 {
@@ -32,7 +32,7 @@ public partial class SegmentedProgressBar : UserControl
 
     /// <summary>
     /// 0.0–1.0. How filled the pill immediately after FilledCount is.
-    /// 0 = completely empty, 1 = fully lit (same as FilledBrush at full opacity).
+    /// 0 = completely empty, 1 = fully lit (same as FilledBrush).
     /// </summary>
     public static readonly StyledProperty<double> PartialFillRatioProperty =
         AvaloniaProperty.Register<SegmentedProgressBar, double>(nameof(PartialFillRatio), 0.0);
@@ -115,20 +115,23 @@ public partial class SegmentedProgressBar : UserControl
             if (i < filled)
             {
                 // Fully lit pill
-                Segments[i].Brush = FilledBrush;
-                Segments[i].Opacity = 1.0;
+                Segments[i].FilledBrush = FilledBrush;
+                Segments[i].EmptyBrush = EmptyBrush;
+                Segments[i].FillWidth = 100.0; // 100% filled
             }
             else if (i == filled && partial > 0.0 && filled < total)
             {
-                // In-progress pill — interpolate opacity so it feels like ms-accurate fill
-                Segments[i].Brush = FilledBrush;
-                Segments[i].Opacity = 0.15 + partial * 0.85; // min 15% so it's subtly visible
+                // In-progress pill — fill width equals partial ratio
+                Segments[i].FilledBrush = FilledBrush;
+                Segments[i].EmptyBrush = EmptyBrush;
+                Segments[i].FillWidth = partial * 100.0; // Percentage filled
             }
             else
             {
                 // Empty pill
-                Segments[i].Brush = EmptyBrush;
-                Segments[i].Opacity = 1.0;
+                Segments[i].FilledBrush = FilledBrush;
+                Segments[i].EmptyBrush = EmptyBrush;
+                Segments[i].FillWidth = 0.0; // 0% filled
             }
         }
     }
@@ -137,19 +140,26 @@ public partial class SegmentedProgressBar : UserControl
 /// <summary>A single pill segment's visual state.</summary>
 public class SegmentItem : INotifyPropertyChanged
 {
-    private IBrush _brush = Brushes.LightGray;
-    private double _opacity = 1.0;
+    private IBrush _filledBrush = Brushes.Green;
+    private IBrush _emptyBrush = Brushes.LightGray;
+    private double _fillWidth = 0.0;
 
-    public IBrush Brush
+    public IBrush FilledBrush
     {
-        get => _brush;
-        set { if (!Equals(_brush, value)) { _brush = value; OnPropertyChanged(); } }
+        get => _filledBrush;
+        set { if (!Equals(_filledBrush, value)) { _filledBrush = value; OnPropertyChanged(); } }
     }
 
-    public double Opacity
+    public IBrush EmptyBrush
     {
-        get => _opacity;
-        set { if (Math.Abs(_opacity - value) > 0.001) { _opacity = value; OnPropertyChanged(); } }
+        get => _emptyBrush;
+        set { if (!Equals(_emptyBrush, value)) { _emptyBrush = value; OnPropertyChanged(); } }
+    }
+
+    public double FillWidth
+    {
+        get => _fillWidth;
+        set { if (Math.Abs(_fillWidth - value) > 0.001) { _fillWidth = value; OnPropertyChanged(); } }
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;

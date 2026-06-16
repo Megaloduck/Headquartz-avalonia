@@ -7,22 +7,29 @@
              x:Class="Headquartz.App.Controls.SegmentedProgressBar"
              x:Name="Root">
 
-	<ItemsControl ItemsSource="{Binding Segments, ElementName=Root}">
-		<ItemsControl.ItemsPanel>
-			<ItemsPanelTemplate>
-				<UniformGrid Rows="1"/>
-			</ItemsPanelTemplate>
-		</ItemsControl.ItemsPanel>
-		<ItemsControl.ItemTemplate>
-			<DataTemplate>
-				<Border
+    <ItemsControl ItemsSource="{Binding Segments, ElementName=Root}">
+        <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+                <UniformGrid Rows="1"/>
+            </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+        <ItemsControl.ItemTemplate>
+            <DataTemplate>
+                <Border
                     Height="5"
                     Margin="1,0"
                     CornerRadius="3"
-                    Background="{Binding Brush}"
-                    Opacity="{Binding Opacity}"/>
-			</DataTemplate>
-		</ItemsControl.ItemTemplate>
-	</ItemsControl>
+                    Background="{Binding EmptyBrush, ElementName=Root}"
+                    ClipToBounds="True">
+                    <Border
+                        Height="5"
+                        CornerRadius="3"
+                        Background="{Binding FilledBrush, ElementName=Root}"
+                        Width="{Binding FillWidth}"
+                        HorizontalAlignment="Left"/>
+                </Border>
+            </DataTemplate>
+        </ItemsControl.ItemTemplate>
+    </ItemsControl>
 
 </UserControl>
