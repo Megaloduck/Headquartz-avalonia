@@ -176,6 +176,7 @@
                         DateLabel="{Binding DateLabel}"
                         TicksPerWorkHour="{Binding TicksPerWorkHour}"
                         TicksElapsedInWorkHour="{Binding TicksElapsedInWorkHour}"
+                        TickPartialFillRatio="{Binding TickPartialFillRatio}"
                         WorkHoursElapsedInDay="{Binding WorkHoursElapsedInDay}"/>
 
                     <!-- ── Bottom: Settings + Log out ────── -->

@@ -1,88 +1,92 @@
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
+using System;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace Headquartz.App.Controls;
 
 /// <summary>
-/// A horizontal row of pill-shaped segments (default 8), where the first
-/// <see cref="FilledCount"/> segments are rendered with <see cref="FilledBrush"/>
-/// and the remainder with <see cref="EmptyBrush"/>.
+/// A horizontal row of pill-shaped segments (default 8).
 ///
-/// Used to visualize discrete time units, e.g.:
-///   - Tick status: 1 tick = 8 seconds  → SegmentCount=8, FilledCount=seconds elapsed in tick
-///   - Work hours:  1 work hour = 8 ticks → SegmentCount=8, FilledCount=ticks elapsed in work hour
+/// Supports two fill modes via <see cref="FilledCount"/> (whole pills)
+/// and <see cref="PartialFillRatio"/> (0.0–1.0 opacity on the next pill),
+/// so callers can animate a smooth in-progress indicator:
+///
+///   FilledCount       = number of fully completed pills
+///   PartialFillRatio  = how far the NEXT pill is filled (0 = empty, 1 = full)
+///
+/// The pill at index FilledCount gets an interpolated brush opacity equal to
+/// PartialFillRatio; everything past that index uses EmptyBrush.
 /// </summary>
 public partial class SegmentedProgressBar : UserControl
 {
     public static readonly StyledProperty<int> SegmentCountProperty =
-        AvaloniaProperty.Register<SegmentedProgressBar, int>(
-            nameof(SegmentCount), 8);
+        AvaloniaProperty.Register<SegmentedProgressBar, int>(nameof(SegmentCount), 8);
 
     public static readonly StyledProperty<int> FilledCountProperty =
-        AvaloniaProperty.Register<SegmentedProgressBar, int>(
-            nameof(FilledCount), 0);
+        AvaloniaProperty.Register<SegmentedProgressBar, int>(nameof(FilledCount), 0);
+
+    /// <summary>
+    /// 0.0–1.0. How filled the pill immediately after FilledCount is.
+    /// 0 = completely empty, 1 = fully lit (same as FilledBrush at full opacity).
+    /// </summary>
+    public static readonly StyledProperty<double> PartialFillRatioProperty =
+        AvaloniaProperty.Register<SegmentedProgressBar, double>(nameof(PartialFillRatio), 0.0);
 
     public static readonly StyledProperty<IBrush> FilledBrushProperty =
-        AvaloniaProperty.Register<SegmentedProgressBar, IBrush>(
-            nameof(FilledBrush), Brushes.Green);
+        AvaloniaProperty.Register<SegmentedProgressBar, IBrush>(nameof(FilledBrush), Brushes.Green);
 
     public static readonly StyledProperty<IBrush> EmptyBrushProperty =
-        AvaloniaProperty.Register<SegmentedProgressBar, IBrush>(
-            nameof(EmptyBrush), Brushes.LightGray);
+        AvaloniaProperty.Register<SegmentedProgressBar, IBrush>(nameof(EmptyBrush), Brushes.LightGray);
 
-    /// <summary>Total number of pill segments to render. Default 8.</summary>
     public int SegmentCount
     {
         get => GetValue(SegmentCountProperty);
         set => SetValue(SegmentCountProperty, value);
     }
 
-    /// <summary>
-    /// How many segments (from the left) should appear "filled".
-    /// Automatically clamped to [0, SegmentCount].
-    /// </summary>
+    /// <summary>Number of fully completed (fully lit) pills.</summary>
     public int FilledCount
     {
         get => GetValue(FilledCountProperty);
         set => SetValue(FilledCountProperty, value);
     }
 
-    /// <summary>Brush used for filled segments.</summary>
+    /// <summary>
+    /// Progress of the current (next) pill: 0.0 = empty, 1.0 = fully lit.
+    /// Ignored when FilledCount >= SegmentCount.
+    /// </summary>
+    public double PartialFillRatio
+    {
+        get => GetValue(PartialFillRatioProperty);
+        set => SetValue(PartialFillRatioProperty, value);
+    }
+
     public IBrush FilledBrush
     {
         get => GetValue(FilledBrushProperty);
         set => SetValue(FilledBrushProperty, value);
     }
 
-    /// <summary>Brush used for empty (not-yet-reached) segments.</summary>
     public IBrush EmptyBrush
     {
         get => GetValue(EmptyBrushProperty);
         set => SetValue(EmptyBrushProperty, value);
     }
 
-    /// <summary>Backing collection rendered by the ItemsControl in XAML.</summary>
     public ObservableCollection<SegmentItem> Segments { get; } = [];
 
     static SegmentedProgressBar()
     {
-        SegmentCountProperty.Changed.AddClassHandler<SegmentedProgressBar>(
-            (control, _) => control.Rebuild());
-
-        FilledCountProperty.Changed.AddClassHandler<SegmentedProgressBar>(
-            (control, _) => control.Rebuild());
-
-        FilledBrushProperty.Changed.AddClassHandler<SegmentedProgressBar>(
-            (control, _) => control.Rebuild());
-
-        EmptyBrushProperty.Changed.AddClassHandler<SegmentedProgressBar>(
-            (control, _) => control.Rebuild());
+        SegmentCountProperty.Changed.AddClassHandler<SegmentedProgressBar>((c, _) => c.Rebuild());
+        FilledCountProperty.Changed.AddClassHandler<SegmentedProgressBar>((c, _) => c.Rebuild());
+        PartialFillRatioProperty.Changed.AddClassHandler<SegmentedProgressBar>((c, _) => c.Rebuild());
+        FilledBrushProperty.Changed.AddClassHandler<SegmentedProgressBar>((c, _) => c.Rebuild());
+        EmptyBrushProperty.Changed.AddClassHandler<SegmentedProgressBar>((c, _) => c.Rebuild());
     }
 
     public SegmentedProgressBar()
@@ -91,21 +95,14 @@ public partial class SegmentedProgressBar : UserControl
         Rebuild();
     }
 
-    private void InitializeComponent()
-    {
-        AvaloniaXamlLoader.Load(this);
-    }
+    private void InitializeComponent() => AvaloniaXamlLoader.Load(this);
 
     private void Rebuild()
     {
         int total = SegmentCount;
-        int filled = FilledCount;
+        int filled = Math.Clamp(FilledCount, 0, total);
+        double partial = Math.Clamp(PartialFillRatio, 0.0, 1.0);
 
-        if (filled < 0) filled = 0;
-        if (filled > total) filled = total;
-
-        // Reuse existing items where possible instead of clearing/rebuilding
-        // the whole collection every time, so the UI doesn't flicker.
         if (Segments.Count != total)
         {
             Segments.Clear();
@@ -114,7 +111,26 @@ public partial class SegmentedProgressBar : UserControl
         }
 
         for (int i = 0; i < total; i++)
-            Segments[i].Brush = i < filled ? FilledBrush : EmptyBrush;
+        {
+            if (i < filled)
+            {
+                // Fully lit pill
+                Segments[i].Brush = FilledBrush;
+                Segments[i].Opacity = 1.0;
+            }
+            else if (i == filled && partial > 0.0 && filled < total)
+            {
+                // In-progress pill — interpolate opacity so it feels like ms-accurate fill
+                Segments[i].Brush = FilledBrush;
+                Segments[i].Opacity = 0.15 + partial * 0.85; // min 15% so it's subtly visible
+            }
+            else
+            {
+                // Empty pill
+                Segments[i].Brush = EmptyBrush;
+                Segments[i].Opacity = 1.0;
+            }
+        }
     }
 }
 
@@ -122,20 +138,21 @@ public partial class SegmentedProgressBar : UserControl
 public class SegmentItem : INotifyPropertyChanged
 {
     private IBrush _brush = Brushes.LightGray;
+    private double _opacity = 1.0;
 
     public IBrush Brush
     {
         get => _brush;
-        set
-        {
-            if (Equals(_brush, value)) return;
-            _brush = value;
-            OnPropertyChanged();
-        }
+        set { if (!Equals(_brush, value)) { _brush = value; OnPropertyChanged(); } }
+    }
+
+    public double Opacity
+    {
+        get => _opacity;
+        set { if (Math.Abs(_opacity - value) > 0.001) { _opacity = value; OnPropertyChanged(); } }
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;
-
     private void OnPropertyChanged([CallerMemberName] string? name = null) =>
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }

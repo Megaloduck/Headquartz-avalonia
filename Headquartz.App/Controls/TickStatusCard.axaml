@@ -8,15 +8,14 @@
              x:Name="Root">
 
 	<!--
-        Time hierarchy widget — values driven by SimulationProfile:
+        Tick bar   : SegmentCount = TicksPerWorkHour (4/5/6/7 by difficulty)
+                     FilledCount  = whole completed ticks in current work hour
+                     PartialFillRatio = ms elapsed in current tick / TickDelayMs
+                     → each pill animates smoothly as ms pass
 
-          Tick bar   : SegmentCount = TicksPerWorkHour (4/5/6/7)
-                       FilledCount  = TicksElapsedInWorkHour
-                       1 pill lights up every tick (= 5 real seconds)
-
-          Work hours : SegmentCount = 8  (always — WorkHoursPerDay)
-                       FilledCount  = WorkHoursElapsedInDay
-                       1 pill lights up every TicksPerWorkHour ticks
+        Work hours : SegmentCount = 8 (always)
+                     FilledCount  = whole work hours completed in current day
+                     No partial — snaps on hour completion
     -->
 
 	<Border
@@ -53,13 +52,10 @@
                         VerticalAlignment="Center"/>
 				</StackPanel>
 
-				<!--
-                    SegmentCount = TicksPerWorkHour (dynamic: 4/5/6/7)
-                    FilledCount  = how many ticks completed in current work hour
-                -->
 				<controls:SegmentedProgressBar
                     SegmentCount="{Binding TicksPerWorkHour, ElementName=Root}"
                     FilledCount="{Binding TicksElapsedInWorkHour, ElementName=Root}"
+                    PartialFillRatio="{Binding TickPartialFillRatio, ElementName=Root}"
                     FilledBrush="{DynamicResource BrushSuccess}"
                     EmptyBrush="{DynamicResource BrushBorderSubtle}"/>
 			</StackPanel>
@@ -82,10 +78,6 @@
                         VerticalAlignment="Center"/>
 				</StackPanel>
 
-				<!--
-                    SegmentCount = 8 (always — WorkHoursPerDay)
-                    FilledCount  = how many work hours completed in current day
-                -->
 				<controls:SegmentedProgressBar
                     SegmentCount="8"
                     FilledCount="{Binding WorkHoursElapsedInDay, ElementName=Root}"
