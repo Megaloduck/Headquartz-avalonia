@@ -1,9 +1,10 @@
-﻿using Headquartz.Domain.Entities;
+using Headquartz.Domain.Entities;
 using Headquartz.Domain.Enums;
 
 using Headquartz.Simulation.Events;
 using Headquartz.Simulation.Ticks;
 using Headquartz.Simulation.Commands;
+using Headquartz.Simulation.Modules.Base;
 
 using Headquartz.Shared.Networking;
 
@@ -17,42 +18,55 @@ public class SimulationEngine
     public CommandProcessor Commands { get; }
 
     /// <summary>
+    /// The industry-specific simulation context that provides all
+    /// per-industry behavior (products, events, task names, etc.).
+    /// </summary>
+    public IIndustrySimulationContext? IndustryContext { get; }
+
+    /// <summary>
     /// The difficulty profile driving event frequency,
     /// cascade severity, and tick timing.
     /// </summary>
     public SimulationProfile Profile { get; }
 
     private volatile int _tickDelayMs;
+    private readonly IndustryProfile _industryProfile;
     private readonly List<ISimulationSystem> _systems = [];
     private readonly EventSystem _eventSystem;
+    private readonly CalendarEventSystem _calendarEventSystem;
     private readonly CascadeSystem _cascadeSystem;
 
     public event Action? OnUpdated;
+
+    public CalendarEventSystem CalendarEvents => _calendarEventSystem;
 
     // =========================================================
     // CONSTRUCTORS
     // =========================================================
 
     /// <summary>
-    /// Default constructor — uses Manager (medium) difficulty profile.
+    /// Default constructor — uses Food as default industry.
     /// </summary>
     public SimulationEngine()
-        : this(SimulationProfile.Manager) { }
+        : this(SimulationProfile.Manager, IndustryType.Food) { }
 
     /// <summary>
     /// Profile-aware constructor used by RootViewModel after onboarding.
     /// </summary>
-    public SimulationEngine(SimulationProfile profile)
+    public SimulationEngine(SimulationProfile profile, IndustryType industry = IndustryType.Food)
     {
         Profile = profile;
         _tickDelayMs = profile.TickDelayMs;
+        IndustryContext = IndustryModuleRegistry.GetContext(industry);
+        _industryProfile = IndustryContext?.GetProfile() ?? IndustryProfile.For(industry);
 
         Company = new Company
         {
             Id = Guid.NewGuid(),
             Name = "Headquartz Industries",
-            Cash = profile.InitialCapital,
-            Reputation = 50,
+            Industry = industry,
+            Cash = profile.InitialCapital * _industryProfile.CashMultiplier,
+            Reputation = _industryProfile.StartingReputation,
         };
 
         Events = new EventBus();
@@ -64,6 +78,7 @@ public class SimulationEngine
 
         Clock = new SimulationClock();
         _eventSystem = new EventSystem();
+        _calendarEventSystem = new CalendarEventSystem();
         _cascadeSystem = new CascadeSystem();
 
         RegisterEventHandlers();
@@ -125,6 +140,7 @@ public class SimulationEngine
         ProcessTasks();
         GenerateRandomEvents();
         RunCascade();
+        _calendarEventSystem.Update(this);
         CleanupCompletedTasks();
 
         OnUpdated?.Invoke();
@@ -199,50 +215,60 @@ public class SimulationEngine
     }
 
     // =========================================================
-    // INVENTORY
+    // INVENTORY — delegated to industry context
     // =========================================================
 
     private void ProcessInventory()
     {
-        foreach (var item in Company.Inventory)
+        if (IndustryContext != null)
+            IndustryContext.ProcessInventory(this);
+        else
         {
-            item.Quantity -= Random.Shared.Next(0, 5);
-            item.Quantity = Math.Max(0, item.Quantity);
-
-            if (item.Quantity <= item.MinimumStock)
-                Events.Publish(new InventoryLowEvent { Item = item });
+            // Absolute fallback
+            foreach (var item in Company.Inventory)
+            {
+                item.Quantity -= Random.Shared.Next(0, 5);
+                item.Quantity = Math.Max(0, item.Quantity);
+                if (item.Quantity <= item.MinimumStock)
+                    Events.Publish(new InventoryLowEvent { Item = item });
+            }
         }
     }
 
     // =========================================================
-    // ORDERS
+    // ORDERS — delegated to industry context
     // =========================================================
 
     private void ProcessOrders()
     {
-        foreach (var order in Company.Orders)
+        if (IndustryContext != null)
+            IndustryContext.ProcessOrders(this);
+        else
         {
-            if (order.Status is OrderStatus.Delivered or
-                                OrderStatus.Cancelled)
-                continue;
-
-            order.Status = order.Status switch
+            // Absolute fallback
+            foreach (var order in Company.Orders)
             {
-                OrderStatus.Pending => OrderStatus.Approved,
-                OrderStatus.Approved => OrderStatus.InProduction,
-                OrderStatus.InProduction => OrderStatus.ReadyForShipment,
-                OrderStatus.ReadyForShipment => OrderStatus.Shipping,
-                OrderStatus.Shipping => OrderStatus.Delivered,
-                _ => order.Status,
-            };
+                if (order.Status is OrderStatus.Delivered or OrderStatus.Cancelled)
+                    continue;
 
-            if (order.Status == OrderStatus.Delivered)
-                Company.Reputation = Math.Min(100, Company.Reputation + 1);
+                order.Status = order.Status switch
+                {
+                    OrderStatus.Pending => OrderStatus.Approved,
+                    OrderStatus.Approved => OrderStatus.InProduction,
+                    OrderStatus.InProduction => OrderStatus.ReadyForShipment,
+                    OrderStatus.ReadyForShipment => OrderStatus.Shipping,
+                    OrderStatus.Shipping => OrderStatus.Delivered,
+                    _ => order.Status,
+                };
+
+                if (order.Status == OrderStatus.Delivered)
+                    Company.Reputation = Math.Min(100, Company.Reputation + 1);
+            }
         }
     }
 
     // =========================================================
-    // ORDER GENERATION
+    // ORDER GENERATION — delegated to industry context
     // =========================================================
 
     private void GenerateRandomOrders()
@@ -256,27 +282,28 @@ public class SimulationEngine
 
     private void GenerateOrder()
     {
-        int deadlineDays = Random.Shared.Next(5, 14);
+        if (IndustryContext == null) return;
+
+        int deadlineDays = IndustryContext.GetOrderDeadlineDays();
 
         var order = new SalesOrder
         {
             Id = Guid.NewGuid(),
-            ClientName = GetRandomClientName(),
-            ProductName = GetRandomProductName(),
-            Quantity = Random.Shared.Next(10, 100),
-            UnitPrice = Random.Shared.Next(50, 150),
+            ClientName = IndustryContext.GetRandomClientName(),
+            ProductName = IndustryContext.GetRandomProductName(),
+            Quantity = IndustryContext.GetOrderQuantity(),
+            UnitPrice = IndustryContext.GetOrderUnitPrice(),
             Status = OrderStatus.Pending,
             CreatedAt = Clock.WorldTime,
             DeliveryDeadline = Clock.WorldTime.AddDays(deadlineDays),
         };
 
         Company.Orders.Add(order);
-
         Events.Publish(new OrderCreatedEvent { Order = order });
     }
 
     // =========================================================
-    // TASK SYSTEM
+    // TASK SYSTEM — delegated to industry context for flavor
     // =========================================================
 
     private void GenerateDepartmentTasks()
@@ -293,11 +320,14 @@ public class SimulationEngine
 
         int duration = Random.Shared.Next(3, 10);
 
+        var taskName = IndustryContext?.GetTaskName(department) ?? "General Task";
+        var taskDesc = IndustryContext?.GetTaskDescription(department) ?? "Operational department task";
+
         var task = new CompanyTask
         {
             Id = Guid.NewGuid(),
-            Name = GenerateTaskName(department),
-            Description = "Operational department task",
+            Name = taskName,
+            Description = taskDesc,
             Department = department,
             Priority = (TaskPriority)Random.Shared.Next(0, 4),
             Status = CompanyTaskStatus.Pending,
@@ -310,7 +340,6 @@ public class SimulationEngine
         };
 
         Company.Tasks.Add(task);
-
         Events.Publish(new TaskCreatedEvent { Task = task });
     }
 
@@ -370,6 +399,10 @@ public class SimulationEngine
                 task.Status = CompanyTaskStatus.Completed;
                 task.Progress = 1.0;
 
+                // Industry-specific resource consumption on completion
+                if (task.Department == DepartmentType.Production && IndustryContext != null)
+                    IndustryContext.ConsumeProductionResources(this);
+
                 Events.Publish(new TaskCompletedEvent { Task = task });
             }
         }
@@ -384,17 +417,19 @@ public class SimulationEngine
     }
 
     // =========================================================
-    // RANDOM EVENTS — profile-driven
+    // RANDOM EVENTS — profile-driven, with industry flavor
     // =========================================================
 
     private void GenerateRandomEvents()
     {
-        // Roll against the profile's event frequency.
-        // The old hard-coded 0.95 guard is replaced by the profile value.
-        if (Random.Shared.NextDouble() >= Profile.EventFrequency) return;
+        double frequency = Math.Clamp(
+            Profile.EventFrequency * _industryProfile.EventFrequencyModifier,
+            0.0, 1.0);
+
+        if (Random.Shared.NextDouble() >= frequency) return;
 
         _eventSystem.Update(
-            Company,
+            this,
             eventFrequency: 1.0,          // already gated above
             severityBias: Profile.SeverityBias);
     }
@@ -403,8 +438,6 @@ public class SimulationEngine
     // CASCADE — profile-driven
     // =========================================================
 
-    // Called explicitly in Update() so we can pass the multiplier.
-    // (Cascade is removed from _systems to avoid the parameterless call.)
     private void RunCascade()
     {
         _cascadeSystem.Update(this, Profile.CascadeMultiplier);
@@ -435,9 +468,7 @@ public class SimulationEngine
 
     private void HandleInventoryLow(InventoryLowEvent e)
     {
-        Company.Reputation =
-            Math.Max(0, Company.Reputation - 1);
-
+        Company.Reputation = Math.Max(0, Company.Reputation - 1);
         Company.Cash -= e.Item.UnitCost * 20;
     }
 
@@ -471,9 +502,7 @@ public class SimulationEngine
 
     private void HandleTaskCompleted(TaskCompletedEvent e)
     {
-        Company.Reputation =
-            Math.Min(100, Company.Reputation + 1);
-
+        Company.Reputation = Math.Min(100, Company.Reputation + 1);
         Company.Cash += Random.Shared.Next(1_000, 5_000);
 
         foreach (var emp in Company.Employees
@@ -520,13 +549,13 @@ public class SimulationEngine
     }
 
     // =========================================================
-    // SEEDING
+    // SEEDING — all delegated to industry context
     // =========================================================
 
     private void SeedDepartments()
     {
-        Company.Departments =
-        [
+        var departments = new List<Department>
+        {
             new() { Type = DepartmentType.HumanResources, Budget = 10_000, Efficiency = 50 },
             new() { Type = DepartmentType.Finance,        Budget = 15_000, Efficiency = 60 },
             new() { Type = DepartmentType.Sales,          Budget = 12_000, Efficiency = 55 },
@@ -534,70 +563,79 @@ public class SimulationEngine
             new() { Type = DepartmentType.Production,     Budget = 25_000, Efficiency = 70 },
             new() { Type = DepartmentType.Warehouse,      Budget = 10_000, Efficiency = 50 },
             new() { Type = DepartmentType.Logistics,      Budget = 15_000, Efficiency = 60 },
-        ];
+        };
+
+        foreach (var dept in departments)
+        {
+            if (_industryProfile.DepartmentEfficiencyDelta.TryGetValue(dept.Type, out int effDelta))
+                dept.Efficiency = Math.Clamp(dept.Efficiency + effDelta, 0, 100);
+
+            if (_industryProfile.DepartmentBudgetDelta.TryGetValue(dept.Type, out decimal budgetDelta))
+                dept.Budget = Math.Max(0, dept.Budget + budgetDelta);
+        }
+
+        Company.Departments = departments;
     }
 
     private void SeedEmployees()
     {
-        Company.Employees =
-        [
-            new() { Id = Guid.NewGuid(), Name = "Alice",  Role = EmployeeRole.Manager,    Department = DepartmentType.Finance,        Salary = 5_000, Morale = 75, Productivity = 80 },
-            new() { Id = Guid.NewGuid(), Name = "Bob",    Role = EmployeeRole.Worker,     Department = DepartmentType.Warehouse,      Salary = 2_500, Morale = 60, Productivity = 70 },
-            new() { Id = Guid.NewGuid(), Name = "Carol",  Role = EmployeeRole.Supervisor, Department = DepartmentType.Production,     Salary = 3_500, Morale = 65, Productivity = 75 },
-            new() { Id = Guid.NewGuid(), Name = "David",  Role = EmployeeRole.Worker,     Department = DepartmentType.Logistics,      Salary = 2_600, Morale = 55, Productivity = 68 },
-            new() { Id = Guid.NewGuid(), Name = "Emma",   Role = EmployeeRole.Manager,    Department = DepartmentType.Marketing,      Salary = 4_800, Morale = 80, Productivity = 82 },
-            new() { Id = Guid.NewGuid(), Name = "Frank",  Role = EmployeeRole.Worker,     Department = DepartmentType.Sales,          Salary = 2_800, Morale = 70, Productivity = 72 },
-            new() { Id = Guid.NewGuid(), Name = "Grace",  Role = EmployeeRole.Worker,     Department = DepartmentType.HumanResources, Salary = 2_700, Morale = 68, Productivity = 71 },
-            new() { Id = Guid.NewGuid(), Name = "Henry",  Role = EmployeeRole.Worker,     Department = DepartmentType.Production,     Salary = 2_600, Morale = 60, Productivity = 65 },
-        ];
+        List<Employee> roster;
+
+        if (IndustryContext != null)
+        {
+            roster = IndustryContext.GetInitialEmployees().ToList();
+        }
+        else
+        {
+            roster =
+            [
+                new() { Id = Guid.NewGuid(), Name = "Alice",  Role = EmployeeRole.Manager,    Department = DepartmentType.Finance,        Salary = 5_000, Morale = 75, Productivity = 80 },
+                new() { Id = Guid.NewGuid(), Name = "Bob",    Role = EmployeeRole.Worker,     Department = DepartmentType.Warehouse,      Salary = 2_500, Morale = 60, Productivity = 70 },
+                new() { Id = Guid.NewGuid(), Name = "Carol",  Role = EmployeeRole.Supervisor, Department = DepartmentType.Production,     Salary = 3_500, Morale = 65, Productivity = 75 },
+                new() { Id = Guid.NewGuid(), Name = "David",  Role = EmployeeRole.Worker,     Department = DepartmentType.Logistics,      Salary = 2_600, Morale = 55, Productivity = 68 },
+                new() { Id = Guid.NewGuid(), Name = "Emma",   Role = EmployeeRole.Manager,    Department = DepartmentType.Marketing,      Salary = 4_800, Morale = 80, Productivity = 82 },
+                new() { Id = Guid.NewGuid(), Name = "Frank",  Role = EmployeeRole.Worker,     Department = DepartmentType.Sales,          Salary = 2_800, Morale = 70, Productivity = 72 },
+                new() { Id = Guid.NewGuid(), Name = "Grace",  Role = EmployeeRole.Worker,     Department = DepartmentType.HumanResources, Salary = 2_700, Morale = 68, Productivity = 71 },
+                new() { Id = Guid.NewGuid(), Name = "Henry",  Role = EmployeeRole.Worker,     Department = DepartmentType.Production,     Salary = 2_600, Morale = 60, Productivity = 65 },
+            ];
+        }
+
+        int targetCount = Math.Max(1, (int)Math.Round(roster.Count * _industryProfile.EmployeeCountMultiplier));
+        var selected = roster.Take(targetCount).ToList();
+
+        // If multiplier pushes above base roster, pad with generic workers
+        int extras = targetCount - selected.Count;
+        for (int i = 0; i < extras; i++)
+        {
+            selected.Add(new Employee
+            {
+                Id = Guid.NewGuid(),
+                Name = $"Worker {i + 1}",
+                Role = EmployeeRole.Worker,
+                Department = DepartmentType.Sales,
+                Salary = 2_500,
+                Morale = 60,
+                Productivity = 65,
+            });
+        }
+
+        Company.Employees = selected;
     }
 
     private void SeedInventory()
     {
+        if (IndustryContext != null)
+        {
+            Company.Inventory = IndustryContext.GetInitialInventory().ToList();
+            return;
+        }
+
+        // Absolute fallback
         Company.Inventory =
         [
             new() { Id = Guid.NewGuid(), Name = "Steel",       Quantity = 500, UnitCost = 10, MinimumStock = 100, MaximumStock = 1_000 },
             new() { Id = Guid.NewGuid(), Name = "Plastic",     Quantity = 300, UnitCost =  5, MinimumStock =  50, MaximumStock =   800 },
             new() { Id = Guid.NewGuid(), Name = "Electronics", Quantity = 150, UnitCost = 25, MinimumStock =  40, MaximumStock =   400 },
         ];
-    }
-
-    // =========================================================
-    // HELPERS
-    // =========================================================
-
-    private static string GenerateTaskName(DepartmentType dept) =>
-        dept switch
-        {
-            DepartmentType.HumanResources => "Employee Recruitment",
-            DepartmentType.Finance => "Budget Review",
-            DepartmentType.Sales => "Client Negotiation",
-            DepartmentType.Marketing => "Marketing Campaign",
-            DepartmentType.Production => "Production Batch",
-            DepartmentType.Warehouse => "Inventory Sorting",
-            DepartmentType.Logistics => "Delivery Coordination",
-            _ => "General Task",
-        };
-
-    private static string GetRandomClientName()
-    {
-        string[] clients =
-        [
-            "Global Retail Corp", "TechNova Industries",
-            "BlueStar Logistics", "Apex Manufacturing",
-            "FutureGrid Systems",
-        ];
-        return clients[Random.Shared.Next(clients.Length)];
-    }
-
-    private static string GetRandomProductName()
-    {
-        string[] products =
-        [
-            "Industrial Widget", "Smart Controller",
-            "Metal Housing",     "Control Board",
-            "Sensor Module",
-        ];
-        return products[Random.Shared.Next(products.Length)];
     }
 }

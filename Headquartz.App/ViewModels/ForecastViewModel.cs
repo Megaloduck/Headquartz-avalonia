@@ -7,6 +7,7 @@ using System.Linq;
 using Avalonia.Threading;
 
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 
 using Headquartz.App.Models;
 using Headquartz.App.Services;
@@ -20,29 +21,45 @@ public partial class ForecastViewModel : ViewModelBase
     // ── Summary ───────────────────────────────────────────────
 
     [ObservableProperty] private decimal _currentCash;
-    [ObservableProperty] private decimal _revenuePerTick;
-    [ObservableProperty] private decimal _expensePerTick;
-    [ObservableProperty] private decimal _netPerTick;
-    [ObservableProperty] private decimal _payrollEvery10;
-    [ObservableProperty] private int _ticksUntilBankrupt;
-    [ObservableProperty] private string _runwayLabel = "";
-    [ObservableProperty] private bool _isCritical;
 
-    // ── Collections ──────────────────────────────────────────
+    // ── Calendar ─────────────────────────────────────────────
 
-    public ObservableCollection<ForecastDataPoint> Projection { get; } = [];
-    public ObservableCollection<KpiCardModel> Kpis { get; } = [];
+    [ObservableProperty] private DateTime _currentMonth = DateTime.Now;
+    [ObservableProperty] private string _upcomingEventTitle = "—";
+    [ObservableProperty] private string _simulationElapsedDisplay = "00:00:00";
+    [ObservableProperty] private long _ticksElapsed;
+    [ObservableProperty] private bool _hasNoTodayEvents;
+
+    public ObservableCollection<CalendarDayModel> CalendarDays { get; } = [];
+    public ObservableCollection<CalendarEventCardModel> TodayEvents { get; } = [];
 
     // ── Constructor ───────────────────────────────────────────
 
     public ForecastViewModel(SimulationService simulation)
     {
         _simulation = simulation;
+        _currentMonth = _simulation.Engine.Clock.WorldTime;
 
         _simulation.Engine.OnUpdated +=
             () => Dispatcher.UIThread.Post(Refresh);
 
         Refresh();
+    }
+
+    // ── Navigation ────────────────────────────────────────────
+
+    [RelayCommand]
+    public void PreviousMonth()
+    {
+        CurrentMonth = CurrentMonth.AddMonths(-1);
+        BuildCalendar();
+    }
+
+    [RelayCommand]
+    public void NextMonth()
+    {
+        CurrentMonth = CurrentMonth.AddMonths(1);
+        BuildCalendar();
     }
 
     // ── Refresh ───────────────────────────────────────────────
@@ -54,78 +71,188 @@ public partial class ForecastViewModel : ViewModelBase
 
         CurrentCash = company.Cash;
 
-        // Estimate revenue per tick from recent order flow
-        int recentOrders = company.Orders
-            .Count(o => o.Status == Domain.Enums.OrderStatus.Delivered);
-        RevenuePerTick = recentOrders > 0
-            ? Math.Min(recentOrders * 100m, 5_000m)
-            : 0m;
 
-        // Operational cost per tick
-        ExpensePerTick = company.Departments.Sum(d => d.Budget * 0.01m);
+        // Calendar & stats
+        TicksElapsed = clock.Tick;
 
-        // Payroll every 10 ticks
-        PayrollEvery10 = company.Employees.Sum(e => e.Salary);
+        var elapsed = clock.WorldTime - new DateTime(2026, 1, 1, 8, 0, 0);
+        SimulationElapsedDisplay = $"{elapsed.Days:D2} : {elapsed.Hours:D2} : {elapsed.Minutes:D2}";
 
-        // Net per tick (excluding payroll)
-        NetPerTick = RevenuePerTick - ExpensePerTick;
+        BuildCalendar();
+        RefreshTodayEvents();
+        RefreshUpcomingEvent();
+    }
 
-        // Project 30 ticks forward
-        Projection.Clear();
+    // =========================================================
+    // CALENDAR BUILDER
+    // =========================================================
 
-        decimal runningCash = CurrentCash;
-        long currentTick = clock.Tick;
-        int bankruptTick = -1;
+    private void BuildCalendar()
+    {
+        CalendarDays.Clear();
 
-        for (int i = 1; i <= 30; i++)
+        var year = CurrentMonth.Year;
+        var month = CurrentMonth.Month;
+
+        var firstOfMonth = new DateTime(year, month, 1);
+        var daysInMonth = DateTime.DaysInMonth(year, month);
+
+        // Pad leading days from previous month
+        int startDayOfWeek = (int)firstOfMonth.DayOfWeek;
+        var prevMonth = firstOfMonth.AddMonths(-1);
+        int daysInPrevMonth = DateTime.DaysInMonth(prevMonth.Year, prevMonth.Month);
+
+        for (int i = startDayOfWeek - 1; i >= 0; i--)
         {
-            long projectedTick = currentTick + i;
-            bool isPayroll = projectedTick % 10 == 0;
-
-            decimal tickExpense = ExpensePerTick;
-            decimal tickRevenue = RevenuePerTick;
-
-            runningCash += tickRevenue - tickExpense;
-
-            if (isPayroll)
-                runningCash -= PayrollEvery10;
-
-            bool isNeg = runningCash < 0;
-
-            if (isNeg && bankruptTick < 0)
-                bankruptTick = i;
-
-            Projection.Add(new ForecastDataPoint
+            CalendarDays.Add(new CalendarDayModel
             {
-                Tick = projectedTick,
-                WorldTime = clock.WorldTime.AddMinutes(15 * i).ToString("MM/dd HH:mm"),
-                ProjectedCash = runningCash,
-                Revenue = tickRevenue,
-                Expenses = tickExpense + (isPayroll ? PayrollEvery10 : 0),
-                IsNegative = isNeg,
-                IsPayrollTick = isPayroll,
-                CashDisplay = $"${runningCash:N0}",
+                DayNumber = daysInPrevMonth - i,
+                IsCurrentMonth = false,
+                IsToday = false,
             });
         }
 
-        TicksUntilBankrupt = bankruptTick;
-        IsCritical = bankruptTick is >= 0 and <= 10;
+        var today = _simulation.Engine.Clock.WorldTime.Date;
 
-        RunwayLabel = bankruptTick switch
+        for (int day = 1; day <= daysInMonth; day++)
         {
-            -1 => "✓ Solvent for 30+ ticks",
-            <= 5 => $"🚨 Cash out in {bankruptTick} tick(s)!",
-            <= 10 => $"⚠ Cash out in {bankruptTick} ticks",
-            _ => $"Cash out in ~{bankruptTick} ticks",
-        };
+            var date = new DateTime(year, month, day);
+            var dayModel = new CalendarDayModel
+            {
+                DayNumber = day,
+                IsCurrentMonth = true,
+                IsToday = date == today,
+            };
 
-        // KPIs
-        Kpis.Clear();
-        Kpis.Add(new KpiCardModel { Title = "Current Cash", Value = $"${CurrentCash:N0}" });
-        Kpis.Add(new KpiCardModel { Title = "Revenue / Tick", Value = $"${RevenuePerTick:N0}" });
-        Kpis.Add(new KpiCardModel { Title = "Expense / Tick", Value = $"${ExpensePerTick:N0}" });
-        Kpis.Add(new KpiCardModel { Title = "Net / Tick", Value = $"${NetPerTick:N0}" });
-        Kpis.Add(new KpiCardModel { Title = "Next Payroll", Value = $"${PayrollEvery10:N0}" });
-        Kpis.Add(new KpiCardModel { Title = "Runway", Value = RunwayLabel });
+            // Add events for this date from the registry
+            var defs = Headquartz.Simulation.Systems.CalendarEventRegistry.GetActiveForDate(date);
+            foreach (var def in defs)
+            {
+                var effectSummary = def.DepartmentEffects.FirstOrDefault()?.Description ?? "";
+                dayModel.Events.Add(new CalendarEventCardModel
+                {
+                    Title = def.Title,
+                    Subtitle = def.Campaign,
+                    ColorTag = def.ColorTag,
+                    EffectSummary = effectSummary,
+                    IsActiveToday = date == today,
+                });
+            }
+
+            CalendarDays.Add(dayModel);
+        }
+
+        // Pad trailing days to complete the grid (6 rows × 7 cols = 42 cells)
+        int remaining = 42 - CalendarDays.Count;
+        for (int i = 1; i <= remaining; i++)
+        {
+            CalendarDays.Add(new CalendarDayModel
+            {
+                DayNumber = i,
+                IsCurrentMonth = false,
+                IsToday = false,
+            });
+        }
+    }
+
+    private void RefreshTodayEvents()
+    {
+        TodayEvents.Clear();
+
+        var today = _simulation.Engine.Clock.WorldTime.Date;
+        var activeEvents = _simulation.Engine.CalendarEvents.ActiveEvents
+            .Where(a => a.StartDate <= today && a.EndDate > today)
+            .ToList();
+
+        foreach (var active in activeEvents)
+        {
+            var def = active.Definition;
+            var effectSummary = def.DepartmentEffects.FirstOrDefault()?.Description ?? "";
+            TodayEvents.Add(new CalendarEventCardModel
+            {
+                Title = def.Title,
+                Subtitle = def.Campaign,
+                ColorTag = def.ColorTag,
+                EffectSummary = effectSummary,
+                IsActiveToday = true,
+            });
+        }
+
+        // If nothing is active today, show the next upcoming event
+        if (TodayEvents.Count == 0)
+        {
+            var nextEvent = GetNextUpcomingEvent();
+            if (nextEvent != null)
+            {
+                var effectSummary = nextEvent.DepartmentEffects.FirstOrDefault()?.Description ?? "";
+                TodayEvents.Add(new CalendarEventCardModel
+                {
+                    Title = nextEvent.Title,
+                    Subtitle = $"Upcoming: {nextEvent.Campaign}",
+                    ColorTag = nextEvent.ColorTag,
+                    EffectSummary = effectSummary,
+                    IsActiveToday = false,
+                });
+            }
+        }
+
+        HasNoTodayEvents = TodayEvents.Count == 0;
+    }
+
+    private void RefreshUpcomingEvent()
+    {
+        var next = GetNextUpcomingEvent();
+        UpcomingEventTitle = next?.Title ?? "—";
+    }
+
+    private Headquartz.Domain.Entities.CalendarEventDefinition? GetNextUpcomingEvent()
+    {
+        var today = _simulation.Engine.Clock.WorldTime.Date;
+        var year = today.Year;
+
+        var allEvents = Headquartz.Simulation.Systems.CalendarEventRegistry.Definitions
+            .Where(d => !d.IsRandom)
+            .ToList();
+
+        Headquartz.Domain.Entities.CalendarEventDefinition? next = null;
+        DateTime? nextDate = null;
+
+        foreach (var def in allEvents)
+        {
+            DateTime? candidate = null;
+
+            if (def.IsRecurring && def.RecurringDayOfMonth.HasValue)
+            {
+                int m = def.RecurringMonth ?? today.Month;
+                int d = Math.Min(def.RecurringDayOfMonth.Value, DateTime.DaysInMonth(year, m));
+                candidate = new DateTime(year, m, d);
+                if (candidate < today)
+                {
+                    // Try next month (or next year for month-specific events)
+                    if (def.RecurringMonth.HasValue)
+                        candidate = new DateTime(year + 1, m, d);
+                    else
+                        candidate = candidate.Value.AddMonths(1);
+                }
+            }
+            else if (def.FixedDate.HasValue)
+            {
+                var fd = def.FixedDate.Value;
+                candidate = new DateTime(year, fd.Month, fd.Day);
+                if (candidate < today)
+                    candidate = new DateTime(year + 1, fd.Month, fd.Day);
+            }
+
+            if (candidate.HasValue && candidate >= today)
+            {
+                if (nextDate == null || candidate < nextDate)
+                {
+                    nextDate = candidate;
+                    next = def;
+                }
+            }
+        }
+
+        return next;
     }
 }

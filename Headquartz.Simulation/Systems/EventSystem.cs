@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -12,20 +12,10 @@ public class EventSystem
     private readonly Random _random = new();
 
     /// <summary>
-    /// Fires random company events.
+    /// Fires random company events with industry-specific flavor.
     /// </summary>
-    /// <param name="company">The company to add events to.</param>
-    /// <param name="eventFrequency">
-    ///     Probability (0–1) that an event fires this tick.
-    ///     Sourced from SimulationProfile.EventFrequency.
-    /// </param>
-    /// <param name="severityBias">
-    ///     Shifts severity distribution. Negative = easier (more Low),
-    ///     positive = harder (more Critical). Range roughly −1 to +1.
-    ///     Sourced from SimulationProfile.SeverityBias.
-    /// </param>
     public void Update(
-        Company company,
+        SimulationEngine engine,
         double eventFrequency = 0.15,
         double severityBias = 0.0)
     {
@@ -39,13 +29,21 @@ public class EventSystem
                 Enum.GetValues<DepartmentType>()
                     .Length);
 
-        company.Events.Add(
+        var context = engine.IndustryContext;
+
+        string title = context?.GetEventTitle(department)
+            ?? GenerateDefaultTitle(department);
+
+        string description = context?.GetEventDescription(department)
+            ?? GenerateDefaultDescription(department);
+
+        engine.Company.Events.Add(
             new CompanyEvent
             {
                 Department = department,
                 Severity = GenerateSeverity(severityBias),
-                Title = GenerateTitle(department),
-                Description = GenerateDescription(department),
+                Title = title,
+                Description = description,
                 RemainingTicks = _random.Next(30, 120)
             });
     }
@@ -56,7 +54,6 @@ public class EventSystem
 
     private EventSeverity GenerateSeverity(double bias)
     {
-        // bias shifts the roll: negative makes it easier, positive harder
         double roll = Math.Clamp(
             _random.NextDouble() + bias,
             0.0,
@@ -72,10 +69,10 @@ public class EventSystem
     }
 
     // =========================================================
-    // TITLE / DESCRIPTION
+    // DEFAULT FALLBACKS (used if no context is available)
     // =========================================================
 
-    private string GenerateTitle(DepartmentType department) =>
+    private static string GenerateDefaultTitle(DepartmentType department) =>
         department switch
         {
             DepartmentType.HumanResources => "Employee Conflict",
@@ -88,7 +85,7 @@ public class EventSystem
             _ => "Operational Issue",
         };
 
-    private string GenerateDescription(DepartmentType department) =>
+    private static string GenerateDefaultDescription(DepartmentType department) =>
         department switch
         {
             DepartmentType.HumanResources => "Employee morale is declining.",

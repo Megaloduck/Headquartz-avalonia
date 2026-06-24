@@ -7,20 +7,24 @@
 	<ScrollViewer>
 		<StackPanel Margin="30" Spacing="20">
 
-			<TextBlock FontSize="34" FontWeight="Bold" Text="Recruitment"/>
+			<!-- HEADER -->
+            <StackPanel Spacing="4">
+				<TextBlock FontSize="34" FontWeight="Bold" Text="Recruitment"/>
+				<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="Post jobs, track applicants, schedule interviews, manage offers"/>
+			</StackPanel>
 
 			<!-- FUNDS ROW -->
-			<WrapPanel>
-				<Border Width="220" Margin="10" Padding="20" Background="#202633" CornerRadius="12">
+			<WrapPanel ItemSpacing=" 10">
+				<Border Width="220"  Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 					<StackPanel>
-						<TextBlock FontSize="13" Foreground="#9CA3AF" Text="Available Cash"/>
+						<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="Available Cash"/>
 						<TextBlock FontSize="26" FontWeight="Bold"
                             Text="{Binding CompanyCash, StringFormat='${0:N0}'}"/>
 					</StackPanel>
 				</Border>
-				<Border Width="220" Margin="10" Padding="20" Background="#202633" CornerRadius="12">
+				<Border Width="220" Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 					<StackPanel>
-						<TextBlock FontSize="13" Foreground="#9CA3AF" Text="Hire Cost (2× salary)"/>
+						<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="Hire Cost (2× salary)"/>
 						<TextBlock FontSize="26" FontWeight="Bold"
                             Text="{Binding HireCost, StringFormat='${0:N0}'}"/>
 					</StackPanel>
@@ -28,27 +32,27 @@
 			</WrapPanel>
 
 			<!-- HIRE FORM -->
-			<Border Padding="28" Background="#202633" CornerRadius="12">
+			<Border Padding="28" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 				<StackPanel Spacing="20">
 
 					<TextBlock FontSize="22" FontWeight="Bold" Text="New Employee"/>
 
 					<!-- Name row -->
 					<StackPanel Spacing="8">
-						<TextBlock FontSize="13" Foreground="#9CA3AF" Text="EMPLOYEE NAME"/>
+						<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="EMPLOYEE NAME"/>
 						<StackPanel Orientation="Horizontal" Spacing="10">
 							<TextBox
                                 Text="{Binding EmployeeName}"
                                 PlaceholderText="Enter name..."
                                 MinWidth="280"
                                 Padding="10,8"
-                                Background="#2B3242"
+                                Background="{DynamicResource BrushBgNested}"
                                 BorderThickness="1"
-                                BorderBrush="#374151"
+                                BorderBrush="{DynamicResource BrushBorderStrong}"
                                 CornerRadius="8"/>
 							<Button
                                 Padding="12,8"
-                                Background="#374151"
+                                Background="{DynamicResource BrushBorderStrong}"
                                 CornerRadius="8"
                                 Command="{Binding RandomNameCommand}"
                                 Content="🎲 Random"/>
@@ -59,41 +63,41 @@
 					<Grid ColumnDefinitions="*,24,*">
 
 						<StackPanel Grid.Column="0" Spacing="8">
-							<TextBlock FontSize="13" Foreground="#9CA3AF" Text="ROLE"/>
+							<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="ROLE"/>
 							<ComboBox
                                 ItemsSource="{Binding AvailableRoles}"
                                 SelectedItem="{Binding SelectedRole}"
                                 HorizontalAlignment="Stretch"
                                 Padding="10,8"
-                                Background="#2B3242"
-                                BorderBrush="#374151"/>
+                                Background="{DynamicResource BrushBgNested}"
+                                BorderBrush="{DynamicResource BrushBorderStrong}"/>
 						</StackPanel>
 
 						<StackPanel Grid.Column="2" Spacing="8">
-							<TextBlock FontSize="13" Foreground="#9CA3AF" Text="DEPARTMENT"/>
+							<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="DEPARTMENT"/>
 							<ComboBox
                                 ItemsSource="{Binding AvailableDepartments}"
                                 SelectedItem="{Binding SelectedDepartment}"
                                 HorizontalAlignment="Stretch"
                                 Padding="10,8"
-                                Background="#2B3242"
-                                BorderBrush="#374151"/>
+                                Background="{DynamicResource BrushBgNested}"
+                                BorderBrush="{DynamicResource BrushBorderStrong}"/>
 						</StackPanel>
 
 					</Grid>
 
 					<!-- Salary -->
 					<StackPanel Spacing="8">
-						<TextBlock FontSize="13" Foreground="#9CA3AF" Text="MONTHLY SALARY ($)"/>
+						<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="MONTHLY SALARY ($)"/>
 						<TextBox
                             Text="{Binding Salary}"
                             PlaceholderText="e.g. 2500"
                             MaxWidth="200"
                             HorizontalAlignment="Left"
                             Padding="10,8"
-                            Background="#2B3242"
+                            Background="{DynamicResource BrushBgNested}"
                             BorderThickness="1"
-                            BorderBrush="#374151"
+                            BorderBrush="{DynamicResource BrushBorderStrong}"
                             CornerRadius="8"/>
 					</StackPanel>
 
@@ -101,17 +105,17 @@
 					<Button
                         Padding="18,12"
                         HorizontalAlignment="Left"
-                        Background="#6366F1"
+                        Background="{DynamicResource BrushAccentPrimary}"
                         CornerRadius="8"
                         Command="{Binding HireCommand}">
-						<TextBlock Text="✅  Confirm Hire" FontSize="14" FontWeight="Bold" Foreground="White"/>
+						<TextBlock Text="✅  Confirm Hire" FontSize="14" FontWeight="Bold" Foreground="{DynamicResource BrushTextPrimary}"/>
 					</Button>
 
 					<!-- Status message -->
 					<Border
                         IsVisible="{Binding StatusMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
                         Padding="14,10"
-                        Background="#2B3242"
+                        Background="{DynamicResource BrushBgNested}"
                         CornerRadius="8">
 						<TextBlock
                             Text="{Binding StatusMessage}"

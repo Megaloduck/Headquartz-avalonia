@@ -1,4 +1,4 @@
-﻿using Headquartz.Domain.Enums;
+using Headquartz.Domain.Enums;
 
 namespace Headquartz.Simulation;
 
@@ -45,6 +45,16 @@ public sealed record SimulationProfile
     /// </summary>
     public double SeverityBias { get; init; } = 0.0;
 
+    /// <summary>
+    /// Multiplier applied to event duration in ticks.
+    /// Higher difficulties make events last longer (more punishing).
+    ///   Trainee  → 0.75 (events resolve faster)
+    ///   Manager  → 1.00 (baseline)
+    ///   Director → 1.50 (events last 50% longer)
+    ///   Chairman → 2.00 (events last 2× as long)
+    /// </summary>
+    public double EventDurationMultiplier { get; init; } = 1.0;
+
     // ── Cascade system ────────────────────────────────────────
 
     /// <summary>
@@ -69,6 +79,7 @@ public sealed record SimulationProfile
         EventFrequency = 0.08,
         SeverityBias = -0.3,
         CascadeMultiplier = 0.5,
+        EventDurationMultiplier = 0.75,
         InitialCapital = 150_000m,
     };
 
@@ -79,6 +90,7 @@ public sealed record SimulationProfile
         EventFrequency = 0.15,
         SeverityBias = 0.0,
         CascadeMultiplier = 1.0,
+        EventDurationMultiplier = 1.0,
         InitialCapital = 100_000m,
     };
 
@@ -89,6 +101,7 @@ public sealed record SimulationProfile
         EventFrequency = 0.25,
         SeverityBias = 0.3,
         CascadeMultiplier = 1.5,
+        EventDurationMultiplier = 1.5,
         InitialCapital = 60_000m,
     };
 
@@ -99,6 +112,7 @@ public sealed record SimulationProfile
         EventFrequency = 0.40,
         SeverityBias = 0.6,
         CascadeMultiplier = 2.5,
+        EventDurationMultiplier = 2.0,
         InitialCapital = 30_000m,
     };
 

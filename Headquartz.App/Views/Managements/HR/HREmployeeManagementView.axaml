@@ -7,26 +7,29 @@
 	<ScrollViewer>
 		<StackPanel Margin="30" Spacing="20">
 
-			<TextBlock FontSize="34" FontWeight="Bold" Text="Employee Management"/>
-			<TextBlock FontSize="13" Foreground="#6B7280" Text="Staff directory"/>
+			<!-- HEADER -->
+            <StackPanel Spacing="4">
+				<TextBlock FontSize="34" FontWeight="Bold" Text="Employee Management"/>
+				<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="Staff directory, search or filter, contract details, employment history and status."/>
+			</StackPanel>
 
 			<!-- SUMMARY ROW -->
-			<WrapPanel>
-				<Border Width="200" Margin="10" Padding="20" Background="#202633" CornerRadius="12">
+			<WrapPanel ItemSpacing="10">
+				<Border Width="200" Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 					<StackPanel>
-						<TextBlock FontSize="13" Foreground="#9CA3AF" Text="Total Employees"/>
+						<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="Total Employees"/>
 						<TextBlock FontSize="28" FontWeight="Bold" Text="{Binding TotalEmployees}"/>
 					</StackPanel>
 				</Border>
-				<Border Width="200" Margin="10" Padding="20" Background="#202633" CornerRadius="12">
+				<Border Width="200"  Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 					<StackPanel>
-						<TextBlock FontSize="13" Foreground="#9CA3AF" Text="At-Risk Employees"/>
+						<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="At-Risk Employees"/>
 						<TextBlock FontSize="28" FontWeight="Bold" Text="{Binding AtRiskCount}"/>
 					</StackPanel>
 				</Border>
-				<Border Width="200" Margin="10" Padding="20" Background="#202633" CornerRadius="12">
+				<Border Width="200" Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 					<StackPanel>
-						<TextBlock FontSize="13" Foreground="#9CA3AF" Text="Monthly Payroll"/>
+						<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="Monthly Payroll"/>
 						<TextBlock FontSize="28" FontWeight="Bold" Text="{Binding TotalPayroll, StringFormat='${0:N0}'}"/>
 					</StackPanel>
 				</Border>
@@ -34,7 +37,7 @@
 
 			<!-- FILTER -->
 			<StackPanel Orientation="Horizontal" Spacing="12">
-				<TextBlock Text="Filter by Department:" VerticalAlignment="Center" Foreground="#9CA3AF"/>
+				<TextBlock Text="Filter by Department:" VerticalAlignment="Center" Foreground="{DynamicResource BrushTextSecondary}"/>
 				<ComboBox
                     ItemsSource="{Binding DepartmentFilters}"
                     SelectedItem="{Binding FilterDepartment}"
@@ -42,21 +45,21 @@
 			</StackPanel>
 
 			<!-- EMPLOYEE LIST -->
-			<Border Padding="20" Background="#202633" CornerRadius="12">
+			<Border Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 				<StackPanel>
 					<TextBlock FontSize="22" FontWeight="Bold" Text="Employees" Margin="0,0,0,16"/>
 
 					<TextBlock
                         IsVisible="{Binding !Employees.Count}"
                         Text="No employees found."
-                        Foreground="#6B7280"/>
+                        Foreground="{DynamicResource BrushTextSecondary}"/>
 
 					<ItemsControl ItemsSource="{Binding Employees}">
 						<ItemsControl.ItemTemplate>
 							<DataTemplate>
 								<Border
                                     Margin="0,5" Padding="16"
-                                    Background="#2B3242"
+                                    Background="{DynamicResource BrushBgNested}"
                                     CornerRadius="8">
 									<StackPanel Spacing="10">
 
@@ -70,7 +73,7 @@
                                                     VerticalAlignment="Center"/>
 												<Border
                                                     IsVisible="{Binding IsLowMorale}"
-                                                    Background="#7F1D1D"
+                                                    Background="{DynamicResource BrushAlertCriticalBg}"
                                                     CornerRadius="6"
                                                     Padding="6,2"
                                                     VerticalAlignment="Center">
@@ -78,11 +81,11 @@
                                                         Text="AT RISK"
                                                         FontSize="10"
                                                         FontWeight="Bold"
-                                                        Foreground="#FCA5A5"/>
+                                                        Foreground="{DynamicResource BrushBadgeDangerFg}"/>
 												</Border>
 												<Border
                                                     IsVisible="{Binding IsAssigned}"
-                                                    Background="#1E3A5F"
+                                                    Background="{DynamicResource BrushAlertInfoBg}"
                                                     CornerRadius="6"
                                                     Padding="6,2"
                                                     VerticalAlignment="Center">
@@ -90,7 +93,7 @@
                                                         Text="ON TASK"
                                                         FontSize="10"
                                                         FontWeight="Bold"
-                                                        Foreground="#93C5FD"/>
+                                                        Foreground="{DynamicResource BrushBadgeInfoFg}"/>
 												</Border>
 											</StackPanel>
 
@@ -100,7 +103,7 @@
                                                 Margin="8,0"
                                                 Padding="10,6"
                                                 FontSize="12"
-                                                Background="#1F2937"
+                                                Background="{DynamicResource BrushBgInput}"
                                                 CornerRadius="6"
                                                 Command="{Binding $parent[ItemsControl].DataContext.BoostMoraleCommand}"
                                                 CommandParameter="{Binding}"
@@ -111,7 +114,7 @@
                                                 Grid.Column="2"
                                                 Padding="10,6"
                                                 FontSize="12"
-                                                Background="#450A0A"
+                                                Background="{DynamicResource BrushBadgeDangerBg}"
                                                 CornerRadius="6"
                                                 Command="{Binding $parent[ItemsControl].DataContext.FireEmployeeCommand}"
                                                 CommandParameter="{Binding}"
@@ -120,44 +123,44 @@
 
 										<!-- Dept + Role + Salary -->
 										<StackPanel Orientation="Horizontal" Spacing="20">
-											<TextBlock FontSize="12" Foreground="#6B7280"
+											<TextBlock FontSize="12" Foreground="{DynamicResource BrushTextSecondary}"
                                                 Text="{Binding Department}"/>
-											<TextBlock FontSize="12" Foreground="#6B7280"
+											<TextBlock FontSize="12" Foreground="{DynamicResource BrushTextSecondary}"
                                                 Text="{Binding Role}"/>
-											<TextBlock FontSize="12" Foreground="#6B7280"
+											<TextBlock FontSize="12" Foreground="{DynamicResource BrushTextSecondary}"
                                                 Text="{Binding Salary, StringFormat='${0:N0}/mo'}"/>
 										</StackPanel>
 
 										<!-- Morale bar -->
 										<StackPanel Orientation="Horizontal" Spacing="8">
-											<TextBlock Text="Morale" FontSize="11" Foreground="#9CA3AF" Width="70"/>
+											<TextBlock Text="Morale" FontSize="11" Foreground="{DynamicResource BrushTextSecondary}" Width="70"/>
 											<ProgressBar
                                                 Value="{Binding Morale}"
                                                 Maximum="100"
                                                 Height="7"
                                                 Width="200"
-                                                Foreground="#8B5CF6"
+                                                Foreground="{DynamicResource BrushDeptHR}"
                                                 VerticalAlignment="Center"/>
 											<TextBlock
                                                 FontSize="11"
-                                                Foreground="#9CA3AF"
+                                                Foreground="{DynamicResource BrushTextSecondary}"
                                                 Text="{Binding MoraleStatus}"
                                                 VerticalAlignment="Center"/>
 										</StackPanel>
 
 										<!-- Productivity bar -->
 										<StackPanel Orientation="Horizontal" Spacing="8">
-											<TextBlock Text="Productivity" FontSize="11" Foreground="#9CA3AF" Width="70"/>
+											<TextBlock Text="Productivity" FontSize="11" Foreground="{DynamicResource BrushTextSecondary}" Width="70"/>
 											<ProgressBar
                                                 Value="{Binding Productivity}"
                                                 Maximum="100"
                                                 Height="7"
                                                 Width="200"
-                                                Foreground="#10B981"
+                                                Foreground="{DynamicResource BrushSuccess}"
                                                 VerticalAlignment="Center"/>
 											<TextBlock
                                                 FontSize="11"
-                                                Foreground="#6B7280"
+                                                Foreground="{DynamicResource BrushTextSecondary}"
                                                 Text="{Binding Productivity, StringFormat={}{0}%}"
                                                 VerticalAlignment="Center"/>
 										</StackPanel>

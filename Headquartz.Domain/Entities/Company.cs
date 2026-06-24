@@ -1,6 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
+
+using Headquartz.Domain.Enums;
 
 namespace Headquartz.Domain.Entities;
 
@@ -8,6 +10,7 @@ public class Company
 {
     public Guid Id { get; set; }
     public string Name { get; set; } = "";
+    public IndustryType Industry { get; set; } 
     public decimal Cash { get; set; }
     public int Reputation { get; set; }
 

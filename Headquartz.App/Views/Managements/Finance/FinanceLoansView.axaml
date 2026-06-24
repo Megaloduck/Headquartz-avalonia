@@ -7,21 +7,25 @@
 	<ScrollViewer>
 		<StackPanel Margin="30" Spacing="20">
 
-			<TextBlock FontSize="34" FontWeight="Bold" Text="Loans"/>
+			<!-- HEADER -->
+            <StackPanel Spacing="4">
+				<TextBlock FontSize="34" FontWeight="Bold" Text="Loans"/>
+				<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="Debt management, interest rate tracking, repayment scheduling, and loan monitoring."/>
+			</StackPanel>
 
 			<!-- KPI ROW -->
 			<ItemsControl ItemsSource="{Binding Kpis}">
 				<ItemsControl.ItemsPanel>
 					<ItemsPanelTemplate>
-						<WrapPanel/>
+						<WrapPanel ItemSpacing="10"/>
 					</ItemsPanelTemplate>
 				</ItemsControl.ItemsPanel>
 				<ItemsControl.ItemTemplate>
 					<DataTemplate>
-						<Border Width="200" Margin="10" Padding="20" Background="#202633" CornerRadius="12">
+						<Border Width="200" Margin="0,5" Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 							<StackPanel>
-								<TextBlock FontSize="13" Foreground="#9CA3AF" Text="{Binding Title}"/>
-								<TextBlock FontSize="26" FontWeight="Bold" Text="{Binding Value}"/>
+								<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="{Binding Title}"/>
+								<TextBlock FontSize="22" FontWeight="Bold" Text="{Binding Value}"/>
 							</StackPanel>
 						</Border>
 					</DataTemplate>
@@ -29,102 +33,102 @@
 			</ItemsControl>
 
 			<!-- TAKE LOAN PANEL -->
-			<Border Padding="24" Background="#202633" CornerRadius="12">
+			<Border Padding="24" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 				<StackPanel Spacing="16">
 					<TextBlock FontSize="20" FontWeight="Bold" Text="Request New Loan"/>
-					<TextBlock FontSize="13" Foreground="#6B7280"
+					<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}"
                         Text="All loans carry 5% interest per payroll cycle (every 10 ticks). Repay early to minimise interest."/>
 
 					<WrapPanel>
 						<Button
-                            Padding="18,12" Margin="0,0,12,0" CornerRadius="8" Background="#1F2937"
+                            Padding="18,12" Margin="0,0,12,0" CornerRadius="8" Background="{DynamicResource BrushBgInput}"
                             Command="{Binding TakeLoanCommand}"
                             CommandParameter="10000">
 							<StackPanel HorizontalAlignment="Center">
 								<TextBlock Text="$10,000" FontSize="16" FontWeight="Bold" HorizontalAlignment="Center"/>
-								<TextBlock Text="Quick loan" FontSize="11" Foreground="#6B7280" HorizontalAlignment="Center"/>
+								<TextBlock Text="Quick loan" FontSize="11" Foreground="{DynamicResource BrushTextSecondary}" HorizontalAlignment="Center"/>
 							</StackPanel>
 						</Button>
 						<Button
-                            Padding="18,12" Margin="0,0,12,0" CornerRadius="8" Background="#1F2937"
+                            Padding="18,12" Margin="0,0,12,0" CornerRadius="8" Background="{DynamicResource BrushBgInput}"
                             Command="{Binding TakeLoanCommand}"
                             CommandParameter="25000">
 							<StackPanel HorizontalAlignment="Center">
 								<TextBlock Text="$25,000" FontSize="16" FontWeight="Bold" HorizontalAlignment="Center"/>
-								<TextBlock Text="Standard" FontSize="11" Foreground="#6B7280" HorizontalAlignment="Center"/>
+								<TextBlock Text="Standard" FontSize="11" Foreground="{DynamicResource BrushTextSecondary}" HorizontalAlignment="Center"/>
 							</StackPanel>
 						</Button>
 						<Button
-                            Padding="18,12" Margin="0,0,12,0" CornerRadius="8" Background="#1F2937"
+                            Padding="18,12" Margin="0,0,12,0" CornerRadius="8" Background="{DynamicResource BrushBgInput}"
                             Command="{Binding TakeLoanCommand}"
                             CommandParameter="50000">
 							<StackPanel HorizontalAlignment="Center">
 								<TextBlock Text="$50,000" FontSize="16" FontWeight="Bold" HorizontalAlignment="Center"/>
-								<TextBlock Text="Large" FontSize="11" Foreground="#6B7280" HorizontalAlignment="Center"/>
+								<TextBlock Text="Large" FontSize="11" Foreground="{DynamicResource BrushTextSecondary}" HorizontalAlignment="Center"/>
 							</StackPanel>
 						</Button>
 						<Button
-                            Padding="18,12" CornerRadius="8" Background="#1F2937"
+                            Padding="18,12" CornerRadius="8" Background="{DynamicResource BrushBgInput}"
                             Command="{Binding TakeLoanCommand}"
                             CommandParameter="100000">
 							<StackPanel HorizontalAlignment="Center">
 								<TextBlock Text="$100,000" FontSize="16" FontWeight="Bold" HorizontalAlignment="Center"/>
-								<TextBlock Text="Emergency" FontSize="11" Foreground="#6B7280" HorizontalAlignment="Center"/>
+								<TextBlock Text="Emergency" FontSize="11" Foreground="{DynamicResource BrushTextSecondary}" HorizontalAlignment="Center"/>
 							</StackPanel>
 						</Button>
 					</WrapPanel>
 
 					<Border
                         IsVisible="{Binding StatusMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
-                        Padding="14,10" Background="#2B3242" CornerRadius="8">
+                        Padding="14,10" Background="{DynamicResource BrushBgNested}" CornerRadius="8">
 						<TextBlock Text="{Binding StatusMessage}" FontSize="13" TextWrapping="Wrap"/>
 					</Border>
 				</StackPanel>
 			</Border>
 
 			<!-- ACTIVE LOANS -->
-			<Border Padding="20" Background="#202633" CornerRadius="12">
+			<Border Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 				<StackPanel>
 					<TextBlock FontSize="22" FontWeight="Bold" Text="Active Loans" Margin="0,0,0,16"/>
 					<TextBlock
                         IsVisible="{Binding !ActiveLoans.Count}"
                         Text="No active loans. Company is debt-free."
-                        Foreground="#6B7280"/>
+                        Foreground="{DynamicResource BrushTextSecondary}"/>
 					<ItemsControl ItemsSource="{Binding ActiveLoans}">
 						<ItemsControl.ItemTemplate>
 							<DataTemplate>
-								<Border Margin="0,5" Padding="16" Background="#2B3242" CornerRadius="8">
+								<Border Margin="0,5" Padding="16" Background="{DynamicResource BrushBgNested}" CornerRadius="8">
 									<Grid ColumnDefinitions="*,120,120,120,Auto">
 
 										<StackPanel Grid.Column="0">
 											<TextBlock FontWeight="SemiBold"
                                                 Text="{Binding Principal, StringFormat='Loan: ${0:N0}'}"/>
-											<TextBlock FontSize="12" Foreground="#6B7280"
+											<TextBlock FontSize="12" Foreground="{DynamicResource BrushTextSecondary}"
                                                 Text="{Binding TakenAtTime, StringFormat='Taken: {0}'}"/>
 										</StackPanel>
 
 										<StackPanel Grid.Column="1" VerticalAlignment="Center">
-											<TextBlock FontSize="11" Foreground="#6B7280" Text="OWED"/>
-											<TextBlock FontSize="15" FontWeight="Bold" Foreground="#EF4444"
+											<TextBlock FontSize="11" Foreground="{DynamicResource BrushTextSecondary}" Text="OWED"/>
+											<TextBlock FontSize="15" FontWeight="Bold" Foreground="{DynamicResource BrushDanger}"
                                                 Text="{Binding TotalOwed, StringFormat='${0:N0}'}"/>
 										</StackPanel>
 
 										<StackPanel Grid.Column="2" VerticalAlignment="Center">
-											<TextBlock FontSize="11" Foreground="#6B7280" Text="INTEREST PAID"/>
-											<TextBlock FontSize="13" Foreground="#F97316"
+											<TextBlock FontSize="11" Foreground="{DynamicResource BrushTextSecondary}" Text="INTEREST PAID"/>
+											<TextBlock FontSize="13" Foreground="{DynamicResource BrushDeptWarehouse}"
                                                 Text="{Binding InterestPaid, StringFormat='${0:N0}'}"/>
 										</StackPanel>
 
 										<StackPanel Grid.Column="3" VerticalAlignment="Center">
-											<TextBlock FontSize="11" Foreground="#6B7280" Text="RATE / CYCLE"/>
-											<TextBlock FontSize="13" Foreground="#9CA3AF"
+											<TextBlock FontSize="11" Foreground="{DynamicResource BrushTextSecondary}" Text="RATE / CYCLE"/>
+											<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}"
                                                 Text="{Binding InterestRate, StringFormat='{}{0:P0}'}"/>
 										</StackPanel>
 
 										<Button
                                             Grid.Column="4"
                                             Padding="12,8"
-                                            Background="#10B981"
+                                            Background="{DynamicResource BrushSuccess}"
                                             CornerRadius="7"
                                             VerticalAlignment="Center"
                                             Command="{Binding $parent[ItemsControl].DataContext.RepayLoanCommand}"
@@ -140,27 +144,27 @@
 			</Border>
 
 			<!-- PAID LOAN HISTORY -->
-			<Border Padding="20" Background="#202633" CornerRadius="12">
+			<Border Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 				<StackPanel>
 					<TextBlock FontSize="20" FontWeight="Bold" Text="Repaid Loans" Margin="0,0,0,12"/>
 					<TextBlock
                         IsVisible="{Binding !PaidLoans.Count}"
                         Text="No repaid loans yet."
-                        Foreground="#6B7280"/>
+                        Foreground="{DynamicResource BrushTextSecondary}"/>
 					<ItemsControl ItemsSource="{Binding PaidLoans}">
 						<ItemsControl.ItemTemplate>
 							<DataTemplate>
-								<Border Margin="0,4" Padding="14,10" Background="#2B3242" CornerRadius="8">
+								<Border Margin="0,4" Padding="14,10" Background="{DynamicResource BrushBgNested}" CornerRadius="8">
 									<Grid ColumnDefinitions="*,140,140">
 										<TextBlock Grid.Column="0"
                                             Text="{Binding Principal, StringFormat='${0:N0} loan'}"
-                                            Foreground="#6B7280" VerticalAlignment="Center"/>
+                                            Foreground="{DynamicResource BrushTextSecondary}" VerticalAlignment="Center"/>
 										<TextBlock Grid.Column="1"
                                             Text="{Binding TakenAtTime, StringFormat='Taken: {0}'}"
-                                            FontSize="12" Foreground="#6B7280" VerticalAlignment="Center"/>
+                                            FontSize="12" Foreground="{DynamicResource BrushTextSecondary}" VerticalAlignment="Center"/>
 										<TextBlock Grid.Column="2"
                                             Text="{Binding InterestPaid, StringFormat='Interest: ${0:N0}'}"
-                                            FontSize="12" Foreground="#9CA3AF" VerticalAlignment="Center"/>
+                                            FontSize="12" Foreground="{DynamicResource BrushTextSecondary}" VerticalAlignment="Center"/>
 									</Grid>
 								</Border>
 							</DataTemplate>

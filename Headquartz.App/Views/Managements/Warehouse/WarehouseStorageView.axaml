@@ -5,23 +5,25 @@
 	<ScrollViewer>
 		<StackPanel Margin="30" Spacing="20">
 
-			<TextBlock FontSize="34" FontWeight="Bold" Text="Storage Allocation"/>
-			<TextBlock FontSize="13" Foreground="#6B7280"
-                Text="Manage warehouse zones, capacity allocation, and storage efficiency."/>
+			<!-- HEADER -->
+            <StackPanel Spacing="4">
+				<TextBlock FontSize="34" FontWeight="Bold" Text="Storage Allocation"/>
+				<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="Space management, capacity optimization, storage location planning."/>
+			</StackPanel>
 
-			<!-- KPIs -->
+			<!-- KPI ROW -->
 			<ItemsControl ItemsSource="{Binding Kpis}">
 				<ItemsControl.ItemsPanel>
 					<ItemsPanelTemplate>
-						<WrapPanel/>
+						<WrapPanel ItemSpacing="10"/>
 					</ItemsPanelTemplate>
 				</ItemsControl.ItemsPanel>
 				<ItemsControl.ItemTemplate>
 					<DataTemplate>
-						<Border Width="180" Margin="8" Padding="18" Background="#202633" CornerRadius="12">
+						<Border Width="200" Margin="0,5" Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 							<StackPanel>
-								<TextBlock FontSize="13" Foreground="#9CA3AF" Text="{Binding Title}"/>
-								<TextBlock FontSize="26" FontWeight="Bold" Text="{Binding Value}"/>
+								<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="{Binding Title}"/>
+								<TextBlock FontSize="22" FontWeight="Bold" Text="{Binding Value}"/>
 							</StackPanel>
 						</Border>
 					</DataTemplate>
@@ -29,28 +31,28 @@
 			</ItemsControl>
 
 			<!-- CAPACITY OVERVIEW -->
-			<Border Padding="20" Background="#202633" CornerRadius="12">
+			<Border Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 				<StackPanel Spacing="10">
 					<TextBlock FontSize="18" FontWeight="Bold" Text="Overall Capacity"/>
 					<StackPanel Orientation="Horizontal" Spacing="8">
-						<TextBlock Text="Used" FontSize="12" Foreground="#9CA3AF"
+						<TextBlock Text="Used" FontSize="12" Foreground="{DynamicResource BrushTextSecondary}"
                             Width="80" VerticalAlignment="Center"/>
 						<ProgressBar Value="{Binding UsedCapacity}"
                             Maximum="{Binding TotalCapacity}"
-                            Height="14" Width="320" Foreground="#F97316"
+                            Height="14" Width="320" Foreground="{DynamicResource BrushDeptWarehouse}"
                             VerticalAlignment="Center"/>
-						<TextBlock FontSize="13" FontWeight="Bold" Foreground="#9CA3AF"
+						<TextBlock FontSize="13" FontWeight="Bold" Foreground="{DynamicResource BrushTextSecondary}"
                             Text="{Binding UsedCapacity, StringFormat='{}{0} units'}"
                             VerticalAlignment="Center"/>
 					</StackPanel>
 					<StackPanel Orientation="Horizontal" Spacing="8">
-						<TextBlock Text="Available" FontSize="12" Foreground="#9CA3AF"
+						<TextBlock Text="Available" FontSize="12" Foreground="{DynamicResource BrushTextSecondary}"
                             Width="80" VerticalAlignment="Center"/>
 						<ProgressBar Value="{Binding AvailableCapacity}"
                             Maximum="{Binding TotalCapacity}"
-                            Height="14" Width="320" Foreground="#10B981"
+                            Height="14" Width="320" Foreground="{DynamicResource BrushSuccess}"
                             VerticalAlignment="Center"/>
-						<TextBlock FontSize="13" FontWeight="Bold" Foreground="#9CA3AF"
+						<TextBlock FontSize="13" FontWeight="Bold" Foreground="{DynamicResource BrushTextSecondary}"
                             Text="{Binding AvailableCapacity, StringFormat='{}{0} units'}"
                             VerticalAlignment="Center"/>
 					</StackPanel>
@@ -58,30 +60,30 @@
 			</Border>
 
 			<!-- ACTIONS -->
-			<WrapPanel>
-				<Button Padding="14" Margin="10" Background="#6366F1" CornerRadius="8"
+			<WrapPanel ItemSpacing="10">
+				<Button Padding="14" Margin="0,5" Background="{DynamicResource BrushAccentPrimary}" CornerRadius="8"
                     Command="{Binding AddZoneCommand}"
                     Content="＋  Add Storage Zone ($5,000)"/>
 			</WrapPanel>
 
 			<!-- STATUS -->
 			<Border IsVisible="{Binding StatusMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
-                    Padding="14,10" Background="#2B3242" CornerRadius="8">
+                    Padding="14,10" Background="{DynamicResource BrushBgNested}" CornerRadius="8">
 				<TextBlock Text="{Binding StatusMessage}" FontSize="13" TextWrapping="Wrap"/>
 			</Border>
 
 			<!-- ZONE LIST -->
-			<Border Padding="20" Background="#202633" CornerRadius="12">
+			<Border Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 				<StackPanel>
 					<TextBlock FontSize="22" FontWeight="Bold" Text="Storage Zones" Margin="0,0,0,16"/>
 
 					<TextBlock IsVisible="{Binding !Zones.Count}"
-                        Text="No storage zones configured." Foreground="#6B7280"/>
+                        Text="No storage zones configured." Foreground="{DynamicResource BrushTextSecondary}"/>
 
 					<ItemsControl ItemsSource="{Binding Zones}">
 						<ItemsControl.ItemTemplate>
 							<DataTemplate>
-								<Border Margin="0,6" Padding="18" Background="#2B3242" CornerRadius="10">
+								<Border Margin="0,6" Padding="18" Background="{DynamicResource BrushBgNested}" CornerRadius="10">
 									<StackPanel Spacing="12">
 
 										<!-- Header -->
@@ -92,23 +94,23 @@
 													<TextBlock FontWeight="Bold" FontSize="16"
                                                         Text="{Binding ZoneName}" VerticalAlignment="Center"/>
 													<Border Padding="8,3" CornerRadius="5"
-                                                            Background="#1F2937" VerticalAlignment="Center">
-														<TextBlock FontSize="11" Foreground="#9CA3AF"
+                                                            Background="{DynamicResource BrushBgInput}" VerticalAlignment="Center">
+														<TextBlock FontSize="11" Foreground="{DynamicResource BrushTextSecondary}"
                                                             Text="{Binding ZoneType}"/>
 													</Border>
 												</StackPanel>
-												<TextBlock FontSize="12" Foreground="#6B7280"
+												<TextBlock FontSize="12" Foreground="{DynamicResource BrushTextSecondary}"
                                                     Text="{Binding AssignedItem, StringFormat='Assigned: {0}'}"/>
 											</StackPanel>
 
 											<StackPanel Grid.Column="1" VerticalAlignment="Center">
-												<TextBlock FontSize="11" Foreground="#6B7280" Text="Capacity"/>
+												<TextBlock FontSize="11" Foreground="{DynamicResource BrushTextSecondary}" Text="Capacity"/>
 												<TextBlock FontSize="16" FontWeight="Bold"
                                                     Text="{Binding Capacity, StringFormat='{}{0} units'}"/>
 											</StackPanel>
 
 											<Button Grid.Column="2"
-                                                Padding="12,7" Background="#374151" CornerRadius="6"
+                                                Padding="12,7" Background="{DynamicResource BrushBorderStrong}" CornerRadius="6"
                                                 VerticalAlignment="Center"
                                                 Command="{Binding $parent[ItemsControl].DataContext.ReorganizeZoneCommand}"
                                                 CommandParameter="{Binding}"
@@ -120,16 +122,16 @@
 										<StackPanel Spacing="4">
 											<StackPanel Orientation="Horizontal" Spacing="8">
 												<ProgressBar Value="{Binding FillPercent}" Maximum="1.0"
-                                                    Height="10" Width="360" Foreground="#F97316"
+                                                    Height="10" Width="360" Foreground="{DynamicResource BrushDeptWarehouse}"
                                                     VerticalAlignment="Center"/>
-												<TextBlock FontSize="12" Foreground="#9CA3AF"
+												<TextBlock FontSize="12" Foreground="{DynamicResource BrushTextSecondary}"
                                                     Text="{Binding FillPercent, StringFormat='{}{0:P0} full'}"
                                                     VerticalAlignment="Center"/>
 											</StackPanel>
 											<StackPanel Orientation="Horizontal" Spacing="20">
-												<TextBlock FontSize="11" Foreground="#6B7280"
+												<TextBlock FontSize="11" Foreground="{DynamicResource BrushTextSecondary}"
                                                     Text="{Binding Used, StringFormat='Used: {0}'}"/>
-												<TextBlock FontSize="11" Foreground="#6B7280"
+												<TextBlock FontSize="11" Foreground="{DynamicResource BrushTextSecondary}"
                                                     Text="{Binding Capacity, StringFormat='Total: {0}'}"/>
 											</StackPanel>
 										</StackPanel>

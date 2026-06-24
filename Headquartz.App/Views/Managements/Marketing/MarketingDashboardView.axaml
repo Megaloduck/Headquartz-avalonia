@@ -7,53 +7,58 @@
 	<ScrollViewer>
 		<StackPanel Margin="30" Spacing="20">
 
-			<TextBlock FontSize="34" FontWeight="Bold" Text="Marketing"/>
+			<!-- HEADER -->
+            <StackPanel Spacing="4">
+                <TextBlock FontSize="34" FontWeight="Bold" Text="Marketing Dashboard"/>
+				<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}"	 Text="Campaign performance, engagement overview, budget utilization, and lead generate totals."/>
+            </StackPanel>	
 
 			<!-- DEPT STRESS BANNER -->
-			<Border IsVisible="{Binding IsDeptCritical}" Background="#78350F" CornerRadius="12" Padding="20">
+			<Border IsVisible="{Binding IsDeptCritical}" Background="{DynamicResource BrushAlertWarningBg}" CornerRadius="12" Padding="20">
 				<StackPanel Orientation="Horizontal" Spacing="12">
 					<TextBlock Text="📣" FontSize="22" VerticalAlignment="Center"/>
 					<StackPanel>
-						<TextBlock Text="MARKETING UNDER STRESS" FontSize="16" FontWeight="Bold" Foreground="#FDE68A"/>
+						<TextBlock Text="MARKETING UNDER STRESS" FontSize="16" FontWeight="Bold" Foreground="{DynamicResource BrushWarning}"/>
 						<TextBlock
                             Text="{Binding DeptStress, StringFormat='Stress at {0}%. Campaign performance degraded.'}"
-                            Foreground="#FDE68A"/>
+                            Foreground="{DynamicResource BrushWarning}"/>
 					</StackPanel>
 				</StackPanel>
 			</Border>
 
-			<!-- KPIs -->
+			<!-- KPI ROW -->
 			<ItemsControl ItemsSource="{Binding Kpis}">
 				<ItemsControl.ItemsPanel>
 					<ItemsPanelTemplate>
-						<WrapPanel/>
+						<WrapPanel ItemSpacing="10"/>
 					</ItemsPanelTemplate>
 				</ItemsControl.ItemsPanel>
 				<ItemsControl.ItemTemplate>
 					<DataTemplate>
-						<Border Width="220" Margin="10" Padding="20" Background="#202633" CornerRadius="12">
+						<Border Width="200" Margin="0,5" Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 							<StackPanel>
-								<TextBlock FontSize="13" Foreground="#9CA3AF" Text="{Binding Title}"/>
-								<TextBlock FontSize="28" FontWeight="Bold" Text="{Binding Value}"/>
+								<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="{Binding Title}"/>
+								<TextBlock FontSize="22" FontWeight="Bold" Text="{Binding Value}"/>
 							</StackPanel>
 						</Border>
 					</DataTemplate>
 				</ItemsControl.ItemTemplate>
 			</ItemsControl>
 
+
 			<!-- DEPT HEALTH -->
-			<Border Padding="20" Background="#202633" CornerRadius="12">
+			<Border Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 				<StackPanel Spacing="10">
 					<TextBlock FontSize="18" FontWeight="Bold" Text="Department Health"/>
 					<StackPanel Orientation="Horizontal" Spacing="8">
-						<TextBlock Text="Efficiency" FontSize="12" Foreground="#9CA3AF" Width="80"/>
-						<ProgressBar Value="{Binding DeptEfficiency}" Maximum="100" Height="10" Width="260" Foreground="#F59E0B" VerticalAlignment="Center"/>
-						<TextBlock Text="{Binding DeptEfficiency, StringFormat={}{0}%}" FontSize="12" Foreground="#9CA3AF"/>
+						<TextBlock Text="Efficiency" FontSize="12" Foreground="{DynamicResource BrushTextSecondary}" Width="80"/>
+						<ProgressBar Value="{Binding DeptEfficiency}" Maximum="100" Height="10" Width="260" Foreground="{DynamicResource BrushWarning}" VerticalAlignment="Center"/>
+						<TextBlock Text="{Binding DeptEfficiency, StringFormat={}{0}%}" FontSize="12" Foreground="{DynamicResource BrushTextSecondary}"/>
 					</StackPanel>
 					<StackPanel Orientation="Horizontal" Spacing="8">
-						<TextBlock Text="Stress" FontSize="12" Foreground="#9CA3AF" Width="80"/>
-						<ProgressBar Value="{Binding DeptStress}" Maximum="100" Height="10" Width="260" Foreground="#EF4444" VerticalAlignment="Center"/>
-						<TextBlock Text="{Binding DeptStress, StringFormat={}{0}%}" FontSize="12" Foreground="#9CA3AF"/>
+						<TextBlock Text="Stress" FontSize="12" Foreground="{DynamicResource BrushTextSecondary}" Width="80"/>
+						<ProgressBar Value="{Binding DeptStress}" Maximum="100" Height="10" Width="260" Foreground="{DynamicResource BrushDanger}" VerticalAlignment="Center"/>
+						<TextBlock Text="{Binding DeptStress, StringFormat={}{0}%}" FontSize="12" Foreground="{DynamicResource BrushTextSecondary}"/>
 					</StackPanel>
 				</StackPanel>
 			</Border>
@@ -66,34 +71,34 @@
 			</WrapPanel>
 
 			<!-- ACTIVE CAMPAIGNS -->
-			<Border Padding="20" Background="#202633" CornerRadius="12">
+			<Border Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 				<StackPanel>
 					<TextBlock FontSize="22" FontWeight="Bold" Text="Active Campaigns" Margin="0,0,0,16"/>
-					<TextBlock IsVisible="{Binding !Campaigns.Count}" Text="No active campaigns." Foreground="#6B7280"/>
+					<TextBlock IsVisible="{Binding !Campaigns.Count}" Text="No active campaigns." Foreground="{DynamicResource BrushTextSecondary}"/>
 					<ItemsControl ItemsSource="{Binding Campaigns}">
 						<ItemsControl.ItemTemplate>
 							<DataTemplate>
-								<Border Margin="0,5" Padding="14" Background="#2B3242" CornerRadius="8">
+								<Border Margin="0,5" Padding="14" Background="{DynamicResource BrushBgNested}" CornerRadius="8">
 									<StackPanel Spacing="8">
 										<Grid ColumnDefinitions="*,Auto,Auto">
 											<TextBlock Grid.Column="0" FontWeight="SemiBold" Text="{Binding Name}"/>
-											<TextBlock Grid.Column="1" Margin="12,0" FontSize="11" Foreground="#6B7280"
+											<TextBlock Grid.Column="1" Margin="12,0" FontSize="11" Foreground="{DynamicResource BrushTextSecondary}"
                                                 Text="{Binding Priority, StringFormat='[{0}]'}" VerticalAlignment="Center"/>
-											<TextBlock Grid.Column="2" FontSize="12" Foreground="#9CA3AF"
+											<TextBlock Grid.Column="2" FontSize="12" Foreground="{DynamicResource BrushTextSecondary}"
                                                 Text="{Binding Status}" VerticalAlignment="Center"/>
 										</Grid>
 										<StackPanel Orientation="Horizontal" Spacing="8">
 											<ProgressBar Value="{Binding Progress}" Maximum="1.0" Height="6"
-                                                Width="320" Foreground="#F59E0B" VerticalAlignment="Center"/>
-											<TextBlock FontSize="11" Foreground="#6B7280"
+                                                Width="320" Foreground="{DynamicResource BrushWarning}" VerticalAlignment="Center"/>
+											<TextBlock FontSize="11" Foreground="{DynamicResource BrushTextSecondary}"
                                                 Text="{Binding Progress, StringFormat={}{0:P0}}" VerticalAlignment="Center"/>
 										</StackPanel>
 										<StackPanel Orientation="Horizontal" Spacing="16">
-											<TextBlock FontSize="11" Foreground="#6B7280"
+											<TextBlock FontSize="11" Foreground="{DynamicResource BrushTextSecondary}"
                                                 Text="{Binding Workers, StringFormat='👷 {0} staff'}"/>
-											<TextBlock FontSize="11" Foreground="#6B7280"
+											<TextBlock FontSize="11" Foreground="{DynamicResource BrushTextSecondary}"
                                                 Text="{Binding RemainingTicks, StringFormat='⏱ {0} ticks left'}"/>
-											<TextBlock FontSize="11" Foreground="#EF4444"
+											<TextBlock FontSize="11" Foreground="{DynamicResource BrushDanger}"
                                                 IsVisible="{Binding IsBlocked}" Text="⚠ BLOCKED"/>
 										</StackPanel>
 									</StackPanel>
@@ -105,21 +110,21 @@
 			</Border>
 
 			<!-- EVENTS -->
-			<Border Padding="20" Background="#202633" CornerRadius="12">
+			<Border Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 				<StackPanel>
 					<TextBlock FontSize="22" FontWeight="Bold" Text="Marketing Alerts" Margin="0,0,0,12"/>
-					<TextBlock IsVisible="{Binding !Events.Count}" Text="No active alerts." Foreground="#6B7280"/>
+					<TextBlock IsVisible="{Binding !Events.Count}" Text="No active alerts." Foreground="{DynamicResource BrushTextSecondary}"/>
 					<ItemsControl ItemsSource="{Binding Events}">
 						<ItemsControl.ItemTemplate>
 							<DataTemplate>
-								<Border Margin="0,6" Padding="14" Background="#2B3242" CornerRadius="8">
+								<Border Margin="0,6" Padding="14" Background="{DynamicResource BrushBgNested}" CornerRadius="8">
 									<StackPanel>
 										<TextBlock FontSize="15" FontWeight="Bold" Text="{Binding Title}"/>
-										<TextBlock Margin="0,4" Foreground="#9CA3AF" Text="{Binding Description}" TextWrapping="Wrap"/>
+										<TextBlock Margin="0,4" Foreground="{DynamicResource BrushTextSecondary}" Text="{Binding Description}" TextWrapping="Wrap"/>
 										<StackPanel Orientation="Horizontal" Spacing="16" Margin="0,6,0,0">
-											<TextBlock FontSize="12" Foreground="#F59E0B"
+											<TextBlock FontSize="12" Foreground="{DynamicResource BrushWarning}"
                                                 Text="{Binding Severity, StringFormat='Severity: {0}'}"/>
-											<TextBlock FontSize="12" Foreground="#6B7280"
+											<TextBlock FontSize="12" Foreground="{DynamicResource BrushTextSecondary}"
                                                 Text="{Binding RemainingTicks, StringFormat='Ticks left: {0}'}"/>
 										</StackPanel>
 									</StackPanel>

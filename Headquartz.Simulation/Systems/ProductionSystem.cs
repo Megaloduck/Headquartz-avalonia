@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
 using Headquartz.Domain.Enums;
+using Headquartz.Simulation.Modules.Base;
 
 namespace Headquartz.Simulation.Systems;
 
 public class ProductionSystem
     : ISimulationSystem
 {
-    public void Update(
-        SimulationEngine engine)
+    public void Update(SimulationEngine engine)
     {
         var productionTasks =
             engine.Company.Tasks
@@ -21,17 +17,16 @@ public class ProductionSystem
                     CompanyTaskStatus.Completed)
                 .ToList();
 
+        // Resource consumption is now handled in SimulationEngine.ProcessTasks
+        // when tasks complete, via IndustryContext.ConsumeProductionResources().
+        // This system is now a lightweight pass-through.
+        // If an industry needs per-tick production behavior, it can override.
+
         foreach (var task in productionTasks)
         {
-            var steel =
-                engine.Company.Inventory
-                    .FirstOrDefault(i =>
-                        i.Name == "Steel");
-
-            if (steel != null)
-            {
-                steel.Quantity -= 5;
-            }
+            // Resource consumption is now handled in SimulationEngine.ProcessTasks
+            // when tasks complete, via IndustryContext.ConsumeProductionResources().
+            // This system is now a lightweight pass-through.
         }
     }
 }

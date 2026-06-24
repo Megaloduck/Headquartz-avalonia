@@ -5,38 +5,40 @@
 	<ScrollViewer>
 		<StackPanel Margin="30" Spacing="20">
 
-			<TextBlock FontSize="34" FontWeight="Bold" Text="Resource Planner"/>
-			<TextBlock FontSize="13" Foreground="#6B7280"
-                Text="Monitor and allocate workers, materials, and budget across production tasks."/>
+			<!-- HEADER -->
+			<StackPanel Spacing="4">
+				<TextBlock FontSize="34" FontWeight="Bold" Text="Resource Planner"/>
+				<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="Labor scheduling, raw material availability checks, and machine capacity allocation."/>
+			</StackPanel>	
 
 			<!-- BLOCKED BANNER -->
 			<Border IsVisible="{Binding BlockedTasks}"
-                    Background="#7C2D12" CornerRadius="12" Padding="20">
+                    Background="{DynamicResource BrushWarning}" CornerRadius="12" Padding="20">
 				<StackPanel Orientation="Horizontal" Spacing="12">
 					<TextBlock Text="⚠" FontSize="22" VerticalAlignment="Center"/>
 					<StackPanel>
 						<TextBlock
                             Text="{Binding BlockedTasks, StringFormat='{}{0} TASK(S) BLOCKED — NO WORKERS'}"
-                            FontSize="16" FontWeight="Bold" Foreground="#FDBA74"/>
+                            FontSize="16" FontWeight="Bold" Foreground="{DynamicResource BrushWarning}"/>
 						<TextBlock Text="Reassign workers or hire temp staff to unblock production."
-                            Foreground="#FDBA74"/>
+                            Foreground="{DynamicResource BrushWarning}"/>
 					</StackPanel>
 				</StackPanel>
 			</Border>
 
-			<!-- KPIs -->
+			<!-- KPI ROW -->
 			<ItemsControl ItemsSource="{Binding Kpis}">
 				<ItemsControl.ItemsPanel>
 					<ItemsPanelTemplate>
-						<WrapPanel/>
+						<WrapPanel ItemSpacing="10"/>
 					</ItemsPanelTemplate>
 				</ItemsControl.ItemsPanel>
 				<ItemsControl.ItemTemplate>
 					<DataTemplate>
-						<Border Width="180" Margin="8" Padding="18" Background="#202633" CornerRadius="12">
+						<Border Width="200" Margin="0,5" Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 							<StackPanel>
-								<TextBlock FontSize="13" Foreground="#9CA3AF" Text="{Binding Title}"/>
-								<TextBlock FontSize="26" FontWeight="Bold" Text="{Binding Value}"/>
+								<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="{Binding Title}"/>
+								<TextBlock FontSize="22" FontWeight="Bold" Text="{Binding Value}"/>
 							</StackPanel>
 						</Border>
 					</DataTemplate>
@@ -44,46 +46,46 @@
 			</ItemsControl>
 
 			<!-- ACTIONS -->
-			<WrapPanel>
-				<Button Padding="14" Margin="10" Background="#6366F1" CornerRadius="8"
+			<WrapPanel ItemSpacing="10">
+				<Button Padding="14" Margin="0,5" Background="{DynamicResource BrushAccentPrimary}" CornerRadius="8"
                     Command="{Binding ReassignWorkersCommand}"
                     Content="🔄  Reassign Workers"/>
-				<Button Padding="14" Margin="10" Background="#10B981" CornerRadius="8"
+				<Button Padding="14" Margin="0,5" Background="{DynamicResource BrushSuccess}" CornerRadius="8"
                     Command="{Binding RequestMoreWorkersCommand}"
                     Content="👷  Hire Temp Worker ($3,000)"/>
 			</WrapPanel>
 
 			<!-- STATUS -->
 			<Border IsVisible="{Binding StatusMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
-                    Padding="14,10" Background="#2B3242" CornerRadius="8">
+                    Padding="14,10" Background="{DynamicResource BrushBgNested}" CornerRadius="8">
 				<TextBlock Text="{Binding StatusMessage}" FontSize="13" TextWrapping="Wrap"/>
 			</Border>
 
 			<!-- WORKER ALLOCATION -->
-			<Border Padding="20" Background="#202633" CornerRadius="12">
+			<Border Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 				<StackPanel Spacing="12">
 					<TextBlock FontSize="18" FontWeight="Bold" Text="Worker Allocation"/>
 
 					<StackPanel Orientation="Horizontal" Spacing="8">
-						<TextBlock Text="Assigned" FontSize="12" Foreground="#9CA3AF" Width="80"
+						<TextBlock Text="Assigned" FontSize="12" Foreground="{DynamicResource BrushTextSecondary}" Width="80"
                             VerticalAlignment="Center"/>
 						<ProgressBar Value="{Binding AssignedWorkers}"
                             Maximum="{Binding TotalWorkers}"
-                            Height="12" Width="300" Foreground="#6366F1"
+                            Height="12" Width="300" Foreground="{DynamicResource BrushAccentPrimary}"
                             VerticalAlignment="Center"/>
-						<TextBlock FontSize="12" Foreground="#9CA3AF"
+						<TextBlock FontSize="12" Foreground="{DynamicResource BrushTextSecondary}"
                             Text="{Binding AssignedWorkers, StringFormat='{}{0} workers'}"
                             VerticalAlignment="Center"/>
 					</StackPanel>
 
 					<StackPanel Orientation="Horizontal" Spacing="8">
-						<TextBlock Text="Available" FontSize="12" Foreground="#9CA3AF" Width="80"
+						<TextBlock Text="Available" FontSize="12" Foreground="{DynamicResource BrushTextSecondary}" Width="80"
                             VerticalAlignment="Center"/>
 						<ProgressBar Value="{Binding AvailableWorkers}"
                             Maximum="{Binding TotalWorkers}"
-                            Height="12" Width="300" Foreground="#10B981"
+                            Height="12" Width="300" Foreground="{DynamicResource BrushSuccess}"
                             VerticalAlignment="Center"/>
-						<TextBlock FontSize="12" Foreground="#9CA3AF"
+						<TextBlock FontSize="12" Foreground="{DynamicResource BrushTextSecondary}"
                             Text="{Binding AvailableWorkers, StringFormat='{}{0} workers'}"
                             VerticalAlignment="Center"/>
 					</StackPanel>
@@ -91,55 +93,55 @@
 			</Border>
 
 			<!-- RESOURCE TABLE -->
-			<Border Padding="20" Background="#202633" CornerRadius="12">
+			<Border Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 				<StackPanel>
 					<TextBlock FontSize="22" FontWeight="Bold" Text="Resource Status" Margin="0,0,0,16"/>
 
 					<Grid ColumnDefinitions="*,80,100,100,120" Margin="14,0,14,8">
 						<TextBlock Grid.Column="0" Text="RESOURCE" FontSize="11"
-                            FontWeight="Bold" Foreground="#6B7280"/>
+                            FontWeight="Bold" Foreground="{DynamicResource BrushTextSecondary}"/>
 						<TextBlock Grid.Column="1" Text="TYPE" FontSize="11"
-                            FontWeight="Bold" Foreground="#6B7280"/>
+                            FontWeight="Bold" Foreground="{DynamicResource BrushTextSecondary}"/>
 						<TextBlock Grid.Column="2" Text="AVAILABLE" FontSize="11"
-                            FontWeight="Bold" Foreground="#6B7280"/>
+                            FontWeight="Bold" Foreground="{DynamicResource BrushTextSecondary}"/>
 						<TextBlock Grid.Column="3" Text="REQUIRED" FontSize="11"
-                            FontWeight="Bold" Foreground="#6B7280"/>
+                            FontWeight="Bold" Foreground="{DynamicResource BrushTextSecondary}"/>
 						<TextBlock Grid.Column="4" Text="STATUS" FontSize="11"
-                            FontWeight="Bold" Foreground="#6B7280"/>
+                            FontWeight="Bold" Foreground="{DynamicResource BrushTextSecondary}"/>
 					</Grid>
 
 					<ItemsControl ItemsSource="{Binding Resources}">
 						<ItemsControl.ItemTemplate>
 							<DataTemplate>
-								<Border Margin="0,3" Padding="14,12" Background="#2B3242" CornerRadius="8">
+								<Border Margin="0,3" Padding="14,12" Background="{DynamicResource BrushBgNested}" CornerRadius="8">
 									<Grid ColumnDefinitions="*,80,100,100,120">
 
 										<TextBlock Grid.Column="0" FontWeight="SemiBold"
                                             Text="{Binding ResourceName}" VerticalAlignment="Center"/>
 
 										<Border Grid.Column="1" Padding="6,2" CornerRadius="4"
-                                                Background="#1F2937" VerticalAlignment="Center"
+                                                Background="{DynamicResource BrushBgInput}" VerticalAlignment="Center"
                                                 HorizontalAlignment="Left">
-											<TextBlock FontSize="11" Foreground="#6B7280"
+											<TextBlock FontSize="11" Foreground="{DynamicResource BrushTextSecondary}"
                                                 Text="{Binding Type}"/>
 										</Border>
 
 										<TextBlock Grid.Column="2" FontSize="14" FontWeight="Bold"
                                             Text="{Binding Available}" VerticalAlignment="Center"
-                                            Foreground="#9CA3AF"/>
+                                            Foreground="{DynamicResource BrushTextSecondary}"/>
 
 										<TextBlock Grid.Column="3" FontSize="14"
                                             Text="{Binding Required}" VerticalAlignment="Center"
-                                            Foreground="#6B7280"/>
+                                            Foreground="{DynamicResource BrushTextSecondary}"/>
 
 										<TextBlock Grid.Column="4" FontSize="12" FontWeight="Bold"
                                             Text="{Binding StatusText}" VerticalAlignment="Center"
-                                            Foreground="#EF4444"
+                                            Foreground="{DynamicResource BrushDanger}"
                                             IsVisible="{Binding IsShortfall}"/>
 
 										<TextBlock Grid.Column="4" FontSize="12" FontWeight="Bold"
                                             Text="{Binding StatusText}" VerticalAlignment="Center"
-                                            Foreground="#10B981"
+                                            Foreground="{DynamicResource BrushSuccess}"
                                             IsVisible="{Binding !IsShortfall}"/>
 
 									</Grid>

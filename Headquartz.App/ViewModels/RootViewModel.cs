@@ -1,5 +1,6 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using Headquartz.App.Services;
+using Headquartz.Domain.Enums;
 using Headquartz.Simulation;
 using System;
 using System.Collections.Generic;
@@ -27,15 +28,14 @@ public partial class RootViewModel : ViewModelBase
 
     private void HandleOnboardingComplete(OnboardingFlowService flow)
     {
-        // Build the difficulty profile from whatever the player chose
-        // during company setup. Falls back to Manager if somehow unset.
         var profile = SimulationProfile.FromDifficulty(
             flow.SessionConfig?.Difficulty
-            ?? Headquartz.Domain.Enums.GameDifficulty.Manager);
+            ?? GameDifficulty.Manager);
 
-        // Override starting capital in case the profile capital differs
-        // from what OnboardingFlowService computed — profile wins.
-        var simulation = new SimulationService(profile);
+        var industry = flow.SessionConfig?.Industry
+            ?? IndustryType.Food;
+
+        var simulation = new SimulationService(profile, industry);
 
         // Apply company name from session config
         if (!string.IsNullOrEmpty(flow.SessionConfig?.CompanyName))
@@ -46,7 +46,7 @@ public partial class RootViewModel : ViewModelBase
             .FirstOrDefault(p => p.IsLocalPlayer);
 
         var startingRole = localPlayer?.AssignedRole
-            ?? Headquartz.Domain.Enums.PlayerRole.Chairman;
+            ?? PlayerRole.Chairman;
 
         // Start simulation loop
         _ = simulation.StartAsync();

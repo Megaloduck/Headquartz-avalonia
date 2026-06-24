@@ -33,15 +33,15 @@
                         <Border Width="28" Height="28" CornerRadius="7">
                             <Border.Background>
                                 <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
-                                    <GradientStop Color="#6366F1" Offset="0"/>
-                                    <GradientStop Color="#4338CA" Offset="1"/>
+                                    <GradientStop Color="{DynamicResource ColorAccentPrimary}" Offset="0"/>
+                                    <GradientStop Color="{DynamicResource ColorAccentPrimaryHover}" Offset="1"/>
                                 </LinearGradientBrush>
                             </Border.Background>
                             <TextBlock
                                 Text="H"
                                 FontSize="14"
                                 FontWeight="Bold"
-                                Foreground="White"
+                                Foreground="{DynamicResource BrushTextPrimary}"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"/>
                         </Border>
@@ -83,14 +83,33 @@
                     </StackPanel>
 
                     <!-- Company Name (centered) -->
-                    <TextBlock
+                    <StackPanel
                         Grid.Column="1"
-                        Text="{Binding CompanyName}"
-                        FontSize="13"
-                        FontWeight="SemiBold"
-                        Foreground="{DynamicResource BrushTextSecondary}"
+                        Orientation="Horizontal"
+                        Spacing="8"
                         HorizontalAlignment="Center"
-                        VerticalAlignment="Center"/>
+                        VerticalAlignment="Center">
+                        <TextBlock
+                            Text="{Binding CompanyName}"
+                            FontSize="13"
+                            FontWeight="SemiBold"
+                            Foreground="{DynamicResource BrushTextSecondary}"
+                            VerticalAlignment="Center"/>
+                        <Border
+                            Padding="6,2"
+                            CornerRadius="4"
+                            Background="{DynamicResource BrushBgElevated}"
+                            BorderBrush="{DynamicResource BrushBorderDefault}"
+                            BorderThickness="1"
+                            VerticalAlignment="Center">
+                            <TextBlock
+                                Text="{Binding Industry}"
+                                FontSize="10"
+                                FontWeight="Medium"
+                                Foreground="{DynamicResource BrushTextMuted}"
+                                VerticalAlignment="Center"/>
+                        </Border>
+                    </StackPanel>
 
                 </Grid>
 
@@ -102,29 +121,34 @@
                     VerticalAlignment="Center"
                     Margin="0,0,12,0">
 
-                    <!-- Role chip -->
-                    <Border
-                        Padding="10,5"
+                    <!-- Role dropdown (solo player can switch departments) -->
+                    <ComboBox
+                        ItemsSource="{Binding AvailableRoles}"
+                        SelectedItem="{Binding CurrentRole}"
+                        Padding="8,4"
                         Background="{DynamicResource BrushBgElevated}"
                         BorderBrush="{DynamicResource BrushBorderDefault}"
-                        BorderThickness="1"
                         CornerRadius="6">
-                        <StackPanel Orientation="Horizontal" Spacing="6">
-                            <Path
-                                Data="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z"
-                                Stroke="{DynamicResource BrushTextMuted}"
-                                StrokeThickness="1.5"
-                                Fill="Transparent"
-                                Width="13" Height="13"
-                                Stretch="Uniform"
-                                VerticalAlignment="Center"/>
-                            <TextBlock
-                                Text="{Binding RoleName}"
-                                FontSize="12"
-                                Foreground="{DynamicResource BrushTextSecondary}"
-                                VerticalAlignment="Center"/>
-                        </StackPanel>
-                    </Border>
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" Spacing="6">
+                                    <Path
+                                        Data="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z"
+                                        Stroke="{DynamicResource BrushTextMuted}"
+                                        StrokeThickness="1.5"
+                                        Fill="Transparent"
+                                        Width="13" Height="13"
+                                        Stretch="Uniform"
+                                        VerticalAlignment="Center"/>
+                                    <TextBlock
+                                        Text="{Binding Converter={x:Static conv:PlayerRoleToNameConverter.Instance}}"
+                                        FontSize="12"
+                                        Foreground="{DynamicResource BrushTextSecondary}"
+                                        VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
 
                     <!-- Theme toggle -->
                     <Button
@@ -307,14 +331,14 @@
                                                                 MinWidth="18"
                                                                 Height="18"
                                                                 Padding="4,0"
-                                                                Background="#EF4444"
+                                                                Background="{DynamicResource BrushDanger}"
                                                                 CornerRadius="9"
                                                                 VerticalAlignment="Center">
                                                                 <TextBlock
                                                                     Text="{Binding NotificationCount}"
                                                                     FontSize="10"
                                                                     FontWeight="Bold"
-                                                                    Foreground="White"
+                                                                    Foreground="{DynamicResource BrushTextPrimary}"
                                                                     HorizontalAlignment="Center"
                                                                     VerticalAlignment="Center"/>
                                                             </Border>
@@ -361,8 +385,8 @@
                     <Border
                         Margin="0,0,0,8"
                         Padding="14,12"
-                        Background="{Binding BackgroundColor}"
-                        BorderBrush="{Binding BorderColor}"
+                        Background="{Binding BackgroundKey, Converter={x:Static conv:ResourceKeyToBrushConverter.Instance}}"
+                        BorderBrush="{Binding BorderKey, Converter={x:Static conv:ResourceKeyToBrushConverter.Instance}}"
                         BorderThickness="1"
                         CornerRadius="10">
                         <Grid ColumnDefinitions="*,Auto">
@@ -370,10 +394,10 @@
                                 <TextBlock
                                     FontSize="13" FontWeight="Bold"
                                     Text="{Binding Title}"
-                                    Foreground="White"
+                                    Foreground="{DynamicResource BrushTextPrimary}"
                                     TextWrapping="Wrap"/>
                                 <TextBlock
-                                    FontSize="12" Foreground="#D1D5DB"
+                                    FontSize="12" Foreground="{DynamicResource BrushTextSecondary}"
                                     Text="{Binding Message}"
                                     TextWrapping="Wrap"/>
                             </StackPanel>
@@ -388,7 +412,7 @@
                                 CommandParameter="{Binding}">
                                 <Path
                                     Data="M18 6L6 18M6 6l12 12"
-                                    Stroke="#9CA3AF"
+                                    Stroke="{DynamicResource BrushTextSecondary}"
                                     StrokeThickness="1.5"
                                     Fill="Transparent"
                                     Width="10" Height="10"

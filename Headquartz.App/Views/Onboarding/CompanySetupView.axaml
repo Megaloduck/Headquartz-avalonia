@@ -3,7 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              x:Class="Headquartz.App.CompanySetupView"
-             Background="#080C14">
+             Background="{DynamicResource BrushBgBase}">
 
     <ScrollViewer>
         <Grid ColumnDefinitions="*,640,*" Margin="0,40,0,40">
@@ -19,25 +19,25 @@
                             Background="Transparent"
                             BorderThickness="0"
                             Command="{Binding GoBackCommand}">
-                            <TextBlock Text="← Back" FontSize="12" Foreground="#374151"/>
+                            <TextBlock Text="← Back" FontSize="12" Foreground="{DynamicResource BrushBorderStrong}"/>
                         </Button>
                     </StackPanel>
                     <TextBlock
                         Text="Company Setup"
                         FontSize="32"
                         FontWeight="Bold"
-                        Foreground="White"/>
+                        Foreground="{DynamicResource BrushTextPrimary}"/>
                     <TextBlock
                         Text="Configure your company before the session begins"
                         FontSize="14"
-                        Foreground="#4B5563"/>
+                        Foreground="{DynamicResource BrushTextMuted}"/>
                 </StackPanel>
 
                 <!-- ── Step 1: Name ──────────────────────── -->
                 <Border
                     Padding="24"
-                    Background="#0F1623"
-                    BorderBrush="#1F2937"
+                    Background="{DynamicResource BrushBgSurface}"
+                    BorderBrush="{DynamicResource BrushBgInput}"
                     BorderThickness="1"
                     CornerRadius="14"
                     Margin="0,0,0,16">
@@ -47,12 +47,12 @@
                             <Border
                                 Width="32" Height="32"
                                 CornerRadius="8"
-                                Background="#1E1B4B">
+                                Background="{DynamicResource BrushBgBase}">
                                 <TextBlock
                                     Text="1"
                                     FontSize="14"
                                     FontWeight="Bold"
-                                    Foreground="#818CF8"
+                                    Foreground="{DynamicResource BrushAccentPrimaryHover}"
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center"/>
                             </Border>
@@ -60,7 +60,7 @@
                                 Text="Company Name"
                                 FontSize="18"
                                 FontWeight="Bold"
-                                Foreground="White"
+                                Foreground="{DynamicResource BrushTextPrimary}"
                                 VerticalAlignment="Center"/>
                         </StackPanel>
 
@@ -71,19 +71,19 @@
                                 PlaceholderText="Enter company name..."
                                 FontSize="16"
                                 Padding="14,12"
-                                Background="#111827"
-                                BorderBrush="#1F2937"
+                                Background="{DynamicResource BrushBgInput}"
+                                BorderBrush="{DynamicResource BrushBgInput}"
                                 BorderThickness="1"
                                 CornerRadius="10"
-                                Foreground="White"/>
+                                Foreground="{DynamicResource BrushTextPrimary}"/>
                             <Button
                                 Grid.Column="1"
                                 Margin="8,0,0,0"
                                 Padding="14,12"
-                                Background="#1F2937"
+                                Background="{DynamicResource BrushBgInput}"
                                 CornerRadius="10"
                                 Command="{Binding RandomNameCommand}">
-                                <TextBlock Text="🎲 Random" FontSize="13" Foreground="#6B7280"/>
+                                <TextBlock Text="🎲 Random" FontSize="13" Foreground="{DynamicResource BrushTextSecondary}"/>
                             </Button>
                         </Grid>
 
@@ -93,8 +93,8 @@
                 <!-- ── Step 2: Industry ──────────────────── -->
                 <Border
                     Padding="24"
-                    Background="#0F1623"
-                    BorderBrush="#1F2937"
+                    Background="{DynamicResource BrushBgSurface}"
+                    BorderBrush="{DynamicResource BrushBgInput}"
                     BorderThickness="1"
                     CornerRadius="14"
                     Margin="0,0,0,16">
@@ -104,12 +104,12 @@
                             <Border
                                 Width="32" Height="32"
                                 CornerRadius="8"
-                                Background="#1E1B4B">
+                                Background="{DynamicResource BrushBgBase}">
                                 <TextBlock
                                     Text="2"
                                     FontSize="14"
                                     FontWeight="Bold"
-                                    Foreground="#818CF8"
+                                    Foreground="{DynamicResource BrushAccentPrimaryHover}"
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center"/>
                             </Border>
@@ -117,7 +117,7 @@
                                 Text="Industry"
                                 FontSize="18"
                                 FontWeight="Bold"
-                                Foreground="White"
+                                Foreground="{DynamicResource BrushTextPrimary}"
                                 VerticalAlignment="Center"/>
                         </StackPanel>
 
@@ -130,8 +130,8 @@
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <Button
-                                        Width="140" Height="64"
-                                        Margin="0,0,8,8"
+                                        Width="120" Height="56"
+                                        Margin="0,0,6,6"
                                         Padding="0"
                                         Background="Transparent"
                                         BorderThickness="0"
@@ -143,23 +143,23 @@
                                             CornerRadius="10"
                                             BorderThickness="1">
                                             <Border.Background>
-                                                <SolidColorBrush Color="#111827"/>
+                                                <SolidColorBrush Color="{DynamicResource ColorBgInput}"/>
                                             </Border.Background>
                                             <Border.BorderBrush>
-                                                <SolidColorBrush Color="#1F2937"/>
+                                                <SolidColorBrush Color="{DynamicResource ColorBgInput}"/>
                                             </Border.BorderBrush>
                                             <StackPanel
                                                 HorizontalAlignment="Center"
                                                 VerticalAlignment="Center"
-                                                Spacing="4">
+                                                Spacing="2">
                                                 <TextBlock
                                                     Text="{Binding Emoji}"
-                                                    FontSize="22"
+                                                    FontSize="20"
                                                     HorizontalAlignment="Center"/>
                                                 <TextBlock
                                                     Text="{Binding Label}"
-                                                    FontSize="12"
-                                                    Foreground="#9CA3AF"
+                                                    FontSize="11"
+                                                    Foreground="{DynamicResource BrushTextSecondary}"
                                                     HorizontalAlignment="Center"/>
                                             </StackPanel>
                                         </Border>
@@ -170,23 +170,102 @@
 
                         <Border
                             Padding="12,8"
-                            Background="#111827"
+                            Background="{DynamicResource BrushBgInput}"
                             CornerRadius="8">
                             <TextBlock
                                 Text="{Binding IndustryDescription}"
                                 FontSize="12"
-                                Foreground="#6B7280"
+                                Foreground="{DynamicResource BrushTextSecondary}"
                                 TextWrapping="Wrap"/>
                         </Border>
 
                     </StackPanel>
                 </Border>
 
-                <!-- ── Step 3: Difficulty ────────────────── -->
+                <!-- ── Step 3: Department Fit ─────────────── -->
                 <Border
                     Padding="24"
-                    Background="#0F1623"
-                    BorderBrush="#1F2937"
+                    Background="{DynamicResource BrushBgSurface}"
+                    BorderBrush="{DynamicResource BrushBgInput}"
+                    BorderThickness="1"
+                    CornerRadius="14"
+                    Margin="0,0,0,16">
+                    <StackPanel Spacing="12">
+
+                        <StackPanel Orientation="Horizontal" Spacing="12">
+                            <Border
+                                Width="32" Height="32"
+                                CornerRadius="8"
+                                Background="{DynamicResource BrushBgBase}">
+                                <TextBlock
+                                    Text="3"
+                                    FontSize="14"
+                                    FontWeight="Bold"
+                                    Foreground="{DynamicResource BrushAccentPrimaryHover}"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"/>
+                            </Border>
+                            <TextBlock
+                                Text="Department Fit"
+                                FontSize="18"
+                                FontWeight="Bold"
+                                Foreground="{DynamicResource BrushTextPrimary}"
+                                VerticalAlignment="Center"/>
+                        </StackPanel>
+
+                        <TextBlock
+                            Text="How each department aligns with your chosen industry."
+                            FontSize="12"
+                            Foreground="{DynamicResource BrushTextMuted}"
+                            TextWrapping="Wrap"
+                            Margin="0,0,0,4"/>
+
+                        <ItemsControl ItemsSource="{Binding DepartmentRelevancePreview}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border
+                                        Width="136"
+                                        Margin="0,0,6,6"
+                                        Padding="8,6"
+                                        CornerRadius="8"
+                                        Background="{DynamicResource BrushBgInput}">
+                                        <StackPanel Spacing="2">
+                                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                                <TextBlock
+                                                    Text="{Binding Emoji}"
+                                                    FontSize="10"
+                                                    VerticalAlignment="Center"/>
+                                                <TextBlock
+                                                    Text="{Binding RelevanceLabel}"
+                                                    FontSize="9"
+                                                    FontWeight="Bold"
+                                                    Foreground="{DynamicResource BrushTextPrimary}"
+                                                    VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                            <TextBlock
+                                                Text="{Binding DepartmentName}"
+                                                FontSize="11"
+                                                Foreground="{DynamicResource BrushTextSecondary}"
+                                                TextTrimming="CharacterEllipsis"/>
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                    </StackPanel>
+                </Border>
+
+                <!-- ── Step 4: Difficulty ────────────────── -->
+                <Border
+                    Padding="24"
+                    Background="{DynamicResource BrushBgSurface}"
+                    BorderBrush="{DynamicResource BrushBgInput}"
                     BorderThickness="1"
                     CornerRadius="14"
                     Margin="0,0,0,16">
@@ -196,12 +275,12 @@
                             <Border
                                 Width="32" Height="32"
                                 CornerRadius="8"
-                                Background="#1E1B4B">
+                                Background="{DynamicResource BrushBgBase}">
                                 <TextBlock
-                                    Text="3"
+                                    Text="4"
                                     FontSize="14"
                                     FontWeight="Bold"
-                                    Foreground="#818CF8"
+                                    Foreground="{DynamicResource BrushAccentPrimaryHover}"
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center"/>
                             </Border>
@@ -209,7 +288,7 @@
                                 Text="Difficulty"
                                 FontSize="18"
                                 FontWeight="Bold"
-                                Foreground="White"
+                                Foreground="{DynamicResource BrushTextPrimary}"
                                 VerticalAlignment="Center"/>
                         </StackPanel>
 
@@ -233,10 +312,10 @@
                                             CornerRadius="10"
                                             BorderThickness="1">
                                             <Border.Background>
-                                                <SolidColorBrush Color="#111827"/>
+                                                <SolidColorBrush Color="{DynamicResource ColorBgInput}"/>
                                             </Border.Background>
                                             <Border.BorderBrush>
-                                                <SolidColorBrush Color="#1F2937"/>
+                                                <SolidColorBrush Color="{DynamicResource ColorBgInput}"/>
                                             </Border.BorderBrush>
                                             <Grid ColumnDefinitions="24,*,Auto">
                                                 <TextBlock
@@ -249,14 +328,14 @@
                                                     Text="{Binding Label}"
                                                     FontSize="14"
                                                     FontWeight="SemiBold"
-                                                    Foreground="White"
+                                                    Foreground="{DynamicResource BrushTextPrimary}"
                                                     VerticalAlignment="Center"
                                                     Margin="8,0"/>
                                                 <TextBlock
                                                     Grid.Column="2"
                                                     Text="{Binding SubLabel}"
                                                     FontSize="12"
-                                                    Foreground="#374151"
+                                                    Foreground="{DynamicResource BrushBorderStrong}"
                                                     VerticalAlignment="Center"/>
                                             </Grid>
                                         </Border>
@@ -271,27 +350,27 @@
                                 Grid.Column="0"
                                 Text="{Binding DifficultyDescription}"
                                 FontSize="12"
-                                Foreground="#6B7280"
+                                Foreground="{DynamicResource BrushTextSecondary}"
                                 TextWrapping="Wrap"
                                 VerticalAlignment="Center"/>
                             <Border
                                 Grid.Column="1"
                                 Padding="16,10"
-                                Background="#111827"
+                                Background="{DynamicResource BrushBgInput}"
                                 CornerRadius="8"
                                 Margin="12,0,0,0">
                                 <StackPanel HorizontalAlignment="Center">
                                     <TextBlock
                                         Text="STARTING CAPITAL"
                                         FontSize="9"
-                                        Foreground="#374151"
+                                        Foreground="{DynamicResource BrushBorderStrong}"
                                         LetterSpacing="1"
                                         HorizontalAlignment="Center"/>
                                     <TextBlock
                                         Text="{Binding CapitalDisplay}"
                                         FontSize="22"
                                         FontWeight="Bold"
-                                        Foreground="#10B981"
+                                        Foreground="{DynamicResource BrushSuccess}"
                                         HorizontalAlignment="Center"/>
                                 </StackPanel>
                             </Border>
@@ -304,15 +383,15 @@
                 <Border
                     IsVisible="{Binding HasError}"
                     Padding="14,10"
-                    Background="#450A0A"
-                    BorderBrush="#7F1D1D"
+                    Background="{DynamicResource BrushBadgeDangerBg}"
+                    BorderBrush="{DynamicResource BrushAlertCriticalBg}"
                     BorderThickness="1"
                     CornerRadius="8"
                     Margin="0,0,0,16">
                     <TextBlock
                         Text="{Binding ErrorMessage}"
                         FontSize="13"
-                        Foreground="#FCA5A5"/>
+                        Foreground="{DynamicResource BrushBadgeDangerFg}"/>
                 </Border>
 
                 <!-- Confirm -->
@@ -323,15 +402,15 @@
                     Command="{Binding ConfirmCommand}">
                     <Button.Background>
                         <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,0%">
-                            <GradientStop Color="#6366F1" Offset="0"/>
-                            <GradientStop Color="#4F46E5" Offset="1"/>
+                            <GradientStop Color="{DynamicResource ColorAccentPrimary}" Offset="0"/>
+                            <GradientStop Color="{DynamicResource ColorAccentPrimaryHover}" Offset="1"/>
                         </LinearGradientBrush>
                     </Button.Background>
                     <TextBlock
                         Text="Select Department →"
                         FontSize="16"
                         FontWeight="Bold"
-                        Foreground="White"
+                        Foreground="{DynamicResource BrushTextPrimary}"
                         HorizontalAlignment="Center"/>
                 </Button>
 

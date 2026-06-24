@@ -1,5 +1,6 @@
-﻿using Headquartz.Simulation;
+using Headquartz.Simulation;
 using Headquartz.Simulation.Systems;
+using Headquartz.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,14 +12,12 @@ public class SimulationService
 {
     public SimulationEngine Engine { get; }
 
-    /// <summary>Default constructor — uses Manager difficulty profile.</summary>
     public SimulationService()
-        : this(SimulationProfile.Manager) { }
+        : this(SimulationProfile.Manager, IndustryType.Food) { }
 
-    /// <summary>Profile-aware constructor used after onboarding completes.</summary>
-    public SimulationService(SimulationProfile profile)
+    public SimulationService(SimulationProfile profile, IndustryType industry = IndustryType.Food)
     {
-        Engine = new SimulationEngine(profile);
+        Engine = new SimulationEngine(profile, industry);
     }
 
     public async Task StartAsync()

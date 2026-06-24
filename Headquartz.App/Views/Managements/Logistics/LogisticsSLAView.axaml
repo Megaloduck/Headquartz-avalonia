@@ -5,54 +5,56 @@
 	<ScrollViewer>
 		<StackPanel Margin="30" Spacing="20">
 
-			<TextBlock FontSize="34" FontWeight="Bold" Text="SLA Management"/>
-			<TextBlock FontSize="13" Foreground="#6B7280"
-                Text="Monitor service level agreements and take action before breaches occur."/>
+			<!-- Header -->
+			<StackPanel Spacing="4">
+				<TextBlock FontSize="34" FontWeight="Bold" Text="SLA Management"/>
+				<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="Monitor service level agreements, penalty tracking, vendor performance reviews, and contract compliance."/>				
+			</StackPanel>	
 
 			<!-- BREACH BANNER -->
 			<Border IsVisible="{Binding Breached}"
-                    Background="#7F1D1D" CornerRadius="12" Padding="20">
+                    Background="{DynamicResource BrushAlertCriticalBg}" CornerRadius="12" Padding="20">
 				<StackPanel Orientation="Horizontal" Spacing="12">
-					<TextBlock Text="⚠" FontSize="22" Foreground="#FCA5A5" VerticalAlignment="Center"/>
+					<TextBlock Text="⚠" FontSize="22" Foreground="{DynamicResource BrushBadgeDangerFg}" VerticalAlignment="Center"/>
 					<StackPanel>
 						<TextBlock
                             Text="{Binding Breached, StringFormat='{}{0} SLA BREACH(ES) — PENALTIES ACTIVE'}"
-                            FontSize="16" FontWeight="Bold" Foreground="#FCA5A5"/>
+                            FontSize="16" FontWeight="Bold" Foreground="{DynamicResource BrushBadgeDangerFg}"/>
 						<TextBlock
                             Text="{Binding TotalPenalties, StringFormat='Total penalties accrued: ${0:N0}'}"
-                            Foreground="#FCA5A5"/>
+                            Foreground="{DynamicResource BrushBadgeDangerFg}"/>
 					</StackPanel>
 				</StackPanel>
 			</Border>
 
 			<!-- AT RISK BANNER -->
 			<Border IsVisible="{Binding AtRisk}"
-                    Background="#78350F" CornerRadius="12" Padding="20">
+                    Background="{DynamicResource BrushAlertWarningBg}" CornerRadius="12" Padding="20">
 				<StackPanel Orientation="Horizontal" Spacing="12">
 					<TextBlock Text="⏱" FontSize="22" VerticalAlignment="Center"/>
 					<StackPanel>
 						<TextBlock
                             Text="{Binding AtRisk, StringFormat='{}{0} ORDER(S) AT RISK — DEADLINE IN 5 TICKS'}"
-                            FontSize="16" FontWeight="Bold" Foreground="#FDE68A"/>
+                            FontSize="16" FontWeight="Bold" Foreground="{DynamicResource BrushWarning}"/>
 						<TextBlock Text="Expedite these orders immediately to avoid SLA breach."
-                            Foreground="#FDE68A"/>
+                            Foreground="{DynamicResource BrushWarning}"/>
 					</StackPanel>
 				</StackPanel>
 			</Border>
 
-			<!-- KPIs -->
+			<!-- KPI ROW -->
 			<ItemsControl ItemsSource="{Binding Kpis}">
 				<ItemsControl.ItemsPanel>
 					<ItemsPanelTemplate>
-						<WrapPanel/>
+						<WrapPanel ItemSpacing="10"/>
 					</ItemsPanelTemplate>
 				</ItemsControl.ItemsPanel>
 				<ItemsControl.ItemTemplate>
 					<DataTemplate>
-						<Border Width="180" Margin="8" Padding="18" Background="#202633" CornerRadius="12">
+						<Border Width="200" Margin="0,5" Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 							<StackPanel>
-								<TextBlock FontSize="13" Foreground="#9CA3AF" Text="{Binding Title}"/>
-								<TextBlock FontSize="26" FontWeight="Bold" Text="{Binding Value}"/>
+								<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="{Binding Title}"/>
+								<TextBlock FontSize="22" FontWeight="Bold" Text="{Binding Value}"/>
 							</StackPanel>
 						</Border>
 					</DataTemplate>
@@ -60,31 +62,31 @@
 			</ItemsControl>
 
 			<!-- ACTIONS -->
-			<WrapPanel>
-				<Button Padding="14" Margin="10" Background="#EF4444" CornerRadius="8"
+			<WrapPanel ItemSpacing="10">
+				<Button Padding="14" Margin="0,5" Background="{DynamicResource BrushDanger}" CornerRadius="8"
                     Command="{Binding PayPenaltiesCommand}"
                     Content="💳  Pay All Penalties"/>
 			</WrapPanel>
 
 			<!-- STATUS -->
 			<Border IsVisible="{Binding StatusMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
-                    Padding="14,10" Background="#2B3242" CornerRadius="8">
+                    Padding="14,10" Background="{DynamicResource BrushBgNested}" CornerRadius="8">
 				<TextBlock Text="{Binding StatusMessage}" FontSize="13" TextWrapping="Wrap"/>
 			</Border>
 
 			<!-- SLA TABLE -->
-			<Border Padding="20" Background="#202633" CornerRadius="12">
+			<Border Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 				<StackPanel>
 					<TextBlock FontSize="22" FontWeight="Bold" Text="SLA Status" Margin="0,0,0,16"/>
 
 					<TextBlock IsVisible="{Binding !SLAs.Count}"
                         Text="No active SLAs. All orders delivered or no deadlines set."
-                        Foreground="#6B7280"/>
+                        Foreground="{DynamicResource BrushTextSecondary}"/>
 
 					<ItemsControl ItemsSource="{Binding SLAs}">
 						<ItemsControl.ItemTemplate>
 							<DataTemplate>
-								<Border Margin="0,5" Padding="16" Background="#2B3242" CornerRadius="8">
+								<Border Margin="0,5" Padding="16" Background="{DynamicResource BrushBgNested}" CornerRadius="8">
 									<Grid ColumnDefinitions="*,100,100,100,Auto">
 
 										<!-- Client + product -->
@@ -94,48 +96,48 @@
                                                     Text="{Binding ClientName}"
                                                     VerticalAlignment="Center"/>
 												<Border IsVisible="{Binding IsBreach}"
-                                                        Padding="6,2" Background="#7F1D1D"
+                                                        Padding="6,2" Background="{DynamicResource BrushAlertCriticalBg}"
                                                         CornerRadius="4" VerticalAlignment="Center">
 													<TextBlock Text="BREACH" FontSize="9"
-                                                        FontWeight="Bold" Foreground="#FCA5A5"/>
+                                                        FontWeight="Bold" Foreground="{DynamicResource BrushBadgeDangerFg}"/>
 												</Border>
 												<Border IsVisible="{Binding IsAtRisk}"
-                                                        Padding="6,2" Background="#78350F"
+                                                        Padding="6,2" Background="{DynamicResource BrushAlertWarningBg}"
                                                         CornerRadius="4" VerticalAlignment="Center">
 													<TextBlock Text="AT RISK" FontSize="9"
-                                                        FontWeight="Bold" Foreground="#FDE68A"/>
+                                                        FontWeight="Bold" Foreground="{DynamicResource BrushWarning}"/>
 												</Border>
 											</StackPanel>
-											<TextBlock FontSize="12" Foreground="#6B7280"
+											<TextBlock FontSize="12" Foreground="{DynamicResource BrushTextSecondary}"
                                                 Text="{Binding ProductName}"/>
 										</StackPanel>
 
 										<!-- Deadline -->
 										<StackPanel Grid.Column="1" VerticalAlignment="Center">
-											<TextBlock FontSize="11" Foreground="#6B7280" Text="Deadline"/>
+											<TextBlock FontSize="11" Foreground="{DynamicResource BrushTextSecondary}" Text="Deadline"/>
 											<TextBlock FontSize="12" Text="{Binding Deadline}"
-                                                Foreground="#9CA3AF"/>
+                                                Foreground="{DynamicResource BrushTextSecondary}"/>
 										</StackPanel>
 
 										<!-- Ticks left -->
 										<StackPanel Grid.Column="2" VerticalAlignment="Center">
-											<TextBlock FontSize="11" Foreground="#6B7280" Text="Ticks Left"/>
+											<TextBlock FontSize="11" Foreground="{DynamicResource BrushTextSecondary}" Text="Ticks Left"/>
 											<TextBlock FontSize="14" FontWeight="Bold"
                                                 Text="{Binding TicksRemaining}"
-                                                Foreground="#06B6D4"/>
+                                                Foreground="{DynamicResource BrushAccentSecondary}"/>
 										</StackPanel>
 
 										<!-- Penalty -->
 										<StackPanel Grid.Column="3" VerticalAlignment="Center">
-											<TextBlock FontSize="11" Foreground="#6B7280" Text="Penalty"/>
+											<TextBlock FontSize="11" Foreground="{DynamicResource BrushTextSecondary}" Text="Penalty"/>
 											<TextBlock FontSize="13" FontWeight="Bold"
                                                 Text="{Binding Penalty, StringFormat='${0:N0}'}"
-                                                Foreground="#EF4444"/>
+                                                Foreground="{DynamicResource BrushDanger}"/>
 										</StackPanel>
 
 										<!-- Expedite -->
 										<Button Grid.Column="4"
-                                            Padding="12,7" Background="#0E7490" CornerRadius="6"
+                                            Padding="12,7" Background="{DynamicResource BrushAccentSecondary}" CornerRadius="6"
                                             VerticalAlignment="Center"
                                             Command="{Binding $parent[ItemsControl].DataContext.ExpediteOrderCommand}"
                                             CommandParameter="{Binding}"

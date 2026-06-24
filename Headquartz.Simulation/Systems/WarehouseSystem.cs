@@ -1,25 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using Headquartz.Simulation.Modules.Base;
 
 namespace Headquartz.Simulation.Systems;
 
 public class WarehouseSystem
     : ISimulationSystem
 {
-    public void Update(
-        SimulationEngine engine)
+    public void Update(SimulationEngine engine)
     {
-        foreach (var item
-                 in engine.Company.Inventory)
-        {
-            if (item.Quantity <
-                item.MinimumStock)
-            {
-                engine.Company.Cash -=
-                    item.UnitCost * 10;
+        var context = engine.IndustryContext;
 
-                item.Quantity += 25;
+        foreach (var item in engine.Company.Inventory)
+        {
+            if (item.Quantity < item.MinimumStock)
+            {
+                if (context != null)
+                    context.ProcessWarehouseRestock(engine, item);
+                else
+                {
+                    // Absolute fallback
+                    engine.Company.Cash -= item.UnitCost * 10;
+                    item.Quantity += 25;
+                }
             }
         }
     }

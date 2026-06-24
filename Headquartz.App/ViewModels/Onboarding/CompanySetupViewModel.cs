@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -8,6 +9,7 @@ using Headquartz.App.Models.Onboarding;
 using Headquartz.App.Services;
 using Headquartz.App.ViewModels;
 using Headquartz.Domain.Enums;
+using Headquartz.Simulation.Modules.Base;
 
 namespace Headquartz.App.ViewModels;
 
@@ -18,7 +20,7 @@ public partial class CompanySetupViewModel : ViewModelBase
     // ── Form ──────────────────────────────────────────────────
 
     [ObservableProperty] private string _companyName = "";
-    [ObservableProperty] private IndustryType _selectedIndustry = IndustryType.Manufacturing;
+    [ObservableProperty] private IndustryType _selectedIndustry = IndustryType.Food;
     [ObservableProperty] private GameDifficulty _selectedDifficulty = GameDifficulty.Manager;
     [ObservableProperty] private decimal _initialCapital = 100_000m;
     [ObservableProperty] private string _errorMessage = "";
@@ -34,6 +36,7 @@ public partial class CompanySetupViewModel : ViewModelBase
 
     public ObservableCollection<IndustryOptionModel> Industries { get; } = [];
     public ObservableCollection<DifficultyOptionModel> Difficulties { get; } = [];
+    public ObservableCollection<DepartmentRelevanceModel> DepartmentRelevancePreview { get; } = [];
 
     private static readonly string[] SuggestedNames =
     [
@@ -50,6 +53,7 @@ public partial class CompanySetupViewModel : ViewModelBase
         BuildIndustries();
         BuildDifficulties();
         UpdateDescriptions();
+        BuildDepartmentRelevance();
 
         // Pre-fill if returning
         if (!string.IsNullOrEmpty(flow.SessionConfig?.CompanyName))
@@ -78,6 +82,7 @@ public partial class CompanySetupViewModel : ViewModelBase
     partial void OnSelectedIndustryChanged(IndustryType value)
     {
         UpdateDescriptions();
+        BuildDepartmentRelevance();
 
         foreach (var i in Industries)
             i.IsSelected = i.Industry == value;
@@ -96,17 +101,62 @@ public partial class CompanySetupViewModel : ViewModelBase
 
         IndustryDescription = SelectedIndustry switch
         {
-            IndustryType.Manufacturing => "Physical goods production. Inventory and logistics are critical.",
-            IndustryType.Technology => "Fast-paced software development. Talent and marketing dominate.",
-            IndustryType.Retail => "High order volume. Customer satisfaction and sales pressure.",
-            IndustryType.Logistics => "Transportation focused. Route management and delivery SLAs.",
-            IndustryType.Finance => "Capital-heavy operations. Loan and budget management.",
-            IndustryType.Healthcare => "Regulated environment. HR compliance and supply chain.",
-            IndustryType.Energy => "Infrastructure operations. Production efficiency focused.",
-            IndustryType.Media => "Campaign-heavy. Marketing and brand reputation driven.",
+            IndustryType.Food => "Perishable goods with spoilage risk. FIFO inventory and cold-chain logistics are critical. Tight margins driven by shelf-life pressure.",
+            IndustryType.Beverage => "Blending, bottling, and distribution. Excise taxes, seasonal demand, and distributor relationships define success.",
+            IndustryType.Entertainment => "Content creation and events. Project-based revenue, talent-heavy, and hype-driven marketing.",
+            IndustryType.Automotive => "Complex assembly with JIT supply chains. Quality control and precision production dominate. Capital-intensive.",
+            IndustryType.Fashion => "Trend-driven with seasonal cycles. Fast fashion requires rapid turnaround; luxury rewards brand and scarcity.",
             _ => "",
         };
     }
+
+    private void BuildDepartmentRelevance()
+    {
+        DepartmentRelevancePreview.Clear();
+
+        var module = IndustryModuleRegistry.GetModule(SelectedIndustry);
+        var relevances = module?.GetDepartmentRelevances();
+
+        foreach (var dept in Enum.GetValues<DepartmentType>())
+        {
+            var relevance = DepartmentRelevance.Standard;
+            if (relevances?.TryGetValue(dept, out var found) == true)
+                relevance = found;
+
+            var (emoji, label, color) = relevance switch
+            {
+                DepartmentRelevance.Critical => ("🔴", "Critical", "BrushAlertCriticalBg"),
+                DepartmentRelevance.Important => ("🟠", "Important", "BrushAlertWarningBg"),
+                DepartmentRelevance.Standard => ("🟡", "Standard", "BrushAccentPrimary"),
+                DepartmentRelevance.Light => ("🟢", "Light", "BrushSuccess"),
+                DepartmentRelevance.Outsourced => ("⚪", "Outsourced", "BrushBorderStrong"),
+                _ => ("🟡", "Standard", "BrushAccentPrimary"),
+            };
+
+            DepartmentRelevancePreview.Add(new DepartmentRelevanceModel
+            {
+                Department = dept,
+                DepartmentName = GetDepartmentDisplayName(dept),
+                Emoji = emoji,
+                RelevanceLabel = label,
+                Relevance = relevance,
+                BrushResourceKey = color,
+            });
+        }
+    }
+
+    private static string GetDepartmentDisplayName(DepartmentType dept) => dept switch
+    {
+        DepartmentType.Management => "Management",
+        DepartmentType.HumanResources => "Human Resources",
+        DepartmentType.Finance => "Finance",
+        DepartmentType.Sales => "Sales",
+        DepartmentType.Marketing => "Marketing",
+        DepartmentType.Production => "Production",
+        DepartmentType.Warehouse => "Warehouse",
+        DepartmentType.Logistics => "Logistics",
+        _ => dept.ToString(),
+    };
 
     [RelayCommand]
     private void RandomName()
@@ -162,14 +212,11 @@ public partial class CompanySetupViewModel : ViewModelBase
     {
         var items = new[]
         {
-            (IndustryType.Manufacturing, "🏭", "Manufacturing"),
-            (IndustryType.Technology,    "💻", "Technology"),
-            (IndustryType.Retail,        "🛍️", "Retail"),
-            (IndustryType.Logistics,     "🚚", "Logistics"),
-            (IndustryType.Finance,       "💰", "Finance"),
-            (IndustryType.Healthcare,    "🏥", "Healthcare"),
-            (IndustryType.Energy,        "⚡", "Energy"),
-            (IndustryType.Media,         "📺", "Media"),
+            (IndustryType.Food,          "🍞", "Food"),
+            (IndustryType.Beverage,      "🥤", "Beverage"),
+            (IndustryType.Entertainment, "🎬", "Entertainment"),
+            (IndustryType.Automotive,    "🚗", "Automotive"),
+            (IndustryType.Fashion,       "👗", "Fashion"),
         };
 
         foreach (var (type, emoji, label) in items)
@@ -223,4 +270,14 @@ public partial class DifficultyOptionModel : ObservableObject
     public string Label { get; set; } = "";
     public string SubLabel { get; set; } = "";
     [ObservableProperty] private bool _isSelected;
+}
+
+public partial class DepartmentRelevanceModel : ObservableObject
+{
+    public DepartmentType Department { get; set; }
+    public string DepartmentName { get; set; } = "";
+    public string Emoji { get; set; } = "";
+    public string RelevanceLabel { get; set; } = "";
+    public DepartmentRelevance Relevance { get; set; }
+    public string BrushResourceKey { get; set; } = "";
 }

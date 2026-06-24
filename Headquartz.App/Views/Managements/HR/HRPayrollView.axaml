@@ -7,12 +7,16 @@
 	<ScrollViewer>
 		<StackPanel Margin="30" Spacing="20">
 
-			<TextBlock FontSize="34" FontWeight="Bold" Text="Payroll"/>
+			<!-- HEADER -->
+            <StackPanel Spacing="4">
+				<TextBlock FontSize="34" FontWeight="Bold" Text="Payroll"/>
+				<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="Process payroll, incentives, tax calculations, and salary adjustments."/>
+			</StackPanel>
 
 			<!-- PAYROLL AT RISK BANNER -->
 			<Border
                 IsVisible="{Binding IsPayrollCritical}"
-                Background="#78350F"
+                Background="{DynamicResource BrushAlertWarningBg}"
                 CornerRadius="12"
                 Padding="20">
 				<StackPanel Orientation="Horizontal" Spacing="12">
@@ -20,10 +24,10 @@
 					<StackPanel>
 						<TextBlock
                             Text="PAYROLL CANNOT BE COVERED"
-                            FontSize="16" FontWeight="Bold" Foreground="#FDE68A"/>
+                            FontSize="16" FontWeight="Bold" Foreground="{DynamicResource BrushWarning}"/>
 						<TextBlock
                             Text="Insufficient cash. Payroll failure will crash morale company-wide."
-                            Foreground="#FDE68A"/>
+                            Foreground="{DynamicResource BrushWarning}"/>
 					</StackPanel>
 				</StackPanel>
 			</Border>
@@ -32,14 +36,14 @@
 			<ItemsControl ItemsSource="{Binding Kpis}">
 				<ItemsControl.ItemsPanel>
 					<ItemsPanelTemplate>
-						<WrapPanel/>
+						<WrapPanel ItemSpacing="10"/>
 					</ItemsPanelTemplate>
 				</ItemsControl.ItemsPanel>
 				<ItemsControl.ItemTemplate>
 					<DataTemplate>
-						<Border Width="200" Margin="10" Padding="20" Background="#202633" CornerRadius="12">
+						<Border Width="200" Margin="0,5" Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 							<StackPanel>
-								<TextBlock FontSize="13" Foreground="#9CA3AF" Text="{Binding Title}"/>
+								<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="{Binding Title}"/>
 								<TextBlock FontSize="22" FontWeight="Bold" Text="{Binding Value}"/>
 							</StackPanel>
 						</Border>
@@ -48,34 +52,34 @@
 			</ItemsControl>
 
 			<!-- PAYROLL COVERAGE BAR -->
-			<Border Padding="20" Background="#202633" CornerRadius="12">
+			<Border Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 				<StackPanel Spacing="10">
 					<TextBlock FontSize="18" FontWeight="Bold" Text="Payroll Coverage"/>
 					<StackPanel Orientation="Horizontal" Spacing="12">
-						<TextBlock Text="Cash" FontSize="12" Foreground="#9CA3AF" Width="60" VerticalAlignment="Center"/>
+						<TextBlock Text="Cash" FontSize="12" Foreground="{DynamicResource BrushTextSecondary}" Width="60" VerticalAlignment="Center"/>
 						<ProgressBar
                             Value="{Binding CompanyCash}"
                             Maximum="{Binding TotalPayroll}"
                             Height="14"
                             Width="300"
-                            Foreground="#10B981"
+                            Foreground="{DynamicResource BrushSuccess}"
                             VerticalAlignment="Center"/>
 						<TextBlock
-                            FontSize="12" Foreground="#9CA3AF"
+                            FontSize="12" Foreground="{DynamicResource BrushTextSecondary}"
                             Text="{Binding CompanyCash, StringFormat='${0:N0}'}"
                             VerticalAlignment="Center"/>
 					</StackPanel>
 					<StackPanel Orientation="Horizontal" Spacing="12">
-						<TextBlock Text="Payroll" FontSize="12" Foreground="#9CA3AF" Width="60" VerticalAlignment="Center"/>
+						<TextBlock Text="Payroll" FontSize="12" Foreground="{DynamicResource BrushTextSecondary}" Width="60" VerticalAlignment="Center"/>
 						<ProgressBar
                             Value="{Binding TotalPayroll}"
                             Maximum="{Binding TotalPayroll}"
                             Height="14"
                             Width="300"
-                            Foreground="#EF4444"
+                            Foreground="{DynamicResource BrushDanger}"
                             VerticalAlignment="Center"/>
 						<TextBlock
-                            FontSize="12" Foreground="#9CA3AF"
+                            FontSize="12" Foreground="{DynamicResource BrushTextSecondary}"
                             Text="{Binding TotalPayroll, StringFormat='${0:N0}'}"
                             VerticalAlignment="Center"/>
 					</StackPanel>
@@ -83,19 +87,19 @@
 			</Border>
 
 			<!-- EMPLOYEE SALARY LIST -->
-			<Border Padding="20" Background="#202633" CornerRadius="12">
+			<Border Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 				<StackPanel>
 					<TextBlock FontSize="22" FontWeight="Bold" Text="Salary Breakdown" Margin="0,0,0,16"/>
 
 					<TextBlock
                         IsVisible="{Binding !Employees.Count}"
                         Text="No employees on payroll."
-                        Foreground="#6B7280"/>
+                        Foreground="{DynamicResource BrushTextSecondary}"/>
 
 					<ItemsControl ItemsSource="{Binding Employees}">
 						<ItemsControl.ItemTemplate>
 							<DataTemplate>
-								<Border Margin="0,4" Padding="14" Background="#2B3242" CornerRadius="8">
+								<Border Margin="0,4" Padding="14" Background="{DynamicResource BrushBgNested}" CornerRadius="8">
 									<Grid ColumnDefinitions="*,120,120,100">
 
 										<!-- Name + dept -->
@@ -106,19 +110,19 @@
                                                     Text="{Binding Name}"/>
 												<Border
                                                     IsVisible="{Binding IsLowMorale}"
-                                                    Background="#7F1D1D"
+                                                    Background="{DynamicResource BrushAlertCriticalBg}"
                                                     CornerRadius="4"
                                                     Padding="5,1">
 													<TextBlock
                                                         Text="AT RISK"
                                                         FontSize="9"
                                                         FontWeight="Bold"
-                                                        Foreground="#FCA5A5"/>
+                                                        Foreground="{DynamicResource BrushBadgeDangerFg}"/>
 												</Border>
 											</StackPanel>
 											<TextBlock
                                                 FontSize="12"
-                                                Foreground="#6B7280"
+                                                Foreground="{DynamicResource BrushTextSecondary}"
                                                 Text="{Binding Department}"/>
 										</StackPanel>
 
@@ -126,7 +130,7 @@
 										<TextBlock
                                             Grid.Column="1"
                                             FontSize="12"
-                                            Foreground="#9CA3AF"
+                                            Foreground="{DynamicResource BrushTextSecondary}"
                                             Text="{Binding Role}"
                                             VerticalAlignment="Center"/>
 
@@ -137,10 +141,10 @@
                                                 Maximum="100"
                                                 Height="5"
                                                 Width="80"
-                                                Foreground="#8B5CF6"/>
+                                                Foreground="{DynamicResource BrushDeptHR}"/>
 											<TextBlock
                                                 FontSize="10"
-                                                Foreground="#6B7280"
+                                                Foreground="{DynamicResource BrushTextSecondary}"
                                                 Text="{Binding MoraleStatus}"/>
 										</StackPanel>
 
@@ -149,7 +153,7 @@
                                             Grid.Column="3"
                                             FontSize="15"
                                             FontWeight="Bold"
-                                            Foreground="#10B981"
+                                            Foreground="{DynamicResource BrushSuccess}"
                                             Text="{Binding Salary, StringFormat='${0:N0}'}"
                                             HorizontalAlignment="Right"
                                             VerticalAlignment="Center"/>

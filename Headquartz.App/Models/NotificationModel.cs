@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System;
+using Headquartz.Domain.Enums;
 
 namespace Headquartz.App.Models;
 
@@ -11,6 +10,7 @@ public class NotificationModel
     public string Message { get; set; } = "";
     public string Severity { get; set; } = "info";
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    public string BackgroundColor { get; set; } = "#1F2937";
-    public string BorderColor { get; set; } = "#374151";
+    public string BackgroundKey { get; set; } = "BrushAlertInfoBg";
+    public string BorderKey { get; set; } = "BrushInfo";
+    public DepartmentType Department { get; set; } = DepartmentType.Management;
 }

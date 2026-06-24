@@ -3,7 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              x:Class="Headquartz.App.MainMenuView"
-             Background="#080C14">
+             Background="{DynamicResource BrushBgBase}">
 
     <Grid ColumnDefinitions="*,440,*" RowDefinitions="*,Auto,*">
 
@@ -13,7 +13,7 @@
                 Width="600" Height="600" Opacity="0.07">
                 <Ellipse.Fill>
                     <RadialGradientBrush>
-                        <GradientStop Color="#6366F1" Offset="0"/>
+                        <GradientStop Color="{DynamicResource ColorAccentPrimary}" Offset="0"/>
                         <GradientStop Color="Transparent" Offset="1"/>
                     </RadialGradientBrush>
                 </Ellipse.Fill>
@@ -22,7 +22,7 @@
                 Width="500" Height="500" Opacity="0.05">
                 <Ellipse.Fill>
                     <RadialGradientBrush>
-                        <GradientStop Color="#06B6D4" Offset="0"/>
+                        <GradientStop Color="{DynamicResource ColorAccentSecondary}" Offset="0"/>
                         <GradientStop Color="Transparent" Offset="1"/>
                     </RadialGradientBrush>
                 </Ellipse.Fill>
@@ -39,13 +39,13 @@
                     <Border Width="56" Height="56" CornerRadius="14">
                         <Border.Background>
                             <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
-                                <GradientStop Color="#6366F1" Offset="0"/>
-                                <GradientStop Color="#4338CA" Offset="1"/>
+                                <GradientStop Color="{DynamicResource ColorAccentPrimary}" Offset="0"/>
+                                <GradientStop Color="{DynamicResource ColorAccentPrimaryHover}" Offset="1"/>
                             </LinearGradientBrush>
                         </Border.Background>
                         <TextBlock
                             Text="H" FontSize="30" FontWeight="Black"
-                            Foreground="White"
+                            Foreground="{DynamicResource BrushTextPrimary}"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"/>
                     </Border>
@@ -54,7 +54,7 @@
                         Text="HEADQUARTZ"
                         FontSize="36"
                         FontWeight="Black"
-                        Foreground="White"
+                        Foreground="{DynamicResource BrushTextPrimary}"
                         LetterSpacing="6"
                         VerticalAlignment="Center"/>
                 </StackPanel>
@@ -62,7 +62,7 @@
                 <TextBlock
                     Text="Enterprise Resource Planning Simulator"
                     FontSize="13"
-                    Foreground="#374151"
+                    Foreground="{DynamicResource BrushBorderStrong}"
                     LetterSpacing="2"
                     HorizontalAlignment="Center"/>
 
@@ -72,13 +72,13 @@
             <Border
                 Margin="0,0,0,32"
                 Padding="14,10"
-                Background="#0F1623"
-                BorderBrush="#1F2937"
+                Background="{DynamicResource BrushBgSurface}"
+                BorderBrush="{DynamicResource BrushBgInput}"
                 BorderThickness="1"
                 CornerRadius="12"
                 HorizontalAlignment="Center">
                 <StackPanel Orientation="Horizontal" Spacing="10">
-                    <Border Width="32" Height="32" CornerRadius="16" Background="#1F2937">
+                    <Border Width="32" Height="32" CornerRadius="16" Background="{DynamicResource BrushBgInput}">
                         <TextBlock
                             Text="{Binding PlayerAvatar}"
                             FontSize="18"
@@ -90,11 +90,11 @@
                             Text="{Binding PlayerName}"
                             FontSize="13"
                             FontWeight="SemiBold"
-                            Foreground="White"/>
+                            Foreground="{DynamicResource BrushTextPrimary}"/>
                         <TextBlock
                             Text="{Binding PlayerLevel, StringFormat='Level {0}'}"
                             FontSize="11"
-                            Foreground="#4B5563"/>
+                            Foreground="{DynamicResource BrushTextMuted}"/>
                     </StackPanel>
                 </StackPanel>
             </Border>
@@ -110,8 +110,8 @@
                     Command="{Binding HostGameCommand}">
                     <Button.Background>
                         <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,0%">
-                            <GradientStop Color="#6366F1" Offset="0"/>
-                            <GradientStop Color="#4F46E5" Offset="1"/>
+                            <GradientStop Color="{DynamicResource ColorAccentPrimary}" Offset="0"/>
+                            <GradientStop Color="{DynamicResource ColorAccentPrimaryHover}" Offset="1"/>
                         </LinearGradientBrush>
                     </Button.Background>
                     <Grid ColumnDefinitions="32,*,32">
@@ -126,12 +126,12 @@
                                 Text="Host Game"
                                 FontSize="16"
                                 FontWeight="Bold"
-                                Foreground="White"
+                                Foreground="{DynamicResource BrushTextPrimary}"
                                 HorizontalAlignment="Center"/>
                             <TextBlock
                                 Text="Create a new multiplayer room"
                                 FontSize="11"
-                                Foreground="#A5B4FC"
+                                Foreground="{DynamicResource BrushAccentPrimary}"
                                 HorizontalAlignment="Center"/>
                         </StackPanel>
                     </Grid>
@@ -143,8 +143,8 @@
                         HorizontalAlignment="Stretch"
                         Padding="0,16"
                         CornerRadius="12"
-                        Background="#0F1623"
-                        BorderBrush="#1F2937"
+                        Background="{DynamicResource BrushBgSurface}"
+                        BorderBrush="{DynamicResource BrushBgInput}"
                         BorderThickness="1"
                         Command="{Binding ToggleJoinInputCommand}">
                         <Grid ColumnDefinitions="32,*,32">
@@ -159,12 +159,12 @@
                                     Text="Join Game"
                                     FontSize="16"
                                     FontWeight="Bold"
-                                    Foreground="White"
+                                    Foreground="{DynamicResource BrushTextPrimary}"
                                     HorizontalAlignment="Center"/>
                                 <TextBlock
                                     Text="Enter a room code to join"
                                     FontSize="11"
-                                    Foreground="#4B5563"
+                                    Foreground="{DynamicResource BrushTextMuted}"
                                     HorizontalAlignment="Center"/>
                             </StackPanel>
                         </Grid>
@@ -174,8 +174,8 @@
                     <Border
                         IsVisible="{Binding ShowJoinInput}"
                         Padding="16"
-                        Background="#0F1623"
-                        BorderBrush="#1F2937"
+                        Background="{DynamicResource BrushBgSurface}"
+                        BorderBrush="{DynamicResource BrushBgInput}"
                         BorderThickness="1"
                         CornerRadius="10">
                         <StackPanel Spacing="10">
@@ -184,7 +184,7 @@
                                 Text="ROOM CODE"
                                 FontSize="11"
                                 FontWeight="Bold"
-                                Foreground="#4B5563"
+                                Foreground="{DynamicResource BrushTextMuted}"
                                 LetterSpacing="2"/>
 
                             <Grid ColumnDefinitions="*,Auto">
@@ -196,36 +196,36 @@
                                     FontSize="20"
                                     FontWeight="Bold"
                                     Padding="14,10"
-                                    Background="#111827"
-                                    BorderBrush="#374151"
+                                    Background="{DynamicResource BrushBgInput}"
+                                    BorderBrush="{DynamicResource BrushBorderStrong}"
                                     BorderThickness="1"
                                     CornerRadius="8"
-                                    Foreground="White"
+                                    Foreground="{DynamicResource BrushTextPrimary}"
                                     LetterSpacing="4"/>
                                 <Button
                                     Grid.Column="1"
                                     Margin="8,0,0,0"
                                     Padding="18,10"
-                                    Background="#059669"
+                                    Background="{DynamicResource BrushSuccess}"
                                     CornerRadius="8"
                                     Command="{Binding ConfirmJoinCommand}">
                                     <TextBlock
                                         Text="Join →"
                                         FontSize="14"
                                         FontWeight="Bold"
-                                        Foreground="White"/>
+                                        Foreground="{DynamicResource BrushTextPrimary}"/>
                                 </Button>
                             </Grid>
 
                             <Border
                                 IsVisible="{Binding HasJoinError}"
                                 Padding="10,8"
-                                Background="#450A0A"
+                                Background="{DynamicResource BrushBadgeDangerBg}"
                                 CornerRadius="6">
                                 <TextBlock
                                     Text="{Binding JoinError}"
                                     FontSize="12"
-                                    Foreground="#FCA5A5"/>
+                                    Foreground="{DynamicResource BrushBadgeDangerFg}"/>
                             </Border>
 
                         </StackPanel>
@@ -237,8 +237,8 @@
                     HorizontalAlignment="Stretch"
                     Padding="0,14"
                     CornerRadius="12"
-                    Background="#0F1623"
-                    BorderBrush="#1F2937"
+                    Background="{DynamicResource BrushBgSurface}"
+                    BorderBrush="{DynamicResource BrushBgInput}"
                     BorderThickness="1"
                     Command="{Binding PlaySoloCommand}">
                     <Grid ColumnDefinitions="32,*,32">
@@ -253,7 +253,7 @@
                             Text="Continue / Solo"
                             FontSize="15"
                             FontWeight="SemiBold"
-                            Foreground="#D1D5DB"
+                            Foreground="{DynamicResource BrushTextSecondary}"
                             HorizontalAlignment="Center"/>
                     </Grid>
                 </Button>
@@ -261,7 +261,7 @@
             </StackPanel>
 
             <!-- Divider -->
-            <Border Height="1" Background="#111827" Margin="0,24"/>
+            <Border Height="1" Background="{DynamicResource BrushBgInput}" Margin="0,24"/>
 
             <!-- Secondary actions -->
             <Grid ColumnDefinitions="*,*,*,*" Margin="0,0,0,0">
@@ -273,7 +273,7 @@
                     Command="{Binding OpenTutorialCommand}">
                     <StackPanel HorizontalAlignment="Center" Spacing="4">
                         <TextBlock Text="📖" FontSize="18" HorizontalAlignment="Center"/>
-                        <TextBlock Text="Tutorial" FontSize="11" Foreground="#4B5563" HorizontalAlignment="Center"/>
+                        <TextBlock Text="Tutorial" FontSize="11" Foreground="{DynamicResource BrushTextMuted}" HorizontalAlignment="Center"/>
                     </StackPanel>
                 </Button>
                 <Button
@@ -284,7 +284,7 @@
                     Command="{Binding OpenSettingsCommand}">
                     <StackPanel HorizontalAlignment="Center" Spacing="4">
                         <TextBlock Text="⚙️" FontSize="18" HorizontalAlignment="Center"/>
-                        <TextBlock Text="Settings" FontSize="11" Foreground="#4B5563" HorizontalAlignment="Center"/>
+                        <TextBlock Text="Settings" FontSize="11" Foreground="{DynamicResource BrushTextMuted}" HorizontalAlignment="Center"/>
                     </StackPanel>
                 </Button>
                 <Button
@@ -295,7 +295,7 @@
                     Command="{Binding OpenCreditsCommand}">
                     <StackPanel HorizontalAlignment="Center" Spacing="4">
                         <TextBlock Text="🏆" FontSize="18" HorizontalAlignment="Center"/>
-                        <TextBlock Text="Credits" FontSize="11" Foreground="#4B5563" HorizontalAlignment="Center"/>
+                        <TextBlock Text="Credits" FontSize="11" Foreground="{DynamicResource BrushTextMuted}" HorizontalAlignment="Center"/>
                     </StackPanel>
                 </Button>
                 <Button
@@ -306,7 +306,7 @@
                     Command="{Binding ExitGameCommand}">
                     <StackPanel HorizontalAlignment="Center" Spacing="4">
                         <TextBlock Text="🚪" FontSize="18" HorizontalAlignment="Center"/>
-                        <TextBlock Text="Exit" FontSize="11" Foreground="#4B5563" HorizontalAlignment="Center"/>
+                        <TextBlock Text="Exit" FontSize="11" Foreground="{DynamicResource BrushTextMuted}" HorizontalAlignment="Center"/>
                     </StackPanel>
                 </Button>
             </Grid>

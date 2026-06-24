@@ -7,47 +7,51 @@
 	<ScrollViewer>
 		<StackPanel Margin="30" Spacing="20">
 
-			<TextBlock FontSize="34" FontWeight="Bold" Text="Budget Allocation"/>
+			<!-- HEADER -->
+            <StackPanel Spacing="4">
+				<TextBlock FontSize="34" FontWeight="Bold" Text="Budget Allocation"/>
+				<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="Create budgets, allocate funds, track department spending, and forecast adjustments."/>
+			</StackPanel>
 
 			<!-- SUMMARY ROW -->
-			<WrapPanel>
-				<Border Width="220" Margin="10" Padding="20" Background="#202633" CornerRadius="12">
+			<WrapPanel ItemSpacing="10	">
+				<Border Width="200" Margin="0,5" Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 					<StackPanel>
-						<TextBlock FontSize="13" Foreground="#9CA3AF" Text="Company Cash"/>
-						<TextBlock FontSize="26" FontWeight="Bold"
+						<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="Company Cash"/>
+						<TextBlock FontSize="23" FontWeight="Bold"
                             Text="{Binding CompanyCash, StringFormat='${0:N0}'}"/>
 					</StackPanel>
 				</Border>
-				<Border Width="220" Margin="10" Padding="20" Background="#202633" CornerRadius="12">
+				<Border Width="200" Margin="0,5" Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 					<StackPanel>
-						<TextBlock FontSize="13" Foreground="#9CA3AF" Text="Total Budget Allocated"/>
-						<TextBlock FontSize="26" FontWeight="Bold"
+						<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="Total Budget Allocated"/>
+						<TextBlock FontSize="23" FontWeight="Bold"
                             Text="{Binding TotalBudget, StringFormat='${0:N0}'}"/>
 					</StackPanel>
 				</Border>
-				<Border Width="220" Margin="10" Padding="20" Background="#202633" CornerRadius="12">
+				<Border Width="200" Margin="0,5" Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 					<StackPanel>
-						<TextBlock FontSize="13" Foreground="#9CA3AF" Text="Operational Cost / Tick"/>
-						<TextBlock FontSize="26" FontWeight="Bold"
+						<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="Operational Cost / Tick"/>
+						<TextBlock FontSize="23" FontWeight="Bold"
                             Text="{Binding TotalOperationalCost, StringFormat='${0:N0}'}"/>
 					</StackPanel>
 				</Border>
 			</WrapPanel>
 
 			<!-- ACTIONS -->
-			<WrapPanel>
-				<Button Padding="14" Margin="10" Command="{Binding ResetAllCommand}" Content="↺  Reset All Budgets"/>
+			<WrapPanel ItemSpacing="10">
+				<Button Padding="14" Margin="0,5" Command="{Binding ResetAllCommand}" Content="↺  Reset All Budgets"/>
 			</WrapPanel>
 
 			<!-- DEPARTMENT BUDGET TABLE -->
-			<Border Padding="20" Background="#202633" CornerRadius="12">
+			<Border Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 				<StackPanel>
 					<TextBlock FontSize="22" FontWeight="Bold" Text="Department Budgets" Margin="0,0,0,16"/>
 
 					<ItemsControl ItemsSource="{Binding Departments}">
 						<ItemsControl.ItemTemplate>
 							<DataTemplate>
-								<Border Margin="0,6" Padding="16" Background="#2B3242" CornerRadius="8">
+								<Border Margin="0,6" Padding="16" Background="{DynamicResource BrushBgNested}" CornerRadius="8">
 									<Grid ColumnDefinitions="32,*,180,Auto">
 
 										<!-- Emoji -->
@@ -65,31 +69,31 @@
                                                 Text="{Binding Name}"/>
 											<StackPanel Orientation="Horizontal" Spacing="16">
 												<StackPanel Orientation="Horizontal" Spacing="6">
-													<TextBlock Text="Eff" FontSize="11" Foreground="#6B7280" Width="22"/>
+													<TextBlock Text="Eff" FontSize="11" Foreground="{DynamicResource BrushTextSecondary}" Width="22"/>
 													<ProgressBar
                                                         Value="{Binding Efficiency}"
                                                         Maximum="100"
                                                         Height="5" Width="80"
-                                                        Foreground="#10B981"
+                                                        Foreground="{DynamicResource BrushSuccess}"
                                                         VerticalAlignment="Center"/>
 													<TextBlock
                                                         Text="{Binding Efficiency, StringFormat={}{0}%}"
-                                                        FontSize="11" Foreground="#9CA3AF"/>
+                                                        FontSize="11" Foreground="{DynamicResource BrushTextSecondary}"/>
 												</StackPanel>
 												<StackPanel Orientation="Horizontal" Spacing="6">
-													<TextBlock Text="Stress" FontSize="11" Foreground="#6B7280" Width="34"/>
+													<TextBlock Text="Stress" FontSize="11" Foreground="{DynamicResource BrushTextSecondary}" Width="34"/>
 													<ProgressBar
                                                         Value="{Binding StressLevel}"
                                                         Maximum="100"
                                                         Height="5" Width="80"
-                                                        Foreground="#EF4444"
+                                                        Foreground="{DynamicResource BrushDanger}"
                                                         VerticalAlignment="Center"/>
 													<TextBlock
                                                         Text="{Binding StressLevel, StringFormat={}{0}%}"
-                                                        FontSize="11" Foreground="#9CA3AF"/>
+                                                        FontSize="11" Foreground="{DynamicResource BrushTextSecondary}"/>
 												</StackPanel>
 												<TextBlock
-                                                    FontSize="11" Foreground="#6B7280"
+                                                    FontSize="11" Foreground="{DynamicResource BrushTextSecondary}"
                                                     Text="{Binding StaffCount, StringFormat='👤 {0} staff'}"
                                                     VerticalAlignment="Center"/>
 											</StackPanel>
@@ -113,7 +117,7 @@
                                             VerticalAlignment="Center">
 											<Button
                                                 Width="36" Height="36"
-                                                Background="#374151"
+                                                Background="{DynamicResource BrushBorderStrong}"
                                                 CornerRadius="6"
                                                 FontSize="18"
                                                 HorizontalContentAlignment="Center"
@@ -122,7 +126,7 @@
                                                 Content="−"/>
 											<Button
                                                 Width="36" Height="36"
-                                                Background="#374151"
+                                                Background="{DynamicResource BrushBorderStrong}"
                                                 CornerRadius="6"
                                                 FontSize="18"
                                                 HorizontalContentAlignment="Center"

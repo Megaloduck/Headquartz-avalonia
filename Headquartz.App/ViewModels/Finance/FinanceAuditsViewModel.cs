@@ -1,4 +1,4 @@
-﻿using Avalonia.Threading;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Headquartz.App.Models;
@@ -35,8 +35,19 @@ public partial class FinanceAuditsViewModel : ViewModelBase
     [ObservableProperty] private string _statusMessage = "";
     [ObservableProperty] private long _lastAuditTick = 0;
 
+    // ── Projection (moved from Forecast) ──────────────────────
+    [ObservableProperty] private decimal _currentCash;
+    [ObservableProperty] private decimal _revenuePerTick;
+    [ObservableProperty] private decimal _expensePerTick;
+    [ObservableProperty] private decimal _netPerTick;
+    [ObservableProperty] private decimal _payrollEvery10;
+    [ObservableProperty] private int _ticksUntilBankrupt;
+    [ObservableProperty] private string _runwayLabel = "";
+    [ObservableProperty] private bool _isCritical;
+
     public ObservableCollection<KpiCardModel> Kpis { get; } = [];
     public ObservableCollection<AuditFindingModel> Findings { get; } = [];
+    public ObservableCollection<ForecastDataPoint> Projection { get; } = [];
 
     public FinanceAuditsViewModel(SimulationService simulation)
     {
@@ -159,6 +170,82 @@ public partial class FinanceAuditsViewModel : ViewModelBase
         Kpis.Add(new KpiCardModel { Title = "Expenses", Value = $"${TotalExpenses:N0}" });
         Kpis.Add(new KpiCardModel { Title = "Findings", Value = UnresolvedFindings.ToString() });
         Kpis.Add(new KpiCardModel { Title = "Audit Status", Value = AuditStatus });
+
+        // ── 30-Tick Cash Projection (moved from Forecast) ──────
+        var clock = _simulation.Engine.Clock;
+        CurrentCash = company.Cash;
+
+        // Estimate revenue per tick from recent order flow
+        int recentOrders = company.Orders
+            .Count(o => o.Status == OrderStatus.Delivered);
+        RevenuePerTick = recentOrders > 0
+            ? Math.Min(recentOrders * 100m, 5_000m)
+            : 0m;
+
+        // Operational cost per tick
+        ExpensePerTick = company.Departments.Sum(d => d.Budget * 0.01m);
+
+        // Payroll every 10 ticks
+        PayrollEvery10 = company.Employees.Sum(e => e.Salary);
+
+        // Net per tick (excluding payroll)
+        NetPerTick = RevenuePerTick - ExpensePerTick;
+
+        // Project 30 ticks forward
+        Projection.Clear();
+
+        decimal runningCash = CurrentCash;
+        long currentTick = clock.Tick;
+        int bankruptTick = -1;
+
+        for (int i = 1; i <= 30; i++)
+        {
+            long projectedTick = currentTick + i;
+            bool isPayroll = projectedTick % 10 == 0;
+
+            decimal tickExpense = ExpensePerTick;
+            decimal tickRevenue = RevenuePerTick;
+
+            runningCash += tickRevenue - tickExpense;
+
+            if (isPayroll)
+                runningCash -= PayrollEvery10;
+
+            bool isNeg = runningCash < 0;
+
+            if (isNeg && bankruptTick < 0)
+                bankruptTick = i;
+
+            Projection.Add(new ForecastDataPoint
+            {
+                Tick = projectedTick,
+                WorldTime = clock.WorldTime.AddMinutes(15 * i).ToString("MM/dd HH:mm"),
+                ProjectedCash = runningCash,
+                Revenue = tickRevenue,
+                Expenses = tickExpense + (isPayroll ? PayrollEvery10 : 0),
+                IsNegative = isNeg,
+                IsPayrollTick = isPayroll,
+                CashDisplay = $"${runningCash:N0}",
+            });
+        }
+
+        TicksUntilBankrupt = bankruptTick;
+        IsCritical = bankruptTick is >= 0 and <= 10;
+
+        RunwayLabel = bankruptTick switch
+        {
+            -1 => "✓ Solvent for 30+ ticks",
+            <= 5 => $"🚨 Cash out in {bankruptTick} tick(s)!",
+            <= 10 => $"⚠ Cash out in {bankruptTick} ticks",
+            _ => $"Cash out in ~{bankruptTick} ticks",
+        };
+
+        // Add projection KPIs to existing Kpis list
+        Kpis.Add(new KpiCardModel { Title = "Rev / Tick", Value = $"${RevenuePerTick:N0}" });
+        Kpis.Add(new KpiCardModel { Title = "Exp / Tick", Value = $"${ExpensePerTick:N0}" });
+        Kpis.Add(new KpiCardModel { Title = "Net / Tick", Value = $"${NetPerTick:N0}" });
+        Kpis.Add(new KpiCardModel { Title = "Next Payroll", Value = $"${PayrollEvery10:N0}" });
+        Kpis.Add(new KpiCardModel { Title = "Runway", Value = RunwayLabel });
 
         Findings.Clear();
         foreach (var f in _findings.OrderBy(f => f.IsResolved ? 1 : 0))

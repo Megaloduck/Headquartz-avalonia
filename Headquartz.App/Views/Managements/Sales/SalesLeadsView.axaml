@@ -7,23 +7,25 @@
 	<ScrollViewer>
 		<StackPanel Margin="30" Spacing="20">
 
-			<TextBlock FontSize="34" FontWeight="Bold" Text="Leads"/>
-			<TextBlock FontSize="13" Foreground="#6B7280"
-                Text="Manage your prospect pipeline. Advance leads through stages to close deals."/>
+			<!-- HEADER -->
+            <StackPanel Spacing="4">
+				<TextBlock FontSize="34" FontWeight="Bold" Text="Leads"/>
+				<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="Lead capture, scoring, qualification status, source tracking, and distribution to sales reps."/>
+			</StackPanel>
 
 			<!-- KPI ROW -->
 			<ItemsControl ItemsSource="{Binding Kpis}">
 				<ItemsControl.ItemsPanel>
 					<ItemsPanelTemplate>
-						<WrapPanel/>
+						<WrapPanel ItemSpacing="10"/>
 					</ItemsPanelTemplate>
 				</ItemsControl.ItemsPanel>
 				<ItemsControl.ItemTemplate>
 					<DataTemplate>
-						<Border Width="180" Margin="8" Padding="16" Background="#202633" CornerRadius="12">
+						<Border Width="200" Margin="0,5" Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 							<StackPanel>
-								<TextBlock FontSize="12" Foreground="#9CA3AF" Text="{Binding Title}"/>
-								<TextBlock FontSize="26" FontWeight="Bold" Text="{Binding Value}"/>
+								<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="{Binding Title}"/>
+								<TextBlock FontSize="22" FontWeight="Bold" Text="{Binding Value}"/>
 							</StackPanel>
 						</Border>
 					</DataTemplate>
@@ -31,33 +33,33 @@
 			</ItemsControl>
 
 			<!-- PIPELINE STAGE BANNER -->
-			<Border Padding="16,12" Background="#202633" CornerRadius="10">
+			<Border Padding="16,12" Background="{DynamicResource BrushBgCard}" CornerRadius="10">
 				<StackPanel Orientation="Horizontal" Spacing="0">
 
-					<Border Padding="12,8" CornerRadius="8" Background="#1E3A5F" Margin="0,0,4,0">
+					<Border Padding="12,8" CornerRadius="8" Background="{DynamicResource BrushAlertInfoBg}" Margin="0,0,4,0">
 						<StackPanel HorizontalAlignment="Center">
-							<TextBlock Text="🎯 New" FontSize="12" FontWeight="Bold" Foreground="#93C5FD" HorizontalAlignment="Center"/>
+							<TextBlock Text="🎯 New" FontSize="12" FontWeight="Bold" Foreground="{DynamicResource BrushBadgeInfoFg}" HorizontalAlignment="Center"/>
 							<TextBlock Text="{Binding NewLeads}" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center"/>
 						</StackPanel>
 					</Border>
-					<TextBlock Text="→" FontSize="18" Foreground="#374151" VerticalAlignment="Center" Margin="4,0"/>
-					<Border Padding="12,8" CornerRadius="8" Background="#1C1917" Margin="0,0,4,0">
+					<TextBlock Text="→" FontSize="18" Foreground="{DynamicResource BrushBorderStrong}" VerticalAlignment="Center" Margin="4,0"/>
+					<Border Padding="12,8" CornerRadius="8" Background="{DynamicResource BrushBgBase}" Margin="0,0,4,0">
 						<StackPanel HorizontalAlignment="Center">
-							<TextBlock Text="📞 Contacted" FontSize="12" FontWeight="Bold" Foreground="#A8A29E" HorizontalAlignment="Center"/>
+							<TextBlock Text="📞 Contacted" FontSize="12" FontWeight="Bold" Foreground="{DynamicResource BrushTextMuted}" HorizontalAlignment="Center"/>
 							<TextBlock Text="{Binding ContactedLeads}" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center"/>
 						</StackPanel>
 					</Border>
-					<TextBlock Text="→" FontSize="18" Foreground="#374151" VerticalAlignment="Center" Margin="4,0"/>
-					<Border Padding="12,8" CornerRadius="8" Background="#431407" Margin="0,0,4,0">
+					<TextBlock Text="→" FontSize="18" Foreground="{DynamicResource BrushBorderStrong}" VerticalAlignment="Center" Margin="4,0"/>
+					<Border Padding="12,8" CornerRadius="8" Background="{DynamicResource BrushAlertWarningBg}" Margin="0,0,4,0">
 						<StackPanel HorizontalAlignment="Center">
-							<TextBlock Text="🤝 Negotiating" FontSize="12" FontWeight="Bold" Foreground="#FCA5A5" HorizontalAlignment="Center"/>
+							<TextBlock Text="🤝 Negotiating" FontSize="12" FontWeight="Bold" Foreground="{DynamicResource BrushBadgeDangerFg}" HorizontalAlignment="Center"/>
 							<TextBlock Text="{Binding NegotiatingLeads}" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center"/>
 						</StackPanel>
 					</Border>
-					<TextBlock Text="→" FontSize="18" Foreground="#374151" VerticalAlignment="Center" Margin="4,0"/>
-					<Border Padding="12,8" CornerRadius="8" Background="#14532D">
+					<TextBlock Text="→" FontSize="18" Foreground="{DynamicResource BrushBorderStrong}" VerticalAlignment="Center" Margin="4,0"/>
+					<Border Padding="12,8" CornerRadius="8" Background="{DynamicResource BrushBadgeSuccessBg}">
 						<StackPanel HorizontalAlignment="Center">
-							<TextBlock Text="✅ Won" FontSize="12" FontWeight="Bold" Foreground="#86EFAC" HorizontalAlignment="Center"/>
+							<TextBlock Text="✅ Won" FontSize="12" FontWeight="Bold" Foreground="{DynamicResource BrushBadgeSuccessFg}" HorizontalAlignment="Center"/>
 							<TextBlock Text="{Binding WonLeads}" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center"/>
 						</StackPanel>
 					</Border>
@@ -66,35 +68,35 @@
 			</Border>
 
 			<!-- ACTIONS -->
-			<WrapPanel>
-				<Button Padding="14" Margin="10" Background="#6366F1" CornerRadius="8"
+			<WrapPanel ItemSpacing="10">
+				<Button Padding="14" Margin="0,5" Background="{DynamicResource BrushAccentPrimary}" CornerRadius="8"
                     Command="{Binding GenerateLeadCommand}"
                     Content="＋  Generate New Lead"/>
 			</WrapPanel>
 
 			<!-- ACTIVE LEADS -->
-			<Border Padding="20" Background="#202633" CornerRadius="12">
+			<Border Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 				<StackPanel>
 					<TextBlock FontSize="22" FontWeight="Bold" Text="Active Pipeline" Margin="0,0,0,16"/>
 
 					<TextBlock
                         IsVisible="{Binding !Leads.Count}"
                         Text="No active leads. Generate a lead or wait for inbound enquiries."
-                        Foreground="#6B7280"/>
+                        Foreground="{DynamicResource BrushTextSecondary}"/>
 
 					<ItemsControl ItemsSource="{Binding Leads}">
 						<ItemsControl.ItemTemplate>
 							<DataTemplate>
-								<Border Margin="0,5" Padding="16" Background="#2B3242" CornerRadius="8">
+								<Border Margin="0,5" Padding="16" Background="{DynamicResource BrushBgNested}" CornerRadius="8">
 									<Grid ColumnDefinitions="*,120,130,120,Auto">
 
 										<!-- Company + Product -->
 										<StackPanel Grid.Column="0">
 											<TextBlock FontWeight="SemiBold" FontSize="14"
                                                 Text="{Binding CompanyName}"/>
-											<TextBlock FontSize="12" Foreground="#6B7280"
+											<TextBlock FontSize="12" Foreground="{DynamicResource BrushTextSecondary}"
                                                 Text="{Binding ProductInterest}"/>
-											<TextBlock FontSize="11" Foreground="#4B5563"
+											<TextBlock FontSize="11" Foreground="{DynamicResource BrushTextMuted}"
                                                 Text="{Binding CreatedAt, StringFormat='Since {0}'}"/>
 										</StackPanel>
 
@@ -103,7 +105,7 @@
                                             Grid.Column="1"
                                             FontSize="16"
                                             FontWeight="Bold"
-                                            Foreground="#10B981"
+                                            Foreground="{DynamicResource BrushSuccess}"
                                             Text="{Binding EstimatedValue, StringFormat='${0:N0}'}"
                                             VerticalAlignment="Center"/>
 
@@ -112,13 +114,13 @@
                                             Grid.Column="2"
                                             Padding="12,5"
                                             CornerRadius="8"
-                                            Background="#374151"
+                                            Background="{DynamicResource BrushBorderStrong}"
                                             VerticalAlignment="Center"
                                             HorizontalAlignment="Left">
 											<TextBlock
                                                 FontSize="12"
                                                 FontWeight="SemiBold"
-                                                Foreground="#D1D5DB"
+                                                Foreground="{DynamicResource BrushTextSecondary}"
                                                 Text="{Binding Stage}"/>
 										</Border>
 
@@ -126,7 +128,7 @@
 										<Button
                                             Grid.Column="3"
                                             Padding="10,7"
-                                            Background="#1E3A5F"
+                                            Background="{DynamicResource BrushAlertInfoBg}"
                                             CornerRadius="7"
                                             VerticalAlignment="Center"
                                             Command="{Binding $parent[ItemsControl].DataContext.AdvanceStageCommand}"
@@ -137,7 +139,7 @@
 										<Button
                                             Grid.Column="4"
                                             Padding="10,7"
-                                            Background="#450A0A"
+                                            Background="{DynamicResource BrushBadgeDangerBg}"
                                             CornerRadius="7"
                                             VerticalAlignment="Center"
                                             Margin="8,0,0,0"

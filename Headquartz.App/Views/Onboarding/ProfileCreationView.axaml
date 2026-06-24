@@ -3,7 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              x:Class="Headquartz.App.ProfileCreationView"
-             Background="#080C14">
+             Background="{DynamicResource BrushBgBase}">
 
 	<Grid ColumnDefinitions="*,1080,*" RowDefinitions="*,Auto,*">
 
@@ -13,7 +13,7 @@
                 Width="500" Height="500" Opacity="0.06">
 				<Ellipse.Fill>
 					<RadialGradientBrush>
-						<GradientStop Color="#6366F1" Offset="0"/>
+						<GradientStop Color="{DynamicResource ColorAccentPrimary}" Offset="0"/>
 						<GradientStop Color="Transparent" Offset="1"/>
 					</RadialGradientBrush>
 				</Ellipse.Fill>
@@ -29,24 +29,24 @@
                     Text="Create Your Profile"
                     FontSize="32"
                     FontWeight="Bold"
-                    Foreground="White"
+                    Foreground="{DynamicResource BrushTextPrimary}"
                     HorizontalAlignment="Center"/>
 				<TextBlock
                     Text="This is how other players will see you"
                     FontSize="14"
-                    Foreground="#4B5563"
+                    Foreground="{DynamicResource BrushTextMuted}"
                     HorizontalAlignment="Center"/>
 			</StackPanel>
 
 			<!-- Two-column layout: Preview + Form -->
-			<Grid ColumnDefinitions="320, 32, *">
+			<Grid ColumnDefinitions="200, 32, *">
 
 				<!-- Profile card preview (left column) -->
 				<Border
                     Grid.Column="0"
                     Padding="24"
-                    Background="#0F1623"
-                    BorderBrush="#1F2937"
+                    Background="{DynamicResource BrushBgSurface}"
+                    BorderBrush="{DynamicResource BrushBgInput}"
                     BorderThickness="1"
                     CornerRadius="16"
                     VerticalAlignment="Center">
@@ -57,7 +57,7 @@
 						<Border
                             Width="100" Height="100"
                             CornerRadius="50"
-                            Background="#1F2937"
+                            Background="{DynamicResource BrushBgInput}"
                             HorizontalAlignment="Center">
 							<TextBlock
                                 Text="{Binding SelectedAvatar}"
@@ -71,19 +71,19 @@
                             Text="{Binding PreviewUsername}"
                             FontSize="20"
                             FontWeight="Bold"
-                            Foreground="White"
+                            Foreground="{DynamicResource BrushTextPrimary}"
                             HorizontalAlignment="Center"/>
 
 						<!-- Level badge -->
 						<Border
                             Padding="14,6"
                             CornerRadius="20"
-                            Background="#1F2937"
+                            Background="{DynamicResource BrushBgInput}"
                             HorizontalAlignment="Center">
 							<TextBlock
                                 Text="{Binding PreviewLevel}"
                                 FontSize="12"
-                                Foreground="#6B7280"/>
+                                Foreground="{DynamicResource BrushTextSecondary}"/>
 						</Border>
 
 					</StackPanel>
@@ -96,8 +96,8 @@
 				<Border
                     Grid.Column="2"
                     Padding="28"
-                    Background="#0F1623"
-                    BorderBrush="#1F2937"
+                    Background="{DynamicResource BrushBgSurface}"
+                    BorderBrush="{DynamicResource BrushBgInput}"
                     BorderThickness="1"
                     CornerRadius="16">
 
@@ -109,18 +109,18 @@
                                 Text="USERNAME"
                                 FontSize="11"
                                 FontWeight="Bold"
-                                Foreground="#4B5563"
+                                Foreground="{DynamicResource BrushTextMuted}"
                                 LetterSpacing="2"/>
 							<TextBox
                                 Text="{Binding Username}"
                                 PlaceholderText="Enter your username..."
                                 FontSize="15"
                                 Padding="14,12"
-                                Background="#111827"
-                                BorderBrush="#1F2937"
+                                Background="{DynamicResource BrushBgInput}"
+                                BorderBrush="{DynamicResource BrushBgInput}"
                                 BorderThickness="1"
                                 CornerRadius="10"
-                                Foreground="White"/>
+                                Foreground="{DynamicResource BrushTextPrimary}"/>
 						</StackPanel>
 
 						<!-- Avatar picker -->
@@ -129,7 +129,7 @@
                                 Text="CHOOSE AVATAR"
                                 FontSize="11"
                                 FontWeight="Bold"
-                                Foreground="#4B5563"
+                                Foreground="{DynamicResource BrushTextMuted}"
                                 LetterSpacing="2"/>
 
 							<ItemsControl ItemsSource="{Binding Avatars}">
@@ -151,8 +151,8 @@
 											<Border
                                                 Width="44" Height="44"
                                                 CornerRadius="10"
-                                                Background="#1E1B4B"
-                                                BorderBrush="#6366F1"
+                                                Background="{DynamicResource BrushBgBase}"
+                                                BorderBrush="{DynamicResource BrushAccentPrimary}"
                                                 BorderThickness="2">
 												<TextBlock
                                                     Text="{Binding Emoji}"
@@ -171,14 +171,14 @@
 						<Border
                             IsVisible="{Binding HasError}"
                             Padding="12,10"
-                            Background="#450A0A"
+                            Background="{DynamicResource BrushBadgeDangerBg}"
                             CornerRadius="8"
-                            BorderBrush="#7F1D1D"
+                            BorderBrush="{DynamicResource BrushAlertCriticalBg}"
                             BorderThickness="1">
 							<TextBlock
                                 Text="{Binding ErrorMessage}"
                                 FontSize="13"
-                                Foreground="#FCA5A5"
+                                Foreground="{DynamicResource BrushBadgeDangerFg}"
                                 TextWrapping="Wrap"/>
 						</Border>
 
@@ -190,15 +190,15 @@
                             Command="{Binding CreateProfileCommand}">
 							<Button.Background>
 								<LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,0%">
-									<GradientStop Color="#6366F1" Offset="0"/>
-									<GradientStop Color="#4F46E5" Offset="1"/>
+									<GradientStop Color="{DynamicResource ColorAccentPrimary}" Offset="0"/>
+									<GradientStop Color="{DynamicResource ColorAccentPrimaryHover}" Offset="1"/>
 								</LinearGradientBrush>
 							</Button.Background>
 							<TextBlock
                                 Text="Continue →"
                                 FontSize="15"
                                 FontWeight="Bold"
-                                Foreground="White"
+                                Foreground="{DynamicResource BrushTextPrimary}"
                                 HorizontalAlignment="Center"/>
 						</Button>
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 using Headquartz.Domain.Enums;
@@ -22,29 +22,11 @@ public class PlayerProfile
 
 // ── Game Session ──────────────────────────────────────────────────────────────
 
-public enum IndustryType
-{
-    Manufacturing,
-    Technology,
-    Retail,
-    Logistics,
-    Finance,
-    Healthcare,
-    Energy,
-    Media
-}
-
-// GameDifficulty has been moved to Headquartz.Domain.Enums.GameDifficulty.
-// It is re-exported here as a using alias so existing code in this namespace
-// compiles without changes.
-// If any file in App.Models.Onboarding references GameDifficulty directly,
-// it will resolve via the Domain using above.
-
 public class GameSessionConfig
 {
     public Guid SessionId { get; set; } = Guid.NewGuid();
     public string CompanyName { get; set; } = "";
-    public IndustryType Industry { get; set; } = IndustryType.Manufacturing;
+    public IndustryType Industry { get; set; } = IndustryType.Food;
     public GameDifficulty Difficulty { get; set; } = GameDifficulty.Manager;
     public decimal InitialCapital { get; set; } = 100_000m;
     public bool IsMultiplayer { get; set; }
@@ -82,10 +64,8 @@ public static class AvatarOptions
 {
     public static readonly string[] All =
     [
-        "👨‍💼", "👩‍💼", "🧑‍💼", "👨‍🔧", "👩‍🔧", "🧑‍🔧",
-        "👨‍💻", "👩‍💻", "🧑‍💻", "👨‍🎓", "👩‍🎓", "🧑‍🎓",
-        "🕵️", "🧑‍✈️", "👨‍🚀", "👩‍🚀", "🧙", "🦸",
-        "🤵", "👑", "🎩", "🦊", "🐺", "🦁"
+        "🐨","🐮","🐻","🐭","🐰","🦝","🐼",
+        "🐱","🐯","🦊","🐶","🦁","🐻‍❄", "🐺",
     ];
 }
 

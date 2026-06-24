@@ -5,23 +5,25 @@
 	<ScrollViewer>
 		<StackPanel Margin="30" Spacing="20">
 
-			<TextBlock FontSize="34" FontWeight="Bold" Text="Product Research"/>
-			<TextBlock FontSize="13" Foreground="#6B7280"
-                Text="Develop new products from concept to market-ready. Each launch boosts reputation."/>
+			<!-- HEADER -->
+            <StackPanel Spacing="4">
+                <TextBlock FontSize="34" FontWeight="Bold" Text="Product Research"/>
+				<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}"	 Text="Product life cycle analysis, customer feedback loops, and feature prioritization."/>
+            </StackPanel>	
 
-			<!-- KPIs -->
+			<!-- KPI ROW -->
 			<ItemsControl ItemsSource="{Binding Kpis}">
 				<ItemsControl.ItemsPanel>
 					<ItemsPanelTemplate>
-						<WrapPanel/>
+						<WrapPanel ItemSpacing="10"/>
 					</ItemsPanelTemplate>
 				</ItemsControl.ItemsPanel>
 				<ItemsControl.ItemTemplate>
 					<DataTemplate>
-						<Border Width="200" Margin="10" Padding="20" Background="#202633" CornerRadius="12">
+						<Border Width="200" Margin="0,5" Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 							<StackPanel>
-								<TextBlock FontSize="13" Foreground="#9CA3AF" Text="{Binding Title}"/>
-								<TextBlock FontSize="26" FontWeight="Bold" Text="{Binding Value}"/>
+								<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="{Binding Title}"/>
+								<TextBlock FontSize="22" FontWeight="Bold" Text="{Binding Value}"/>
 							</StackPanel>
 						</Border>
 					</DataTemplate>
@@ -29,39 +31,39 @@
 			</ItemsControl>
 
 			<!-- PIPELINE FLOW -->
-			<Border Padding="20" Background="#202633" CornerRadius="12">
+			<Border Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 				<StackPanel Spacing="10">
 					<TextBlock FontSize="18" FontWeight="Bold" Text="Development Pipeline"/>
 					<StackPanel Orientation="Horizontal" Spacing="0">
 
-						<Border Padding="16,10" Background="#1E3A5F" CornerRadius="8" Margin="0,0,4,0">
+						<Border Padding="16,10" Background="{DynamicResource BrushAlertInfoBg}" CornerRadius="8" Margin="0,0,4,0">
 							<StackPanel HorizontalAlignment="Center">
 								<TextBlock Text="💡 Concept" FontSize="12" FontWeight="Bold"
-                                    Foreground="#93C5FD" HorizontalAlignment="Center"/>
+                                    Foreground="{DynamicResource BrushBadgeInfoFg}" HorizontalAlignment="Center"/>
 								<TextBlock Text="{Binding ConceptCount}" FontSize="22"
                                     FontWeight="Bold" HorizontalAlignment="Center"/>
 							</StackPanel>
 						</Border>
 
-						<TextBlock Text="→" FontSize="18" Foreground="#374151"
+						<TextBlock Text="→" FontSize="18" Foreground="{DynamicResource BrushBorderStrong}"
                             VerticalAlignment="Center" Margin="4,0"/>
 
-						<Border Padding="16,10" Background="#78350F" CornerRadius="8" Margin="0,0,4,0">
+						<Border Padding="16,10" Background="{DynamicResource BrushAlertWarningBg}" CornerRadius="8" Margin="0,0,4,0">
 							<StackPanel HorizontalAlignment="Center">
 								<TextBlock Text="🔬 Research" FontSize="12" FontWeight="Bold"
-                                    Foreground="#FDE68A" HorizontalAlignment="Center"/>
+                                    Foreground="{DynamicResource BrushWarning}" HorizontalAlignment="Center"/>
 								<TextBlock Text="{Binding InResearchCount}" FontSize="22"
                                     FontWeight="Bold" HorizontalAlignment="Center"/>
 							</StackPanel>
 						</Border>
 
-						<TextBlock Text="→" FontSize="18" Foreground="#374151"
+						<TextBlock Text="→" FontSize="18" Foreground="{DynamicResource BrushBorderStrong}"
                             VerticalAlignment="Center" Margin="4,0"/>
 
-						<Border Padding="16,10" Background="#14532D" CornerRadius="8">
+						<Border Padding="16,10" Background="{DynamicResource BrushBadgeSuccessBg}" CornerRadius="8">
 							<StackPanel HorizontalAlignment="Center">
 								<TextBlock Text="✅ Ready" FontSize="12" FontWeight="Bold"
-                                    Foreground="#86EFAC" HorizontalAlignment="Center"/>
+                                    Foreground="{DynamicResource BrushBadgeSuccessFg}" HorizontalAlignment="Center"/>
 								<TextBlock Text="{Binding ReadyCount}" FontSize="22"
                                     FontWeight="Bold" HorizontalAlignment="Center"/>
 							</StackPanel>
@@ -72,69 +74,69 @@
 			</Border>
 
 			<!-- ACTIONS -->
-			<WrapPanel>
-				<Button Padding="14" Margin="10" Background="#6366F1" CornerRadius="8"
+			<WrapPanel ItemSpacing="10">
+				<Button Padding="14" Margin="0,5	" Background="{DynamicResource BrushAccentPrimary}" CornerRadius="8"
                     Command="{Binding AddConceptCommand}"
                     Content="＋  New Product Concept"/>
 			</WrapPanel>
 
 			<!-- STATUS -->
 			<Border IsVisible="{Binding StatusMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
-                    Padding="14,10" Background="#2B3242" CornerRadius="8">
+                    Padding="14,10" Background="{DynamicResource BrushBgNested}" CornerRadius="8">
 				<TextBlock Text="{Binding StatusMessage}" FontSize="13" TextWrapping="Wrap"/>
 			</Border>
 
 			<!-- PIPELINE TABLE -->
-			<Border Padding="20" Background="#202633" CornerRadius="12">
+			<Border Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 				<StackPanel>
 					<TextBlock FontSize="22" FontWeight="Bold" Text="Product Pipeline" Margin="0,0,0,16"/>
 
 					<TextBlock IsVisible="{Binding !Pipeline.Count}"
-                        Text="No products in pipeline." Foreground="#6B7280"/>
+                        Text="No products in pipeline." Foreground="{DynamicResource BrushTextSecondary}"/>
 
 					<ItemsControl ItemsSource="{Binding Pipeline}">
 						<ItemsControl.ItemTemplate>
 							<DataTemplate>
-								<Border Margin="0,5" Padding="16" Background="#2B3242" CornerRadius="8">
+								<Border Margin="0,5" Padding="16" Background="{DynamicResource BrushBgNested}" CornerRadius="8">
 									<Grid ColumnDefinitions="*,90,100,110,Auto">
 
 										<StackPanel Grid.Column="0">
 											<TextBlock FontWeight="Bold" FontSize="14"
                                                 Text="{Binding Name}"/>
 											<StackPanel Orientation="Horizontal" Spacing="12">
-												<TextBlock FontSize="12" Foreground="#6B7280"
+												<TextBlock FontSize="12" Foreground="{DynamicResource BrushTextSecondary}"
                                                     Text="{Binding Category}"/>
-												<TextBlock FontSize="12" Foreground="#6B7280"
+												<TextBlock FontSize="12" Foreground="{DynamicResource BrushTextSecondary}"
                                                     Text="{Binding TimeToMarket, StringFormat='{}{0} ticks'}"/>
 											</StackPanel>
 										</StackPanel>
 
 										<StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
-											<TextBlock FontSize="11" Foreground="#6B7280" Text="Market Fit"/>
+											<TextBlock FontSize="11" Foreground="{DynamicResource BrushTextSecondary}" Text="Market Fit"/>
 											<ProgressBar Value="{Binding MarketFit}" Maximum="100"
-                                                Height="5" Width="70" Foreground="#F59E0B"/>
+                                                Height="5" Width="70" Foreground="{DynamicResource BrushWarning}"/>
 										</StackPanel>
 
 										<TextBlock Grid.Column="2"
                                             Text="{Binding DevelopmentCost, StringFormat='${0:N0}'}"
-                                            Foreground="#EF4444" VerticalAlignment="Center"/>
+                                            Foreground="{DynamicResource BrushDanger}" VerticalAlignment="Center"/>
 
 										<Border Grid.Column="3" Padding="8,3" CornerRadius="6"
-                                                Background="#1F2937" VerticalAlignment="Center"
+                                                Background="{DynamicResource BrushBgInput}" VerticalAlignment="Center"
                                                 HorizontalAlignment="Left">
 											<TextBlock FontSize="11" FontWeight="Bold"
-                                                Text="{Binding Status}" Foreground="#9CA3AF"/>
+                                                Text="{Binding Status}" Foreground="{DynamicResource BrushTextSecondary}"/>
 										</Border>
 
 										<StackPanel Grid.Column="4" Orientation="Horizontal" Spacing="6">
 											<Button IsVisible="{Binding Status, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
-                                                Padding="10,6" Background="#6366F1" CornerRadius="6"
+                                                Padding="10,6" Background="{DynamicResource BrushAccentPrimary}" CornerRadius="6"
                                                 VerticalAlignment="Center"
                                                 Command="{Binding $parent[ItemsControl].DataContext.StartResearchCommand}"
                                                 CommandParameter="{Binding}"
                                                 Content="🔬 Research"/>
 											<Button IsVisible="{Binding Status, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
-                                                Padding="10,6" Background="#10B981" CornerRadius="6"
+                                                Padding="10,6" Background="{DynamicResource BrushSuccess}" CornerRadius="6"
                                                 VerticalAlignment="Center"
                                                 Command="{Binding $parent[ItemsControl].DataContext.AdvanceToReadyCommand}"
                                                 CommandParameter="{Binding}"

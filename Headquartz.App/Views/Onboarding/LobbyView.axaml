@@ -3,7 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              x:Class="Headquartz.App.LobbyView"
-             Background="#080C14">
+             Background="{DynamicResource BrushBgBase}">
 
 	<Grid ColumnDefinitions="*,780,*" RowDefinitions="Auto,*,Auto">
 
@@ -13,7 +13,7 @@
                 Width="500" Height="500" Opacity="0.05">
 				<Ellipse.Fill>
 					<RadialGradientBrush>
-						<GradientStop Color="#6366F1" Offset="0"/>
+						<GradientStop Color="{DynamicResource ColorAccentPrimary}" Offset="0"/>
 						<GradientStop Color="Transparent" Offset="1"/>
 					</RadialGradientBrush>
 				</Ellipse.Fill>
@@ -24,8 +24,8 @@
 		<Border
             Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="0"
             Padding="24,16"
-            Background="#0D1117"
-            BorderBrush="#111827"
+            Background="{DynamicResource BrushBgBase}"
+            BorderBrush="{DynamicResource BrushBgInput}"
             BorderThickness="0,0,0,1">
 			<Grid ColumnDefinitions="*,Auto,*">
 
@@ -38,7 +38,7 @@
                     BorderThickness="0"
                     CornerRadius="8"
                     Command="{Binding LeaveRoomCommand}">
-					<TextBlock Text="← Leave Room" FontSize="13" Foreground="#4B5563"/>
+					<TextBlock Text="← Leave Room" FontSize="13" Foreground="{DynamicResource BrushTextMuted}"/>
 				</Button>
 
 				<!-- Center: logo + title -->
@@ -46,18 +46,18 @@
 					<Border Width="32" Height="32" CornerRadius="8">
 						<Border.Background>
 							<LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
-								<GradientStop Color="#6366F1" Offset="0"/>
-								<GradientStop Color="#4338CA" Offset="1"/>
+								<GradientStop Color="{DynamicResource ColorAccentPrimary}" Offset="0"/>
+								<GradientStop Color="{DynamicResource ColorAccentPrimaryHover}" Offset="1"/>
 							</LinearGradientBrush>
 						</Border.Background>
-						<TextBlock Text="H" FontSize="16" FontWeight="Black" Foreground="White"
+						<TextBlock Text="H" FontSize="16" FontWeight="Black" Foreground="{DynamicResource BrushTextPrimary}"
                             HorizontalAlignment="Center" VerticalAlignment="Center"/>
 					</Border>
 					<TextBlock
                         Text="MULTIPLAYER LOBBY"
                         FontSize="14"
                         FontWeight="Bold"
-                        Foreground="#D1D5DB"
+                        Foreground="{DynamicResource BrushTextSecondary}"
                         LetterSpacing="3"
                         VerticalAlignment="Center"/>
 				</StackPanel>
@@ -69,11 +69,11 @@
                     HorizontalAlignment="Right"
                     VerticalAlignment="Center"
                     Spacing="6">
-					<Border Width="8" Height="8" CornerRadius="4" Background="#10B981"/>
+					<Border Width="8" Height="8" CornerRadius="4" Background="{DynamicResource BrushSuccess}"/>
 					<TextBlock
                         Text="{Binding LocalPing, StringFormat='{}{0} ms'}"
                         FontSize="12"
-                        Foreground="#4B5563"/>
+                        Foreground="{DynamicResource BrushTextMuted}"/>
 				</StackPanel>
 
 			</Grid>
@@ -91,8 +91,8 @@
 				<!-- Room code card -->
 				<Border
                     Padding="20"
-                    Background="#0F1623"
-                    BorderBrush="#1F2937"
+                    Background="{DynamicResource BrushBgSurface}"
+                    BorderBrush="{DynamicResource BrushBgInput}"
                     BorderThickness="1"
                     CornerRadius="14">
 					<Grid ColumnDefinitions="*,Auto">
@@ -102,28 +102,28 @@
                                 Text="ROOM CODE"
                                 FontSize="11"
                                 FontWeight="Bold"
-                                Foreground="#374151"
+                                Foreground="{DynamicResource BrushBorderStrong}"
                                 LetterSpacing="2"/>
 							<TextBlock
                                 Text="{Binding RoomCode}"
                                 FontSize="36"
                                 FontWeight="Black"
-                                Foreground="White"
+                                Foreground="{DynamicResource BrushTextPrimary}"
                                 LetterSpacing="8"/>
 							<TextBlock
                                 Text="Share this code with your team"
                                 FontSize="12"
-                                Foreground="#374151"/>
+                                Foreground="{DynamicResource BrushBorderStrong}"/>
 						</StackPanel>
 
 						<Button
                             Grid.Column="1"
                             Padding="14,10"
-                            Background="#1F2937"
+                            Background="{DynamicResource BrushBgInput}"
                             CornerRadius="8"
                             VerticalAlignment="Center"
                             Command="{Binding CopyRoomCodeCommand}">
-							<TextBlock Text="📋 Copy" FontSize="13" Foreground="#9CA3AF"/>
+							<TextBlock Text="📋 Copy" FontSize="13" Foreground="{DynamicResource BrushTextSecondary}"/>
 						</Button>
 
 					</Grid>
@@ -132,8 +132,8 @@
 				<!-- Player list -->
 				<Border
                     Padding="20"
-                    Background="#0F1623"
-                    BorderBrush="#1F2937"
+                    Background="{DynamicResource BrushBgSurface}"
+                    BorderBrush="{DynamicResource BrushBgInput}"
                     BorderThickness="1"
                     CornerRadius="14">
 					<StackPanel Spacing="16">
@@ -143,17 +143,17 @@
                                 Text="PLAYERS"
                                 FontSize="11"
                                 FontWeight="Bold"
-                                Foreground="#374151"
+                                Foreground="{DynamicResource BrushBorderStrong}"
                                 LetterSpacing="2"
                                 VerticalAlignment="Center"/>
 							<Border
                                 Padding="8,2"
-                                Background="#1F2937"
+                                Background="{DynamicResource BrushBgInput}"
                                 CornerRadius="10">
 								<TextBlock
                                     Text="{Binding Players.Count}"
                                     FontSize="11"
-                                    Foreground="#6B7280"/>
+                                    Foreground="{DynamicResource BrushTextSecondary}"/>
 							</Border>
 						</StackPanel>
 
@@ -163,7 +163,7 @@
 									<Border
                                         Margin="0,0,0,8"
                                         Padding="14,12"
-                                        Background="#111827"
+                                        Background="{DynamicResource BrushBgInput}"
                                         CornerRadius="10">
 										<Grid ColumnDefinitions="40,*,Auto,60,Auto">
 
@@ -172,7 +172,7 @@
                                                 Grid.Column="0"
                                                 Width="36" Height="36"
                                                 CornerRadius="18"
-                                                Background="#1F2937">
+                                                Background="{DynamicResource BrushBgInput}">
 												<TextBlock
                                                     Text="{Binding AvatarEmoji}"
                                                     FontSize="20"
@@ -186,36 +186,36 @@
 													<TextBlock
                                                         FontSize="14"
                                                         FontWeight="SemiBold"
-                                                        Foreground="White"
+                                                        Foreground="{DynamicResource BrushTextPrimary}"
                                                         Text="{Binding Username}"/>
 													<!-- Host badge -->
 													<Border
                                                         IsVisible="{Binding IsHost}"
                                                         Padding="6,2"
-                                                        Background="#1E1B4B"
+                                                        Background="{DynamicResource BrushBgBase}"
                                                         CornerRadius="4">
 														<TextBlock
                                                             Text="HOST"
                                                             FontSize="9"
                                                             FontWeight="Bold"
-                                                            Foreground="#818CF8"/>
+                                                            Foreground="{DynamicResource BrushAccentPrimaryHover}"/>
 													</Border>
 													<!-- You badge -->
 													<Border
                                                         IsVisible="{Binding IsLocalPlayer}"
                                                         Padding="6,2"
-                                                        Background="#0D2414"
+                                                        Background="{DynamicResource BrushBadgeSuccessBg}"
                                                         CornerRadius="4">
 														<TextBlock
                                                             Text="YOU"
                                                             FontSize="9"
                                                             FontWeight="Bold"
-                                                            Foreground="#34D399"/>
+                                                            Foreground="{DynamicResource BrushSuccess}"/>
 													</Border>
 												</StackPanel>
 												<TextBlock
                                                     FontSize="11"
-                                                    Foreground="#374151"
+                                                    Foreground="{DynamicResource BrushBorderStrong}"
                                                     Text="{Binding Level, StringFormat='Level {0}'}"/>
 											</StackPanel>
 
@@ -223,7 +223,7 @@
 											<TextBlock
                                                 Grid.Column="3"
                                                 FontSize="11"
-                                                Foreground="#374151"
+                                                Foreground="{DynamicResource BrushBorderStrong}"
                                                 VerticalAlignment="Center"
                                                 Text="{Binding PingMs, StringFormat='{}{0}ms'}"/>
 
@@ -233,7 +233,7 @@
                                                 Padding="8,4"
                                                 CornerRadius="6"
                                                 VerticalAlignment="Center"
-                                                Background="#111827">
+                                                Background="{DynamicResource BrushBgInput}">
 												<TextBlock
                                                     Text="{Binding StatusLabel}"
                                                     FontSize="11"
@@ -259,7 +259,7 @@
                     Text="AVAILABLE ROLES"
                     FontSize="11"
                     FontWeight="Bold"
-                    Foreground="#374151"
+                    Foreground="{DynamicResource BrushBorderStrong}"
                     LetterSpacing="2"
                     Margin="0,0,0,4"/>
 
@@ -269,8 +269,8 @@
 							<Border
                                 Margin="0,0,0,6"
                                 Padding="12,10"
-                                Background="#0F1623"
-                                BorderBrush="#111827"
+                                Background="{DynamicResource BrushBgSurface}"
+                                BorderBrush="{DynamicResource BrushBgInput}"
                                 BorderThickness="1"
                                 CornerRadius="8">
 								<Grid ColumnDefinitions="32,*,Auto">
@@ -285,7 +285,7 @@
                                         Grid.Column="1"
                                         FontSize="13"
                                         FontWeight="SemiBold"
-                                        Foreground="#6B7280"
+                                        Foreground="{DynamicResource BrushTextSecondary}"
                                         Text="{Binding RoleName}"
                                         VerticalAlignment="Center"
                                         Margin="6,0"/>
@@ -295,11 +295,11 @@
                                         Grid.Column="2"
                                         Padding="7,2"
                                         CornerRadius="4"
-                                        Background="#0D1B0D">
+                                        Background="{DynamicResource BrushBadgeSuccessBg}">
 										<TextBlock
                                             Text="Open"
                                             FontSize="10"
-                                            Foreground="#16A34A"/>
+                                            Foreground="{DynamicResource BrushSuccess}"/>
 									</Border>
 
 								</Grid>
@@ -312,16 +312,16 @@
 				<Border
                     Margin="0,8,0,0"
                     Padding="12,10"
-                    Background="#0F1623"
-                    BorderBrush="#1F2937"
+                    Background="{DynamicResource BrushBgSurface}"
+                    BorderBrush="{DynamicResource BrushBgInput}"
                     BorderThickness="1"
                     CornerRadius="8">
 					<StackPanel Orientation="Horizontal" Spacing="8">
-						<Border Width="8" Height="8" CornerRadius="4" Background="#F59E0B" VerticalAlignment="Center"/>
+						<Border Width="8" Height="8" CornerRadius="4" Background="{DynamicResource BrushWarning}" VerticalAlignment="Center"/>
 						<TextBlock
                             Text="{Binding StatusMessage}"
                             FontSize="12"
-                            Foreground="#6B7280"
+                            Foreground="{DynamicResource BrushTextSecondary}"
                             TextWrapping="Wrap"/>
 					</StackPanel>
 				</Border>
@@ -334,8 +334,8 @@
 		<Border
             Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="2"
             Padding="24,16"
-            Background="#0D1117"
-            BorderBrush="#111827"
+            Background="{DynamicResource BrushBgBase}"
+            BorderBrush="{DynamicResource BrushBgInput}"
             BorderThickness="0,1,0,0">
 			<Grid ColumnDefinitions="*,560,*">
 				<Grid Grid.Column="1" ColumnDefinitions="*,16,*">
@@ -348,10 +348,10 @@
                         CornerRadius="10"
                         Command="{Binding ToggleReadyCommand}">
 						<Button.Background>
-							<SolidColorBrush Color="#111827"/>
+							<SolidColorBrush Color="{DynamicResource ColorBgInput}"/>
 						</Button.Background>
 						<Button.BorderBrush>
-							<SolidColorBrush Color="#1F2937"/>
+							<SolidColorBrush Color="{DynamicResource ColorBgInput}"/>
 						</Button.BorderBrush>
 						<Button.BorderThickness>
 							<Thickness>1</Thickness>
@@ -366,7 +366,7 @@
 								</Style>
 							</TextBlock.Styles>
 							<TextBlock.Foreground>
-								<SolidColorBrush Color="#D1D5DB"/>
+								<SolidColorBrush Color="{DynamicResource ColorTextSecondary}"/>
 							</TextBlock.Foreground>
 						</TextBlock>
 					</Button>
@@ -382,15 +382,15 @@
                         Command="{Binding StartGameCommand}">
 						<Button.Background>
 							<LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,0%">
-								<GradientStop Color="#059669" Offset="0"/>
-								<GradientStop Color="#047857" Offset="1"/>
+								<GradientStop Color="{DynamicResource ColorSuccess}" Offset="0"/>
+								<GradientStop Color="{DynamicResource ColorSuccess}" Offset="1"/>
 							</LinearGradientBrush>
 						</Button.Background>
 						<TextBlock
                             Text="▶  Start Game"
                             FontSize="15"
                             FontWeight="Bold"
-                            Foreground="White"
+                            Foreground="{DynamicResource BrushTextPrimary}"
                             HorizontalAlignment="Center"/>
 					</Button>
 

@@ -7,34 +7,38 @@
 	<ScrollViewer>
 		<StackPanel Margin="30" Spacing="20">
 
-			<TextBlock FontSize="34" FontWeight="Bold" Text="Warehouse"/>
+			<!-- HEADER -->
+            <StackPanel Spacing="4">
+				<TextBlock FontSize="34" FontWeight="Bold" Text="Warehouse Dashboard"/>
+				<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="Warehouse department overview, Inventory inbound/outbound status, and warehouse utilization."/>
+			</StackPanel>
 
 			<!-- LOW STOCK BANNER -->
-			<Border IsVisible="{Binding HasLowStock}" Background="#7C2D12" CornerRadius="12" Padding="20">
+			<Border IsVisible="{Binding HasLowStock}" Background="{DynamicResource BrushWarning}" CornerRadius="12" Padding="20">
 				<StackPanel Orientation="Horizontal" Spacing="12">
 					<TextBlock Text="📦" FontSize="22" VerticalAlignment="Center"/>
 					<StackPanel>
 						<TextBlock
                             Text="{Binding LowStockCount, StringFormat={}{0} ITEM(S) BELOW MINIMUM STOCK}"
-                            FontSize="16" FontWeight="Bold" Foreground="#FDBA74"/>
-						<TextBlock Text="Production and logistics may be blocked. Emergency restock recommended." Foreground="#FDBA74"/>
+                            FontSize="16" FontWeight="Bold" Foreground="{DynamicResource BrushWarning}"/>
+						<TextBlock Text="Production and logistics may be blocked. Emergency restock recommended." Foreground="{DynamicResource BrushWarning}"/>
 					</StackPanel>
 				</StackPanel>
 			</Border>
 
-			<!-- KPIs -->
+			<!-- KPI ROW -->
 			<ItemsControl ItemsSource="{Binding Kpis}">
 				<ItemsControl.ItemsPanel>
 					<ItemsPanelTemplate>
-						<WrapPanel/>
+						<WrapPanel ItemSpacing="10"/>
 					</ItemsPanelTemplate>
 				</ItemsControl.ItemsPanel>
 				<ItemsControl.ItemTemplate>
 					<DataTemplate>
-						<Border Width="220" Margin="10" Padding="20" Background="#202633" CornerRadius="12">
+						<Border Width="200" Margin="0,5" Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 							<StackPanel>
-								<TextBlock FontSize="13" Foreground="#9CA3AF" Text="{Binding Title}"/>
-								<TextBlock FontSize="28" FontWeight="Bold" Text="{Binding Value}"/>
+								<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="{Binding Title}"/>
+								<TextBlock FontSize="22" FontWeight="Bold" Text="{Binding Value}"/>
 							</StackPanel>
 						</Border>
 					</DataTemplate>
@@ -42,19 +46,19 @@
 			</ItemsControl>
 
 			<!-- ACTIONS -->
-			<WrapPanel>
-				<Button Padding="14" Margin="10" Command="{Binding EmergencyRestockCommand}"    Content="📥  Emergency Restock"/>
-				<Button Padding="14" Margin="10" Command="{Binding ReorganizeWarehouseCommand}" Content="🔄  Reorganize (−15% Stress)"/>
+			<WrapPanel ItemSpacing="10">
+				<Button Padding="14" Margin="0,5" Command="{Binding EmergencyRestockCommand}"    Content="📥  Emergency Restock"/>
+				<Button Padding="14" Margin="0,5" Command="{Binding ReorganizeWarehouseCommand}" Content="🔄  Reorganize (−15% Stress)"/>
 			</WrapPanel>
 
 			<!-- INVENTORY LIST -->
-			<Border Padding="20" Background="#202633" CornerRadius="12">
+			<Border Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 				<StackPanel>
 					<TextBlock FontSize="22" FontWeight="Bold" Text="Inventory" Margin="0,0,0,16"/>
 					<ItemsControl ItemsSource="{Binding Inventory}">
 						<ItemsControl.ItemTemplate>
 							<DataTemplate>
-								<Border Margin="0,6" Padding="16" Background="#2B3242" CornerRadius="8">
+								<Border Margin="0,6" Padding="16" Background="{DynamicResource BrushBgNested}" CornerRadius="8">
 									<StackPanel Spacing="10">
 
 										<Grid ColumnDefinitions="*,Auto,Auto">
@@ -63,11 +67,11 @@
 												<!-- Low stock warning -->
 												<Border
                                                     IsVisible="{Binding IsLow}"
-                                                    Background="#7F1D1D"
+                                                    Background="{DynamicResource BrushAlertCriticalBg}"
                                                     CornerRadius="6"
                                                     Padding="6,2"
                                                     VerticalAlignment="Center">
-													<TextBlock Text="LOW" FontSize="10" FontWeight="Bold" Foreground="#FCA5A5"/>
+													<TextBlock Text="LOW" FontSize="10" FontWeight="Bold" Foreground="{DynamicResource BrushBadgeDangerFg}"/>
 												</Border>
 											</StackPanel>
 											<TextBlock
@@ -81,7 +85,7 @@
                                                 Grid.Column="2"
                                                 Margin="8,0,0,0"
                                                 FontSize="12"
-                                                Foreground="#6B7280"
+                                                Foreground="{DynamicResource BrushTextSecondary}"
                                                 Text="units"
                                                 VerticalAlignment="Center"/>
 										</Grid>
@@ -93,22 +97,22 @@
                                                 Maximum="1.0"
                                                 Height="8"
                                                 Width="320"
-                                                Foreground="#F97316"
+                                                Foreground="{DynamicResource BrushDeptWarehouse}"
                                                 VerticalAlignment="Center"/>
 											<TextBlock
                                                 FontSize="11"
-                                                Foreground="#6B7280"
+                                                Foreground="{DynamicResource BrushTextSecondary}"
                                                 Text="{Binding FillPercent, StringFormat={}{0:P0}}"
                                                 VerticalAlignment="Center"/>
 										</StackPanel>
 
 										<!-- Min / Max / Cost -->
 										<StackPanel Orientation="Horizontal" Spacing="20">
-											<TextBlock FontSize="11" Foreground="#6B7280"
+											<TextBlock FontSize="11" Foreground="{DynamicResource BrushTextSecondary}"
                                                 Text="{Binding MinimumStock, StringFormat='Min: {0}'}"/>
-											<TextBlock FontSize="11" Foreground="#6B7280"
+											<TextBlock FontSize="11" Foreground="{DynamicResource BrushTextSecondary}"
                                                 Text="{Binding MaximumStock, StringFormat='Max: {0}'}"/>
-											<TextBlock FontSize="11" Foreground="#6B7280"
+											<TextBlock FontSize="11" Foreground="{DynamicResource BrushTextSecondary}"
                                                 Text="{Binding UnitCost, StringFormat='Cost: ${0}/unit'}"/>
 										</StackPanel>
 
@@ -121,21 +125,21 @@
 			</Border>
 
 			<!-- EVENTS -->
-			<Border Padding="20" Background="#202633" CornerRadius="12">
+			<Border Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 				<StackPanel>
 					<TextBlock FontSize="22" FontWeight="Bold" Text="Warehouse Alerts" Margin="0,0,0,12"/>
-					<TextBlock IsVisible="{Binding !Events.Count}" Text="No active alerts." Foreground="#6B7280"/>
+					<TextBlock IsVisible="{Binding !Events.Count}" Text="No active alerts." Foreground="{DynamicResource BrushTextSecondary}"/>
 					<ItemsControl ItemsSource="{Binding Events}">
 						<ItemsControl.ItemTemplate>
 							<DataTemplate>
-								<Border Margin="0,6" Padding="14" Background="#2B3242" CornerRadius="8">
+								<Border Margin="0,6" Padding="14" Background="{DynamicResource BrushBgNested}" CornerRadius="8">
 									<StackPanel>
 										<TextBlock FontSize="15" FontWeight="Bold" Text="{Binding Title}"/>
-										<TextBlock Margin="0,4" Foreground="#9CA3AF" Text="{Binding Description}" TextWrapping="Wrap"/>
+										<TextBlock Margin="0,4" Foreground="{DynamicResource BrushTextSecondary}" Text="{Binding Description}" TextWrapping="Wrap"/>
 										<StackPanel Orientation="Horizontal" Spacing="16" Margin="0,6,0,0">
-											<TextBlock FontSize="12" Foreground="#F97316"
+											<TextBlock FontSize="12" Foreground="{DynamicResource BrushDeptWarehouse}"
                                                 Text="{Binding Severity, StringFormat='Severity: {0}'}"/>
-											<TextBlock FontSize="12" Foreground="#6B7280"
+											<TextBlock FontSize="12" Foreground="{DynamicResource BrushTextSecondary}"
                                                 Text="{Binding RemainingTicks, StringFormat='Ticks left: {0}'}"/>
 										</StackPanel>
 									</StackPanel>

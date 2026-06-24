@@ -18,7 +18,7 @@ public partial class ProfileCreationViewModel : ViewModelBase
     // ── Form state ────────────────────────────────────────────
 
     [ObservableProperty] private string _username = "";
-    [ObservableProperty] private string _selectedAvatar = "👨‍💼";
+    [ObservableProperty] private string _selectedAvatar = "🐻";
     [ObservableProperty] private string _errorMessage = "";
     [ObservableProperty] private bool _hasError;
 

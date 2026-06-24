@@ -7,32 +7,36 @@
 	<ScrollViewer>
 		<StackPanel Margin="30" Spacing="20">
 
-			<TextBlock FontSize="34" FontWeight="Bold" Text="Human Resources"/>
+			<!-- HEADER -->
+            <StackPanel Spacing="4">
+				<TextBlock FontSize="34" FontWeight="Bold" Text="HR Dashboard"/>
+				<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="HR department overview, open positions, pending approvals, and upcoming reviews."/>
+			</StackPanel>
 
 			<!-- RESIGNATION RISK BANNER -->
-			<Border IsVisible="{Binding HasResignationRisk}" Background="#7F1D1D" CornerRadius="12" Padding="20">
+			<Border IsVisible="{Binding HasResignationRisk}" Background="{DynamicResource BrushAlertCriticalBg}" CornerRadius="12" Padding="20">
 				<StackPanel Orientation="Horizontal" Spacing="12">
 					<TextBlock Text="🚨" FontSize="22" VerticalAlignment="Center"/>
 					<StackPanel>
-						<TextBlock Text="RESIGNATION RISK DETECTED" FontSize="16" FontWeight="Bold" Foreground="#FCA5A5"/>
-						<TextBlock Text="One or more employees have critically low morale and may resign this tick." Foreground="#FCA5A5"/>
+						<TextBlock Text="RESIGNATION RISK DETECTED" FontSize="16" FontWeight="Bold" Foreground="{DynamicResource BrushBadgeDangerFg}"/>
+						<TextBlock Text="One or more employees have critically low morale and may resign this tick." Foreground="{DynamicResource BrushBadgeDangerFg}"/>
 					</StackPanel>
 				</StackPanel>
 			</Border>
 
-			<!-- KPIs -->
+			<!-- KPI ROW -->
 			<ItemsControl ItemsSource="{Binding Kpis}">
 				<ItemsControl.ItemsPanel>
 					<ItemsPanelTemplate>
-						<WrapPanel/>
+						<WrapPanel ItemSpacing="10"/>
 					</ItemsPanelTemplate>
 				</ItemsControl.ItemsPanel>
 				<ItemsControl.ItemTemplate>
 					<DataTemplate>
-						<Border Width="200" Margin="10" Padding="20" Background="#202633" CornerRadius="12">
+						<Border Width="200" Margin="0,5" Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 							<StackPanel>
-								<TextBlock FontSize="13" Foreground="#9CA3AF" Text="{Binding Title}"/>
-								<TextBlock FontSize="28" FontWeight="Bold" Text="{Binding Value}"/>
+								<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="{Binding Title}"/>
+								<TextBlock FontSize="22" FontWeight="Bold" Text="{Binding Value}"/>
 							</StackPanel>
 						</Border>
 					</DataTemplate>
@@ -40,20 +44,20 @@
 			</ItemsControl>
 
 			<!-- ACTIONS -->
-			<WrapPanel>
-				<Button Padding="14" Margin="10" Command="{Binding HireEmployeeCommand}"     Content="👤  Quick Hire"/>
-				<Button Padding="14" Margin="10" Command="{Binding StartTrainingCommand}"    Content="📚  Start Training (+10 Morale)"/>
-				<Button Padding="14" Margin="10" Command="{Binding BoostCompanyMoraleCommand}" Content="🎉  Company Morale Boost (−$3,000)"/>
+			<WrapPanel ItemSpacing="10">
+				<Button Padding="14" Margin="0,5" Command="{Binding HireEmployeeCommand}"     Content="👤  Quick Hire"/>
+				<Button Padding="14" Margin="0,5" Command="{Binding StartTrainingCommand}"    Content="📚  Start Training (+10 Morale)"/>
+				<Button Padding="14" Margin="0,5" Command="{Binding BoostCompanyMoraleCommand}" Content="🎉  Company Morale Boost (−$3,000)"/>
 			</WrapPanel>
 
 			<!-- PENDING TASKS -->
-			<Border Padding="20" Background="#202633" CornerRadius="12">
+			<Border Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 				<StackPanel>
 					<TextBlock FontSize="22" FontWeight="Bold" Text="HR Tasks" Margin="0,0,0,12"/>
 					<ItemsControl ItemsSource="{Binding PendingTasks}">
 						<ItemsControl.ItemTemplate>
 							<DataTemplate>
-								<Border Margin="0,4" Padding="12" Background="#2B3242" CornerRadius="6">
+								<Border Margin="0,4" Padding="12" Background="{DynamicResource BrushBgNested}" CornerRadius="6">
 									<TextBlock Text="{Binding}" FontSize="13"/>
 								</Border>
 							</DataTemplate>
@@ -63,21 +67,21 @@
 			</Border>
 
 			<!-- HR EVENTS -->
-			<Border Padding="20" Background="#202633" CornerRadius="12">
+			<Border Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 				<StackPanel>
 					<TextBlock FontSize="22" FontWeight="Bold" Text="HR Alerts" Margin="0,0,0,12"/>
-					<TextBlock IsVisible="{Binding !Events.Count}" Text="No active alerts." Foreground="#6B7280"/>
+					<TextBlock IsVisible="{Binding !Events.Count}" Text="No active alerts." Foreground="{DynamicResource BrushTextSecondary}"/>
 					<ItemsControl ItemsSource="{Binding Events}">
 						<ItemsControl.ItemTemplate>
 							<DataTemplate>
-								<Border Margin="0,6" Padding="14" Background="#2B3242" CornerRadius="8">
+								<Border Margin="0,6" Padding="14" Background="{DynamicResource BrushBgNested}" CornerRadius="8">
 									<StackPanel>
 										<TextBlock FontSize="15" FontWeight="Bold" Text="{Binding Title}"/>
-										<TextBlock Margin="0,4" Foreground="#9CA3AF" Text="{Binding Description}" TextWrapping="Wrap"/>
+										<TextBlock Margin="0,4" Foreground="{DynamicResource BrushTextSecondary}" Text="{Binding Description}" TextWrapping="Wrap"/>
 										<StackPanel Orientation="Horizontal" Spacing="16" Margin="0,6,0,0">
-											<TextBlock FontSize="12" Foreground="#8B5CF6"
+											<TextBlock FontSize="12" Foreground="{DynamicResource BrushDeptHR}"
                                                 Text="{Binding Severity, StringFormat='Severity: {0}'}"/>
-											<TextBlock FontSize="12" Foreground="#6B7280"
+											<TextBlock FontSize="12" Foreground="{DynamicResource BrushTextSecondary}"
                                                 Text="{Binding RemainingTicks, StringFormat='Ticks left: {0}'}"/>
 										</StackPanel>
 									</StackPanel>

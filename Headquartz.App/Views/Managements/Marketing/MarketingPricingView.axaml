@@ -5,23 +5,25 @@
 	<ScrollViewer>
 		<StackPanel Margin="30" Spacing="20">
 
-			<TextBlock FontSize="34" FontWeight="Bold" Text="Pricing Strategy"/>
-			<TextBlock FontSize="13" Foreground="#6B7280"
-                Text="Set pricing strategies across your product catalog to balance revenue and demand."/>
+			<!-- HEADER -->
+            <StackPanel Spacing="4">
+                <TextBlock FontSize="34" FontWeight="Bold" Text="Pricing Strategy"/>
+				<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}"	 Text="Price optimization, promotional pricing, bundle pricing, and seasonal adjustments."/>
+            </StackPanel>	
 
-			<!-- KPIs -->
+			<!-- KPI ROW -->
 			<ItemsControl ItemsSource="{Binding Kpis}">
 				<ItemsControl.ItemsPanel>
 					<ItemsPanelTemplate>
-						<WrapPanel/>
+						<WrapPanel ItemSpacing="10"/>
 					</ItemsPanelTemplate>
 				</ItemsControl.ItemsPanel>
 				<ItemsControl.ItemTemplate>
 					<DataTemplate>
-						<Border Width="200" Margin="10" Padding="20" Background="#202633" CornerRadius="12">
+						<Border Width="200" Margin="0,5" Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 							<StackPanel>
-								<TextBlock FontSize="13" Foreground="#9CA3AF" Text="{Binding Title}"/>
-								<TextBlock FontSize="26" FontWeight="Bold" Text="{Binding Value}"/>
+								<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="{Binding Title}"/>
+								<TextBlock FontSize="22" FontWeight="Bold" Text="{Binding Value}"/>
 							</StackPanel>
 						</Border>
 					</DataTemplate>
@@ -29,71 +31,71 @@
 			</ItemsControl>
 
 			<!-- STRATEGY SELECTOR -->
-			<Border Padding="24" Background="#202633" CornerRadius="12">
+			<Border Padding="24" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 				<StackPanel Spacing="14">
 					<TextBlock FontSize="20" FontWeight="Bold" Text="Apply Global Strategy"/>
 
 					<Grid ColumnDefinitions="*,12,*,12,*,12,*">
 
-						<Border Grid.Column="0" Padding="16,12" Background="#2B3242" CornerRadius="10">
+						<Border Grid.Column="0" Padding="16,12" Background="{DynamicResource BrushBgNested}" CornerRadius="10">
 							<StackPanel Spacing="8" HorizontalAlignment="Center">
 								<TextBlock Text="💎" FontSize="24" HorizontalAlignment="Center"/>
 								<TextBlock Text="Premium" FontSize="13" FontWeight="Bold"
                                     HorizontalAlignment="Center"/>
-								<TextBlock Text="+25% price" FontSize="11" Foreground="#6B7280"
+								<TextBlock Text="+25% price" FontSize="11" Foreground="{DynamicResource BrushTextSecondary}"
                                     HorizontalAlignment="Center"/>
-								<TextBlock Text="+3 Rep" FontSize="11" Foreground="#10B981"
+								<TextBlock Text="+3 Rep" FontSize="11" Foreground="{DynamicResource BrushSuccess}"
                                     HorizontalAlignment="Center"/>
 								<Button HorizontalAlignment="Stretch" Padding="10,7"
-                                    Background="#6366F1" CornerRadius="6"
+                                    Background="{DynamicResource BrushAccentPrimary}" CornerRadius="6"
                                     Command="{Binding ApplyPremiumPricingCommand}"
                                     Content="Apply"/>
 							</StackPanel>
 						</Border>
 
-						<Border Grid.Column="2" Padding="16,12" Background="#2B3242" CornerRadius="10">
+						<Border Grid.Column="2" Padding="16,12" Background="{DynamicResource BrushBgNested}" CornerRadius="10">
 							<StackPanel Spacing="8" HorizontalAlignment="Center">
 								<TextBlock Text="🏷️" FontSize="24" HorizontalAlignment="Center"/>
 								<TextBlock Text="Discount" FontSize="13" FontWeight="Bold"
                                     HorizontalAlignment="Center"/>
-								<TextBlock Text="−20% price" FontSize="11" Foreground="#6B7280"
+								<TextBlock Text="−20% price" FontSize="11" Foreground="{DynamicResource BrushTextSecondary}"
                                     HorizontalAlignment="Center"/>
-								<TextBlock Text="+15 Demand" FontSize="11" Foreground="#10B981"
+								<TextBlock Text="+15 Demand" FontSize="11" Foreground="{DynamicResource BrushSuccess}"
                                     HorizontalAlignment="Center"/>
 								<Button HorizontalAlignment="Stretch" Padding="10,7"
-                                    Background="#F59E0B" CornerRadius="6"
+                                    Background="{DynamicResource BrushWarning}" CornerRadius="6"
                                     Command="{Binding ApplyDiscountPricingCommand}"
                                     Content="Apply"/>
 							</StackPanel>
 						</Border>
 
-						<Border Grid.Column="4" Padding="16,12" Background="#2B3242" CornerRadius="10">
+						<Border Grid.Column="4" Padding="16,12" Background="{DynamicResource BrushBgNested}" CornerRadius="10">
 							<StackPanel Spacing="8" HorizontalAlignment="Center">
 								<TextBlock Text="⚡" FontSize="24" HorizontalAlignment="Center"/>
 								<TextBlock Text="Dynamic" FontSize="13" FontWeight="Bold"
                                     HorizontalAlignment="Center"/>
-								<TextBlock Text="Rep-based" FontSize="11" Foreground="#6B7280"
+								<TextBlock Text="Rep-based" FontSize="11" Foreground="{DynamicResource BrushTextSecondary}"
                                     HorizontalAlignment="Center"/>
-								<TextBlock Text="Adaptive" FontSize="11" Foreground="#10B981"
+								<TextBlock Text="Adaptive" FontSize="11" Foreground="{DynamicResource BrushSuccess}"
                                     HorizontalAlignment="Center"/>
 								<Button HorizontalAlignment="Stretch" Padding="10,7"
-                                    Background="#3B82F6" CornerRadius="6"
+                                    Background="{DynamicResource BrushInfo}" CornerRadius="6"
                                     Command="{Binding ApplyDynamicPricingCommand}"
                                     Content="Apply"/>
 							</StackPanel>
 						</Border>
 
-						<Border Grid.Column="6" Padding="16,12" Background="#2B3242" CornerRadius="10">
+						<Border Grid.Column="6" Padding="16,12" Background="{DynamicResource BrushBgNested}" CornerRadius="10">
 							<StackPanel Spacing="8" HorizontalAlignment="Center">
 								<TextBlock Text="⚖️" FontSize="24" HorizontalAlignment="Center"/>
 								<TextBlock Text="Standard" FontSize="13" FontWeight="Bold"
                                     HorizontalAlignment="Center"/>
-								<TextBlock Text="Base price" FontSize="11" Foreground="#6B7280"
+								<TextBlock Text="Base price" FontSize="11" Foreground="{DynamicResource BrushTextSecondary}"
                                     HorizontalAlignment="Center"/>
-								<TextBlock Text="Balanced" FontSize="11" Foreground="#10B981"
+								<TextBlock Text="Balanced" FontSize="11" Foreground="{DynamicResource BrushSuccess}"
                                     HorizontalAlignment="Center"/>
 								<Button HorizontalAlignment="Stretch" Padding="10,7"
-                                    Background="#374151" CornerRadius="6"
+                                    Background="{DynamicResource BrushBorderStrong}" CornerRadius="6"
                                     Command="{Binding ApplyStandardPricingCommand}"
                                     Content="Apply"/>
 							</StackPanel>
@@ -102,7 +104,7 @@
 					</Grid>
 
 					<Border IsVisible="{Binding StatusMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
-                            Padding="14,10" Background="#374151" CornerRadius="8">
+                            Padding="14,10" Background="{DynamicResource BrushBorderStrong}" CornerRadius="8">
 						<TextBlock Text="{Binding StatusMessage}" FontSize="13" TextWrapping="Wrap"/>
 					</Border>
 
@@ -110,27 +112,27 @@
 			</Border>
 
 			<!-- PRODUCT PRICING TABLE -->
-			<Border Padding="20" Background="#202633" CornerRadius="12">
+			<Border Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 				<StackPanel>
 					<TextBlock FontSize="22" FontWeight="Bold" Text="Product Catalog" Margin="0,0,0,16"/>
 
 					<Grid ColumnDefinitions="*,100,100,100,100" Margin="14,0,14,8">
 						<TextBlock Grid.Column="0" Text="PRODUCT" FontSize="11"
-                            FontWeight="Bold" Foreground="#6B7280"/>
+                            FontWeight="Bold" Foreground="{DynamicResource BrushTextSecondary}"/>
 						<TextBlock Grid.Column="1" Text="BASE PRICE" FontSize="11"
-                            FontWeight="Bold" Foreground="#6B7280"/>
+                            FontWeight="Bold" Foreground="{DynamicResource BrushTextSecondary}"/>
 						<TextBlock Grid.Column="2" Text="CURRENT" FontSize="11"
-                            FontWeight="Bold" Foreground="#6B7280"/>
+                            FontWeight="Bold" Foreground="{DynamicResource BrushTextSecondary}"/>
 						<TextBlock Grid.Column="3" Text="DEMAND" FontSize="11"
-                            FontWeight="Bold" Foreground="#6B7280"/>
+                            FontWeight="Bold" Foreground="{DynamicResource BrushTextSecondary}"/>
 						<TextBlock Grid.Column="4" Text="STRATEGY" FontSize="11"
-                            FontWeight="Bold" Foreground="#6B7280"/>
+                            FontWeight="Bold" Foreground="{DynamicResource BrushTextSecondary}"/>
 					</Grid>
 
 					<ItemsControl ItemsSource="{Binding Products}">
 						<ItemsControl.ItemTemplate>
 							<DataTemplate>
-								<Border Margin="0,3" Padding="14,12" Background="#2B3242" CornerRadius="8">
+								<Border Margin="0,3" Padding="14,12" Background="{DynamicResource BrushBgNested}" CornerRadius="8">
 									<Grid ColumnDefinitions="*,100,100,100,100">
 
 										<TextBlock Grid.Column="0" FontWeight="SemiBold"
@@ -138,24 +140,24 @@
 
 										<TextBlock Grid.Column="1"
                                             Text="{Binding BasePrice, StringFormat='${0:N0}'}"
-                                            Foreground="#6B7280" VerticalAlignment="Center"/>
+                                            Foreground="{DynamicResource BrushTextSecondary}" VerticalAlignment="Center"/>
 
 										<TextBlock Grid.Column="2"
                                             Text="{Binding CurrentPrice, StringFormat='${0:N0}'}"
-                                            Foreground="#10B981" FontWeight="Bold"
+                                            Foreground="{DynamicResource BrushSuccess}" FontWeight="Bold"
                                             VerticalAlignment="Center"/>
 
 										<StackPanel Grid.Column="3" VerticalAlignment="Center" Spacing="2">
 											<ProgressBar Value="{Binding DemandScore}" Maximum="100"
-                                                Height="5" Width="70" Foreground="#F59E0B"/>
-											<TextBlock FontSize="10" Foreground="#6B7280"
+                                                Height="5" Width="70" Foreground="{DynamicResource BrushWarning}"/>
+											<TextBlock FontSize="10" Foreground="{DynamicResource BrushTextSecondary}"
                                                 Text="{Binding DemandScore, StringFormat='{}{0}/100'}"/>
 										</StackPanel>
 
 										<Border Grid.Column="4" Padding="8,3" CornerRadius="5"
-                                                Background="#1F2937" VerticalAlignment="Center"
+                                                Background="{DynamicResource BrushBgInput}" VerticalAlignment="Center"
                                                 HorizontalAlignment="Left">
-											<TextBlock FontSize="11" Foreground="#9CA3AF"
+											<TextBlock FontSize="11" Foreground="{DynamicResource BrushTextSecondary}"
                                                 Text="{Binding Strategy}"/>
 										</Border>
 

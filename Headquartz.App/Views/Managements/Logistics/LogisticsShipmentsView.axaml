@@ -7,21 +7,25 @@
 	<ScrollViewer>
 		<StackPanel Margin="30" Spacing="20">
 
-			<TextBlock FontSize="34" FontWeight="Bold" Text="Shipments"/>
+			<!-- Header -->
+			<StackPanel Spacing="4">
+				<TextBlock FontSize="34" FontWeight="Bold" Text="Shipments"/>
+				<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="Freight handling, Shipping rates selection, label generation, and customs documentation."/>				
+			</StackPanel>	
 
 			<!-- KPI ROW -->
 			<ItemsControl ItemsSource="{Binding Kpis}">
 				<ItemsControl.ItemsPanel>
 					<ItemsPanelTemplate>
-						<WrapPanel/>
+						<WrapPanel ItemSpacing="10"/>
 					</ItemsPanelTemplate>
 				</ItemsControl.ItemsPanel>
 				<ItemsControl.ItemTemplate>
 					<DataTemplate>
-						<Border Width="200" Margin="10" Padding="20" Background="#202633" CornerRadius="12">
+						<Border Width="200" Margin="0,5" Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 							<StackPanel>
-								<TextBlock FontSize="13" Foreground="#9CA3AF" Text="{Binding Title}"/>
-								<TextBlock FontSize="26" FontWeight="Bold" Text="{Binding Value}"/>
+								<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="{Binding Title}"/>
+								<TextBlock FontSize="22" FontWeight="Bold" Text="{Binding Value}"/>
 							</StackPanel>
 						</Border>
 					</DataTemplate>
@@ -34,7 +38,7 @@
 				<Button
                     Grid.Column="0"
                     Padding="14,9"
-                    Background="#0E7490"
+                    Background="{DynamicResource BrushAccentSecondary}"
                     CornerRadius="8"
                     Command="{Binding ExpediteAllCommand}"
                     Content="⚡  Expedite All (−$800/order)"/>
@@ -50,7 +54,7 @@
 							<Button
                                 Padding="14,8"
                                 CornerRadius="8"
-                                Background="#202633"
+                                Background="{DynamicResource BrushBgCard}"
                                 Command="{Binding $parent[ItemsControl].DataContext.SetFilterCommand}"
                                 CommandParameter="{Binding}"
                                 Content="{Binding}"/>
@@ -61,61 +65,61 @@
 			</Grid>
 
 			<!-- SHIPMENTS TABLE -->
-			<Border Padding="20" Background="#202633" CornerRadius="12">
+			<Border Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 				<StackPanel>
 
 					<!-- Header -->
 					<Grid ColumnDefinitions="*,120,110,120,Auto" Margin="14,0,14,8">
-						<TextBlock Grid.Column="0" Text="CLIENT / PRODUCT" FontSize="11" FontWeight="Bold" Foreground="#6B7280"/>
-						<TextBlock Grid.Column="1" Text="VALUE"            FontSize="11" FontWeight="Bold" Foreground="#6B7280"/>
-						<TextBlock Grid.Column="2" Text="STATUS"           FontSize="11" FontWeight="Bold" Foreground="#6B7280"/>
-						<TextBlock Grid.Column="3" Text="DEADLINE"         FontSize="11" FontWeight="Bold" Foreground="#6B7280"/>
-						<TextBlock Grid.Column="4" Text="ACTION"           FontSize="11" FontWeight="Bold" Foreground="#6B7280"/>
+						<TextBlock Grid.Column="0" Text="CLIENT / PRODUCT" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource BrushTextSecondary}"/>
+						<TextBlock Grid.Column="1" Text="VALUE"            FontSize="11" FontWeight="Bold" Foreground="{DynamicResource BrushTextSecondary}"/>
+						<TextBlock Grid.Column="2" Text="STATUS"           FontSize="11" FontWeight="Bold" Foreground="{DynamicResource BrushTextSecondary}"/>
+						<TextBlock Grid.Column="3" Text="DEADLINE"         FontSize="11" FontWeight="Bold" Foreground="{DynamicResource BrushTextSecondary}"/>
+						<TextBlock Grid.Column="4" Text="ACTION"           FontSize="11" FontWeight="Bold" Foreground="{DynamicResource BrushTextSecondary}"/>
 					</Grid>
 
 					<TextBlock
                         IsVisible="{Binding !Shipments.Count}"
                         Text="No shipments match this filter."
-                        Foreground="#6B7280"
+                        Foreground="{DynamicResource BrushTextSecondary}"
                         Margin="14,8"/>
 
 					<ItemsControl ItemsSource="{Binding Shipments}">
 						<ItemsControl.ItemTemplate>
 							<DataTemplate>
-								<Border Margin="0,3" Padding="14,12" Background="#2B3242" CornerRadius="8">
+								<Border Margin="0,3" Padding="14,12" Background="{DynamicResource BrushBgNested}" CornerRadius="8">
 									<Grid ColumnDefinitions="*,120,110,120,Auto">
 
 										<StackPanel Grid.Column="0">
 											<TextBlock FontWeight="SemiBold" Text="{Binding ClientName}"/>
-											<TextBlock FontSize="12" Foreground="#6B7280" Text="{Binding ProductName}"/>
+											<TextBlock FontSize="12" Foreground="{DynamicResource BrushTextSecondary}" Text="{Binding ProductName}"/>
 										</StackPanel>
 
 										<TextBlock
                                             Grid.Column="1"
                                             Text="{Binding Revenue, StringFormat='${0:N0}'}"
-                                            Foreground="#06B6D4"
+                                            Foreground="{DynamicResource BrushAccentSecondary}"
                                             VerticalAlignment="Center"/>
 
 										<Border
                                             Grid.Column="2"
                                             Padding="8,3"
                                             CornerRadius="6"
-                                            Background="#1F2937"
+                                            Background="{DynamicResource BrushBgInput}"
                                             VerticalAlignment="Center"
                                             HorizontalAlignment="Left">
 											<TextBlock
                                                 FontSize="11"
                                                 FontWeight="SemiBold"
-                                                Foreground="#9CA3AF"
+                                                Foreground="{DynamicResource BrushTextSecondary}"
                                                 Text="{Binding Status}"/>
 										</Border>
 
 										<StackPanel Grid.Column="3" VerticalAlignment="Center">
-											<TextBlock FontSize="11" Text="{Binding Deadline}" Foreground="#6B7280"/>
+											<TextBlock FontSize="11" Text="{Binding Deadline}" Foreground="{DynamicResource BrushTextSecondary}"/>
 											<TextBlock
                                                 FontSize="11" FontWeight="Bold"
                                                 Text="⚠ OVERDUE"
-                                                Foreground="#EF4444"
+                                                Foreground="{DynamicResource BrushDanger}"
                                                 IsVisible="{Binding IsOverdue}"/>
 										</StackPanel>
 
@@ -123,7 +127,7 @@
                                             Grid.Column="4"
                                             Padding="10,6"
                                             FontSize="11"
-                                            Background="#0E7490"
+                                            Background="{DynamicResource BrushAccentSecondary}"
                                             CornerRadius="6"
                                             VerticalAlignment="Center"
                                             Command="{Binding $parent[ItemsControl].DataContext.ExpediteShipmentCommand}"

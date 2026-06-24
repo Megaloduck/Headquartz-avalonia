@@ -25,9 +25,9 @@
 	<Color x:Key="ColorBorderFocus">#6366F1</Color>
 
 	<Color x:Key="ColorTextPrimary">#F1F5F9</Color>
-	<Color x:Key="ColorTextSecondary">#94A3B8</Color>
-	<Color x:Key="ColorTextMuted">#4B6280</Color>
-	<Color x:Key="ColorTextDisabled">#2D3F55</Color>
+	<Color x:Key="ColorTextSecondary">#CBD5E1</Color>
+	<Color x:Key="ColorTextMuted">#94A3B8</Color>
+	<Color x:Key="ColorTextDisabled">#64748B</Color>
 
 	<Color x:Key="ColorAccentPrimary">#6366F1</Color>
 	<Color x:Key="ColorAccentPrimaryHover">#818CF8</Color>

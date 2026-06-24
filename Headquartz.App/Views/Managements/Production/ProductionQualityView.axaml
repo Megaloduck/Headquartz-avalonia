@@ -5,38 +5,40 @@
 	<ScrollViewer>
 		<StackPanel Margin="30" Spacing="20">
 
-			<TextBlock FontSize="34" FontWeight="Bold" Text="Quality Control"/>
-			<TextBlock FontSize="13" Foreground="#6B7280"
-                Text="Run inspections, track defects, and resolve quality incidents before they impact reputation."/>
+			<!-- HEADER -->
+			<StackPanel Spacing="4">
+				<TextBlock FontSize="34" FontWeight="Bold" Text="Quality Control"/>
+				<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="Goods inspection, defect tracking, compliance standards, and improvement plans."/>
+			</StackPanel>	
 
 			<!-- ACTIVE INCIDENTS BANNER -->
 			<Border IsVisible="{Binding ActiveIncidents}"
-                    Background="#7C2D12" CornerRadius="12" Padding="20">
+                    Background="{DynamicResource BrushWarning}" CornerRadius="12" Padding="20">
 				<StackPanel Orientation="Horizontal" Spacing="12">
 					<TextBlock Text="⚠" FontSize="22" VerticalAlignment="Center"/>
 					<StackPanel>
 						<TextBlock
                             Text="{Binding ActiveIncidents, StringFormat='{}{0} ACTIVE QUALITY INCIDENT(S)'}"
-                            FontSize="16" FontWeight="Bold" Foreground="#FDBA74"/>
+                            FontSize="16" FontWeight="Bold" Foreground="{DynamicResource BrushWarning}"/>
 						<TextBlock Text="Unresolved incidents reduce reputation every cycle."
-                            Foreground="#FDBA74"/>
+                            Foreground="{DynamicResource BrushWarning}"/>
 					</StackPanel>
 				</StackPanel>
 			</Border>
 
-			<!-- KPIs -->
+			<!-- KPI ROW -->
 			<ItemsControl ItemsSource="{Binding Kpis}">
 				<ItemsControl.ItemsPanel>
 					<ItemsPanelTemplate>
-						<WrapPanel/>
+						<WrapPanel ItemSpacing="10"/>
 					</ItemsPanelTemplate>
 				</ItemsControl.ItemsPanel>
 				<ItemsControl.ItemTemplate>
 					<DataTemplate>
-						<Border Width="180" Margin="8" Padding="18" Background="#202633" CornerRadius="12">
+						<Border Width="200" Margin="0,5" Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 							<StackPanel>
-								<TextBlock FontSize="13" Foreground="#9CA3AF" Text="{Binding Title}"/>
-								<TextBlock FontSize="26" FontWeight="Bold" Text="{Binding Value}"/>
+								<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="{Binding Title}"/>
+								<TextBlock FontSize="22" FontWeight="Bold" Text="{Binding Value}"/>
 							</StackPanel>
 						</Border>
 					</DataTemplate>
@@ -44,26 +46,26 @@
 			</ItemsControl>
 
 			<!-- QUALITY SCORE BAR -->
-			<Border Padding="20" Background="#202633" CornerRadius="12">
+			<Border Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 				<StackPanel Spacing="10">
 					<TextBlock FontSize="18" FontWeight="Bold" Text="Quality Health"/>
 					<StackPanel Orientation="Horizontal" Spacing="10">
-						<TextBlock Text="Score" FontSize="12" Foreground="#9CA3AF"
+						<TextBlock Text="Score" FontSize="12" Foreground="{DynamicResource BrushTextSecondary}"
                             Width="60" VerticalAlignment="Center"/>
 						<ProgressBar Value="{Binding QualityScore}" Maximum="100"
-                            Height="14" Width="340" Foreground="#10B981"
+                            Height="14" Width="340" Foreground="{DynamicResource BrushSuccess}"
                             VerticalAlignment="Center"/>
-						<TextBlock FontSize="14" FontWeight="Bold" Foreground="#9CA3AF"
+						<TextBlock FontSize="14" FontWeight="Bold" Foreground="{DynamicResource BrushTextSecondary}"
                             Text="{Binding QualityScore, StringFormat='{}{0}/100'}"
                             VerticalAlignment="Center"/>
 					</StackPanel>
 					<StackPanel Orientation="Horizontal" Spacing="10">
-						<TextBlock Text="Pass Rate" FontSize="12" Foreground="#9CA3AF"
+						<TextBlock Text="Pass Rate" FontSize="12" Foreground="{DynamicResource BrushTextSecondary}"
                             Width="60" VerticalAlignment="Center"/>
 						<ProgressBar Value="{Binding PassRate}" Maximum="100"
-                            Height="14" Width="340" Foreground="#6366F1"
+                            Height="14" Width="340" Foreground="{DynamicResource BrushAccentPrimary}"
                             VerticalAlignment="Center"/>
-						<TextBlock FontSize="14" FontWeight="Bold" Foreground="#9CA3AF"
+						<TextBlock FontSize="14" FontWeight="Bold" Foreground="{DynamicResource BrushTextSecondary}"
                             Text="{Binding PassRate, StringFormat='{}{0}%'}"
                             VerticalAlignment="Center"/>
 					</StackPanel>
@@ -71,33 +73,33 @@
 			</Border>
 
 			<!-- ACTIONS -->
-			<WrapPanel>
-				<Button Padding="14" Margin="10" Background="#6366F1" CornerRadius="8"
+			<WrapPanel ItemSpacing="10">
+				<Button Padding="14" Margin="0,5" Background="{DynamicResource BrushAccentPrimary}" CornerRadius="8"
                     Command="{Binding RunInspectionCommand}"
                     Content="🔍  Run Inspection ($1,500)"/>
-				<Button Padding="14" Margin="10" Background="#10B981" CornerRadius="8"
+				<Button Padding="14" Margin="0,5" Background="{DynamicResource BrushSuccess}" CornerRadius="8"
                     Command="{Binding RunFullAuditCommand}"
                     Content="✅  Full Quality Audit ($5,000)"/>
 			</WrapPanel>
 
 			<!-- STATUS -->
 			<Border IsVisible="{Binding StatusMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
-                    Padding="14,10" Background="#2B3242" CornerRadius="8">
+                    Padding="14,10" Background="{DynamicResource BrushBgNested}" CornerRadius="8">
 				<TextBlock Text="{Binding StatusMessage}" FontSize="13" TextWrapping="Wrap"/>
 			</Border>
 
 			<!-- INCIDENTS -->
-			<Border Padding="20" Background="#202633" CornerRadius="12">
+			<Border Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 				<StackPanel>
 					<TextBlock FontSize="22" FontWeight="Bold" Text="Quality Incidents" Margin="0,0,0,16"/>
 
 					<TextBlock IsVisible="{Binding !Incidents.Count}"
-                        Text="No quality incidents recorded." Foreground="#6B7280"/>
+                        Text="No quality incidents recorded." Foreground="{DynamicResource BrushTextSecondary}"/>
 
 					<ItemsControl ItemsSource="{Binding Incidents}">
 						<ItemsControl.ItemTemplate>
 							<DataTemplate>
-								<Border Margin="0,5" Padding="16" Background="#2B3242" CornerRadius="8">
+								<Border Margin="0,5" Padding="16" Background="{DynamicResource BrushBgNested}" CornerRadius="8">
 									<Grid ColumnDefinitions="*,90,90,Auto">
 
 										<StackPanel Grid.Column="0" Spacing="3">
@@ -105,32 +107,32 @@
 												<TextBlock FontWeight="Bold" FontSize="14"
                                                     Text="{Binding Issue}" VerticalAlignment="Center"/>
 												<Border IsVisible="{Binding IsResolved}"
-                                                        Padding="6,2" Background="#14532D"
+                                                        Padding="6,2" Background="{DynamicResource BrushBadgeSuccessBg}"
                                                         CornerRadius="4" VerticalAlignment="Center">
 													<TextBlock Text="RESOLVED" FontSize="9"
-                                                        FontWeight="Bold" Foreground="#86EFAC"/>
+                                                        FontWeight="Bold" Foreground="{DynamicResource BrushBadgeSuccessFg}"/>
 												</Border>
 											</StackPanel>
-											<TextBlock FontSize="12" Foreground="#6B7280"
+											<TextBlock FontSize="12" Foreground="{DynamicResource BrushTextSecondary}"
                                                 Text="{Binding Product}"/>
-											<TextBlock FontSize="12" Foreground="#6B7280"
+											<TextBlock FontSize="12" Foreground="{DynamicResource BrushTextSecondary}"
                                                 Text="{Binding DefectCount, StringFormat='{}{0} defects detected'}"/>
 										</StackPanel>
 
 										<Border Grid.Column="1" Padding="8,3" CornerRadius="6"
-                                                Background="#1F2937" VerticalAlignment="Center"
+                                                Background="{DynamicResource BrushBgInput}" VerticalAlignment="Center"
                                                 HorizontalAlignment="Center">
 											<TextBlock FontSize="11" FontWeight="Bold"
-                                                Text="{Binding Severity}" Foreground="#F97316"/>
+                                                Text="{Binding Severity}" Foreground="{DynamicResource BrushDeptWarehouse}"/>
 										</Border>
 
 										<TextBlock Grid.Column="2" FontSize="11"
-                                            Foreground="#6B7280" Text="{Binding DetectedAt}"
+                                            Foreground="{DynamicResource BrushTextSecondary}" Text="{Binding DetectedAt}"
                                             VerticalAlignment="Center" HorizontalAlignment="Center"/>
 
 										<Button Grid.Column="3"
                                             IsVisible="{Binding !IsResolved}"
-                                            Padding="12,7" Background="#374151" CornerRadius="6"
+                                            Padding="12,7" Background="{DynamicResource BrushBorderStrong}" CornerRadius="6"
                                             VerticalAlignment="Center"
                                             Command="{Binding $parent[ItemsControl].DataContext.ResolveIncidentCommand}"
                                             CommandParameter="{Binding}"

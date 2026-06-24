@@ -1,10 +1,11 @@
-﻿using Avalonia.Threading;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Headquartz.App.Models;
 using Headquartz.App.Services;
 using Headquartz.Domain.Enums;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
@@ -42,6 +43,7 @@ public partial class ShellViewModel : ViewModelBase
     [ObservableProperty] private string _pageTitle = "Company Overview";
     [ObservableProperty] private string _sectionLabel = "Overview";
     [ObservableProperty] private string _companyName = "Company Name";
+    [ObservableProperty] private string _industry = "";
 
     // =========================================================
     // TICK STATUS CARD
@@ -100,6 +102,10 @@ public partial class ShellViewModel : ViewModelBase
     public ObservableCollection<SidebarSection> SidebarSections { get; } = [];
     public ObservableCollection<NotificationModel> Notifications { get; } = [];
 
+    public ObservableCollection<PlayerRole> AvailableRoles { get; } = [];
+
+    private readonly List<NotificationModel> _allNotifications = [];
+
     // =========================================================
     // CONSTRUCTORS
     // =========================================================
@@ -122,6 +128,7 @@ public partial class ShellViewModel : ViewModelBase
 
         IsDarkTheme = ThemeService.Instance.IsDark;
         CompanyName = _simulation.Engine.Company.Name;
+        Industry = _simulation.Engine.Company.Industry.ToString();
         TicksPerWorkHour = _simulation.Engine.Profile.TicksPerWorkHour;
 
         // Sub-tick timer — 100 ms resolution for smooth partial-pill animation
@@ -136,6 +143,9 @@ public partial class ShellViewModel : ViewModelBase
         LoadSidebar();
         _navigation.Navigate("company", startingRole);
         RefreshStaticTickValues();
+
+        foreach (var role in Enum.GetValues<PlayerRole>())
+            AvailableRoles.Add(role);
     }
 
     /// <summary>Parameterless — design-time / standalone use.</summary>
@@ -158,6 +168,7 @@ public partial class ShellViewModel : ViewModelBase
 
         IsDarkTheme = ThemeService.Instance.IsDark;
         CompanyName = _simulation.Engine.Company.Name;
+        Industry = _simulation.Engine.Company.Industry.ToString();
         TicksPerWorkHour = _simulation.Engine.Profile.TicksPerWorkHour;
 
         _subTickTimer = new DispatcherTimer(
@@ -168,6 +179,9 @@ public partial class ShellViewModel : ViewModelBase
         _subTickTimer.Start();
 
         RefreshStaticTickValues();
+
+        foreach (var role in Enum.GetValues<PlayerRole>())
+            AvailableRoles.Add(role);
     }
 
     // =========================================================
@@ -203,6 +217,7 @@ public partial class ShellViewModel : ViewModelBase
 
         CurrentTick = clock.Tick;
         CompanyName = _simulation.Engine.Company.Name;
+        Industry = _simulation.Engine.Company.Industry.ToString();
         DateLabel = clock.WorldTime.ToString("dd MMMM yyyy");
         WorldDate = DateLabel;
 
@@ -293,8 +308,49 @@ public partial class ShellViewModel : ViewModelBase
     // NOTIFICATIONS
     // =========================================================
 
+    private static DepartmentType MapRoleToDepartment(PlayerRole role) => role switch
+    {
+        PlayerRole.HumanResourcesManager => DepartmentType.HumanResources,
+        PlayerRole.FinanceManager => DepartmentType.Finance,
+        PlayerRole.SalesManager => DepartmentType.Sales,
+        PlayerRole.MarketingManager => DepartmentType.Marketing,
+        PlayerRole.ProductionManager => DepartmentType.Production,
+        PlayerRole.WarehouseManager => DepartmentType.Warehouse,
+        PlayerRole.LogisticsManager => DepartmentType.Logistics,
+        PlayerRole.Chairman => DepartmentType.Management,
+        _ => DepartmentType.Management,
+    };
+
+    private bool IsNotificationForRole(NotificationModel notification, PlayerRole role)
+    {
+        if (role == PlayerRole.Chairman)
+            return true;
+        return notification.Department == MapRoleToDepartment(role);
+    }
+
+    private void RebuildNotifications()
+    {
+        Dispatcher.UIThread.Post(() =>
+        {
+            Notifications.Clear();
+            foreach (var n in _allNotifications.Where(n => IsNotificationForRole(n, CurrentRole)))
+            {
+                Notifications.Add(n);
+                if (Notifications.Count >= 4)
+                    break;
+            }
+        });
+    }
+
     private void OnNotificationFired(NotificationModel notification)
     {
+        _allNotifications.Insert(0, notification);
+        while (_allNotifications.Count > 20)
+            _allNotifications.RemoveAt(_allNotifications.Count - 1);
+
+        if (!IsNotificationForRole(notification, CurrentRole))
+            return;
+
         Dispatcher.UIThread.Post(() =>
         {
             Notifications.Insert(0, notification);
@@ -306,14 +362,19 @@ public partial class ShellViewModel : ViewModelBase
     private void PruneOldNotifications()
     {
         var cutoff = DateTime.UtcNow.AddSeconds(-6);
-        var stale = Notifications.Where(n => n.CreatedAt < cutoff).ToList();
+        var stale = _allNotifications.Where(n => n.CreatedAt < cutoff).ToList();
         foreach (var n in stale)
-            Notifications.Remove(n);
+            _allNotifications.Remove(n);
+
+        RebuildNotifications();
     }
 
     [RelayCommand]
-    private void DismissNotification(NotificationModel n) =>
+    private void DismissNotification(NotificationModel n)
+    {
+        _allNotifications.Remove(n);
         Notifications.Remove(n);
+    }
 
     // =========================================================
     // NAVIGATION
@@ -348,7 +409,11 @@ public partial class ShellViewModel : ViewModelBase
     // SIDEBAR
     // =========================================================
 
-    partial void OnCurrentRoleChanged(PlayerRole value) => LoadSidebar();
+    partial void OnCurrentRoleChanged(PlayerRole value)
+    {
+        LoadSidebar();
+        RebuildNotifications();
+    }
 
     private void LoadSidebar()
     {

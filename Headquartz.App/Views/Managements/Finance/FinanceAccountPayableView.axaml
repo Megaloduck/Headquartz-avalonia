@@ -5,39 +5,41 @@
 	<ScrollViewer>
 		<StackPanel Margin="30" Spacing="20">
 
-			<TextBlock FontSize="34" FontWeight="Bold" Text="Account Payable"/>
-			<TextBlock FontSize="13" Foreground="#6B7280"
-                Text="Outstanding invoices and vendor payments owed by the company."/>
+			<!-- HEADER -->
+            <StackPanel Spacing="4">
+				<TextBlock FontSize="34" FontWeight="Bold" Text="Account Payable"/>
+				<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="Expense tracking, approval workflows, vendor payments, and receipt management."/>
+			</StackPanel>
 
 			<!-- OVERDUE BANNER -->
 			<Border IsVisible="{Binding OverdueCount}"
-                    Background="#7F1D1D" CornerRadius="12" Padding="20">
+                    Background="{DynamicResource BrushAlertCriticalBg}" CornerRadius="12" Padding="20">
 				<StackPanel Orientation="Horizontal" Spacing="12">
-					<TextBlock Text="⚠" FontSize="22" Foreground="#FCA5A5" VerticalAlignment="Center"/>
+					<TextBlock Text="⚠" FontSize="22" Foreground="{DynamicResource BrushBadgeDangerFg}" VerticalAlignment="Center"/>
 					<StackPanel>
 						<TextBlock
                             Text="{Binding OverdueCount, StringFormat='{}{0} INVOICE(S) OVERDUE'}"
-                            FontSize="16" FontWeight="Bold" Foreground="#FCA5A5"/>
+                            FontSize="16" FontWeight="Bold" Foreground="{DynamicResource BrushBadgeDangerFg}"/>
 						<TextBlock
                             Text="{Binding OverdueAmount, StringFormat='Total overdue: ${0:N0}'}"
-                            Foreground="#FCA5A5"/>
+                            Foreground="{DynamicResource BrushBadgeDangerFg}"/>
 					</StackPanel>
 				</StackPanel>
 			</Border>
 
-			<!-- KPIs -->
+			<!-- KPI ROW -->
 			<ItemsControl ItemsSource="{Binding Kpis}">
 				<ItemsControl.ItemsPanel>
 					<ItemsPanelTemplate>
-						<WrapPanel/>
+						<WrapPanel ItemSpacing="10"/>
 					</ItemsPanelTemplate>
 				</ItemsControl.ItemsPanel>
 				<ItemsControl.ItemTemplate>
 					<DataTemplate>
-						<Border Width="200" Margin="10" Padding="20" Background="#202633" CornerRadius="12">
+						<Border Width="200" Margin="0,5" Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 							<StackPanel>
-								<TextBlock FontSize="13" Foreground="#9CA3AF" Text="{Binding Title}"/>
-								<TextBlock FontSize="26" FontWeight="Bold" Text="{Binding Value}"/>
+								<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="{Binding Title}"/>
+								<TextBlock FontSize="22" FontWeight="Bold" Text="{Binding Value}"/>
 							</StackPanel>
 						</Border>
 					</DataTemplate>
@@ -45,62 +47,62 @@
 			</ItemsControl>
 
 			<!-- ACTIONS -->
-			<WrapPanel>
-				<Button Padding="14" Margin="10" Background="#6366F1" CornerRadius="8"
+			<WrapPanel ItemSpacing="10">
+				<Button Padding="14" Margin="0,5" Background="{DynamicResource BrushAccentPrimary}" CornerRadius="8"
                     Command="{Binding PayAllCommand}" Content="💳  Pay All Invoices"/>
 			</WrapPanel>
 
 			<!-- STATUS -->
 			<Border IsVisible="{Binding StatusMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
-                    Padding="14,10" Background="#2B3242" CornerRadius="8">
+                    Padding="14,10" Background="{DynamicResource BrushBgNested}" CornerRadius="8">
 				<TextBlock Text="{Binding StatusMessage}" FontSize="13" TextWrapping="Wrap"/>
 			</Border>
 
 			<!-- INVOICES TABLE -->
-			<Border Padding="20" Background="#202633" CornerRadius="12">
+			<Border Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 				<StackPanel>
 					<TextBlock FontSize="22" FontWeight="Bold" Text="Outstanding Invoices" Margin="0,0,0,16"/>
 
 					<Grid ColumnDefinitions="*,120,100,100,Auto" Margin="14,0,14,8">
-						<TextBlock Grid.Column="0" Text="VENDOR" FontSize="11" FontWeight="Bold" Foreground="#6B7280"/>
-						<TextBlock Grid.Column="1" Text="AMOUNT" FontSize="11" FontWeight="Bold" Foreground="#6B7280"/>
-						<TextBlock Grid.Column="2" Text="DUE DATE" FontSize="11" FontWeight="Bold" Foreground="#6B7280"/>
-						<TextBlock Grid.Column="3" Text="STATUS" FontSize="11" FontWeight="Bold" Foreground="#6B7280"/>
-						<TextBlock Grid.Column="4" Text="ACTION" FontSize="11" FontWeight="Bold" Foreground="#6B7280"/>
+						<TextBlock Grid.Column="0" Text="VENDOR" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource BrushTextSecondary}"/>
+						<TextBlock Grid.Column="1" Text="AMOUNT" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource BrushTextSecondary}"/>
+						<TextBlock Grid.Column="2" Text="DUE DATE" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource BrushTextSecondary}"/>
+						<TextBlock Grid.Column="3" Text="STATUS" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource BrushTextSecondary}"/>
+						<TextBlock Grid.Column="4" Text="ACTION" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource BrushTextSecondary}"/>
 					</Grid>
 
 					<TextBlock IsVisible="{Binding !Payables.Count}"
-                        Text="No outstanding invoices." Foreground="#6B7280" Margin="14,8"/>
+                        Text="No outstanding invoices." Foreground="{DynamicResource BrushTextSecondary}" Margin="14,8"/>
 
 					<ItemsControl ItemsSource="{Binding Payables}">
 						<ItemsControl.ItemTemplate>
 							<DataTemplate>
-								<Border Margin="0,3" Padding="14,12" Background="#2B3242" CornerRadius="8">
+								<Border Margin="0,3" Padding="14,12" Background="{DynamicResource BrushBgNested}" CornerRadius="8">
 									<Grid ColumnDefinitions="*,120,100,100,Auto">
 
 										<StackPanel Grid.Column="0">
 											<TextBlock FontWeight="SemiBold" Text="{Binding Vendor}"/>
-											<TextBlock FontSize="12" Foreground="#6B7280" Text="{Binding Description}"/>
+											<TextBlock FontSize="12" Foreground="{DynamicResource BrushTextSecondary}" Text="{Binding Description}"/>
 										</StackPanel>
 
 										<TextBlock Grid.Column="1"
                                             Text="{Binding Amount, StringFormat='${0:N0}'}"
-                                            Foreground="#EF4444" VerticalAlignment="Center"/>
+                                            Foreground="{DynamicResource BrushDanger}" VerticalAlignment="Center"/>
 
 										<StackPanel Grid.Column="2" VerticalAlignment="Center">
-											<TextBlock FontSize="12" Text="{Binding DueDate}" Foreground="#6B7280"/>
+											<TextBlock FontSize="12" Text="{Binding DueDate}" Foreground="{DynamicResource BrushTextSecondary}"/>
 											<TextBlock FontSize="11" FontWeight="Bold" Text="OVERDUE"
-                                                Foreground="#EF4444" IsVisible="{Binding IsOverdue}"/>
+                                                Foreground="{DynamicResource BrushDanger}" IsVisible="{Binding IsOverdue}"/>
 										</StackPanel>
 
 										<Border Grid.Column="3" Padding="8,3" CornerRadius="6"
-                                                Background="#1F2937" VerticalAlignment="Center"
+                                                Background="{DynamicResource BrushBgInput}" VerticalAlignment="Center"
                                                 HorizontalAlignment="Left">
-											<TextBlock FontSize="11" Foreground="#9CA3AF" Text="{Binding Status}"/>
+											<TextBlock FontSize="11" Foreground="{DynamicResource BrushTextSecondary}" Text="{Binding Status}"/>
 										</Border>
 
 										<Button Grid.Column="4"
-                                            Padding="10,6" Background="#10B981" CornerRadius="6"
+                                            Padding="10,6" Background="{DynamicResource BrushSuccess}" CornerRadius="6"
                                             VerticalAlignment="Center"
                                             Command="{Binding $parent[ItemsControl].DataContext.PayNowCommand}"
                                             CommandParameter="{Binding}"

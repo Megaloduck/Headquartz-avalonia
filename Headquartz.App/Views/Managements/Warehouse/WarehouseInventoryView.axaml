@@ -7,21 +7,25 @@
 	<ScrollViewer>
 		<StackPanel Margin="30" Spacing="20">
 
-			<TextBlock FontSize="34" FontWeight="Bold" Text="Inventory Management"/>
+			<!-- HEADER -->
+            <StackPanel Spacing="4">
+				<TextBlock FontSize="34" FontWeight="Bold" Text="Inventory Management"/>
+				<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="Stock levels, SKU management, reorder points, and inventory valuation."/>
+			</StackPanel>
 
 			<!-- KPI ROW -->
 			<ItemsControl ItemsSource="{Binding Kpis}">
 				<ItemsControl.ItemsPanel>
 					<ItemsPanelTemplate>
-						<WrapPanel/>
+						<WrapPanel ItemSpacing="10"/>
 					</ItemsPanelTemplate>
 				</ItemsControl.ItemsPanel>
 				<ItemsControl.ItemTemplate>
 					<DataTemplate>
-						<Border Width="200" Margin="10" Padding="20" Background="#202633" CornerRadius="12">
+						<Border Width="200" Margin="0,5" Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 							<StackPanel>
-								<TextBlock FontSize="13" Foreground="#9CA3AF" Text="{Binding Title}"/>
-								<TextBlock FontSize="26" FontWeight="Bold" Text="{Binding Value}"/>
+								<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="{Binding Title}"/>
+								<TextBlock FontSize="22" FontWeight="Bold" Text="{Binding Value}"/>
 							</StackPanel>
 						</Border>
 					</DataTemplate>
@@ -29,22 +33,22 @@
 			</ItemsControl>
 
 			<!-- ACTIONS -->
-			<WrapPanel>
+			<WrapPanel ItemSpacing="10">
 				<Button
-                    Padding="14" Margin="10"
+                    Padding="14" Margin="0,5"
                     Command="{Binding RestockAllCommand}"
                     Content="📥  Restock All Low Items"/>
 			</WrapPanel>
 
 			<!-- INVENTORY TABLE -->
-			<Border Padding="20" Background="#202633" CornerRadius="12">
+			<Border Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 				<StackPanel>
 					<TextBlock FontSize="22" FontWeight="Bold" Text="Stock Levels" Margin="0,0,0,16"/>
 
 					<ItemsControl ItemsSource="{Binding Inventory}">
 						<ItemsControl.ItemTemplate>
 							<DataTemplate>
-								<Border Margin="0,6" Padding="18" Background="#2B3242" CornerRadius="10">
+								<Border Margin="0,6" Padding="18" Background="{DynamicResource BrushBgNested}" CornerRadius="10">
 									<StackPanel Spacing="12">
 
 										<!-- Name + qty + restock button -->
@@ -58,7 +62,7 @@
                                                     VerticalAlignment="Center"/>
 												<Border
                                                     IsVisible="{Binding IsLow}"
-                                                    Background="#7F1D1D"
+                                                    Background="{DynamicResource BrushAlertCriticalBg}"
                                                     CornerRadius="6"
                                                     Padding="7,2"
                                                     VerticalAlignment="Center">
@@ -66,7 +70,7 @@
                                                         Text="LOW STOCK"
                                                         FontSize="9"
                                                         FontWeight="Bold"
-                                                        Foreground="#FCA5A5"/>
+                                                        Foreground="{DynamicResource BrushBadgeDangerFg}"/>
 												</Border>
 											</StackPanel>
 
@@ -83,7 +87,7 @@
                                                     Text="{Binding Quantity}"/>
 												<TextBlock
                                                     FontSize="12"
-                                                    Foreground="#6B7280"
+                                                    Foreground="{DynamicResource BrushTextSecondary}"
                                                     Text="units"
                                                     VerticalAlignment="Bottom"
                                                     Margin="0,0,0,3"/>
@@ -93,7 +97,7 @@
 											<Button
                                                 Grid.Column="2"
                                                 Padding="12,7"
-                                                Background="#1F2937"
+                                                Background="{DynamicResource BrushBgInput}"
                                                 CornerRadius="7"
                                                 VerticalAlignment="Center"
                                                 Command="{Binding $parent[ItemsControl].DataContext.RestockItemCommand}"
@@ -109,24 +113,24 @@
                                                 Maximum="1.0"
                                                 Height="10"
                                                 Width="340"
-                                                Foreground="#F97316"
+                                                Foreground="{DynamicResource BrushDeptWarehouse}"
                                                 VerticalAlignment="Center"/>
 											<TextBlock
                                                 FontSize="12"
-                                                Foreground="#9CA3AF"
+                                                Foreground="{DynamicResource BrushTextSecondary}"
                                                 Text="{Binding FillPercent, StringFormat='{}{0:P0}'}"
                                                 VerticalAlignment="Center"/>
 										</StackPanel>
 
 										<!-- Stock info row -->
 										<StackPanel Orientation="Horizontal" Spacing="24">
-											<TextBlock FontSize="12" Foreground="#6B7280"
+											<TextBlock FontSize="12" Foreground="{DynamicResource BrushTextSecondary}"
                                                 Text="{Binding MinimumStock, StringFormat='Min: {0}'}"/>
-											<TextBlock FontSize="12" Foreground="#6B7280"
+											<TextBlock FontSize="12" Foreground="{DynamicResource BrushTextSecondary}"
                                                 Text="{Binding MaximumStock, StringFormat='Max: {0}'}"/>
-											<TextBlock FontSize="12" Foreground="#6B7280"
+											<TextBlock FontSize="12" Foreground="{DynamicResource BrushTextSecondary}"
                                                 Text="{Binding UnitCost, StringFormat='${0}/unit'}"/>
-											<TextBlock FontSize="12" Foreground="#6B7280"
+											<TextBlock FontSize="12" Foreground="{DynamicResource BrushTextSecondary}"
                                                 Text="{Binding Quantity, StringFormat='Restock cost: {0}×'}"/>
 										</StackPanel>
 

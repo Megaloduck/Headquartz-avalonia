@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 
@@ -28,6 +28,7 @@ public partial class CompanyDashboardViewModel : ViewModelBase
     [ObservableProperty] private long _tick;
     [ObservableProperty] private string _worldTime = "";
     [ObservableProperty] private int _companyHealth;
+    [ObservableProperty] private string _industry = "";
 
     // ── Collections ──────────────────────────────────────────
 
@@ -58,6 +59,7 @@ public partial class CompanyDashboardViewModel : ViewModelBase
         Expenses = company.Expenses;
         Reputation = company.Reputation;
         EmployeeCount = company.Employees.Count;
+        Industry = company.Industry.ToString();
         ActiveTasks = company.Tasks.Count(t =>
             t.Status != Domain.Enums.CompanyTaskStatus.Completed);
         ActiveOrders = company.Orders.Count(o =>

@@ -7,12 +7,12 @@
 	<Grid RowDefinitions="Auto,Auto,*,Auto">
 
 		<!-- HEADER -->
-		<StackPanel Grid.Row="0" Margin="30,30,30,10">
+		<StackPanel Grid.Row="0" Margin="30,30,30,10" Spacing="4">
 			<TextBlock FontSize="34" FontWeight="Bold" Text="Communication"/>
-			<StackPanel Orientation="Horizontal" Spacing="20" Margin="0,4,0,0">
-				<TextBlock FontSize="13" Foreground="#6B7280"
+			<StackPanel Orientation="Horizontal" Spacing="20">
+				<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}"
                     Text="{Binding WorldTime, StringFormat='World time: {0}'}"/>
-				<TextBlock FontSize="13" Foreground="#6B7280"
+				<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}"
                     Text="{Binding CurrentTick, StringFormat='Tick: {0}'}"/>
 			</StackPanel>
 		</StackPanel>
@@ -23,7 +23,7 @@
             HorizontalAlignment="Right"
             Margin="0,0,30,10"
             Padding="12,7"
-            Background="#374151"
+            Background="{DynamicResource BrushBorderStrong}"
             CornerRadius="7"
             Command="{Binding ClearMessagesCommand}"
             Content="Clear Board"/>
@@ -37,7 +37,7 @@
                             Margin="0,4"
                             Padding="14,12"
                             CornerRadius="10"
-                            Background="#202633">
+                            Background="{DynamicResource BrushBgCard}">
 							<Grid ColumnDefinitions="Auto,*,100">
 
 								<!-- Avatar -->
@@ -45,7 +45,7 @@
                                     Grid.Column="0"
                                     Width="38" Height="38"
                                     CornerRadius="19"
-                                    Background="#2B3242"
+                                    Background="{DynamicResource BrushBgNested}"
                                     Margin="0,0,12,0">
 									<TextBlock
                                         Text="{Binding SenderEmoji}"
@@ -59,20 +59,20 @@
 									<TextBlock
                                         FontSize="12"
                                         FontWeight="Bold"
-                                        Foreground="#9CA3AF"
+                                        Foreground="{DynamicResource BrushTextSecondary}"
                                         Text="{Binding SenderRole}"/>
 									<TextBlock
                                         FontSize="14"
                                         Text="{Binding Text}"
                                         TextWrapping="Wrap"
-                                        Foreground="#D1D5DB"/>
+                                        Foreground="{DynamicResource BrushTextSecondary}"/>
 								</StackPanel>
 
 								<!-- Timestamp -->
 								<TextBlock
                                     Grid.Column="2"
                                     FontSize="11"
-                                    Foreground="#4B5563"
+                                    Foreground="{DynamicResource BrushTextMuted}"
                                     Text="{Binding Timestamp}"
                                     HorizontalAlignment="Right"
                                     VerticalAlignment="Top"
@@ -90,7 +90,7 @@
             Grid.Row="3"
             Margin="30,10,30,30"
             Padding="16,12"
-            Background="#202633"
+            Background="{DynamicResource BrushBgCard}"
             CornerRadius="12">
 
 			<Grid ColumnDefinitions="*,Auto">
@@ -106,7 +106,7 @@
 				<Button
                     Grid.Column="1"
                     Padding="18,10"
-                    Background="#6366F1"
+                    Background="{DynamicResource BrushAccentPrimary}"
                     CornerRadius="8"
                     Margin="10,0,0,0"
                     Command="{Binding PostMessageCommand}"

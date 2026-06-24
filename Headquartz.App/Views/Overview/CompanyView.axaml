@@ -11,16 +11,32 @@
 			<Grid ColumnDefinitions="*,Auto">
 				<StackPanel Grid.Column="0">
 					<TextBlock FontSize="34" FontWeight="Bold" Text="Company Overview"/>
-					<TextBlock FontSize="13" Foreground="#6B7280" Text="{Binding WorldTime}"/>
+					<StackPanel Orientation="Horizontal" Spacing="8" Margin="0,4,0,0">
+						<Border
+							Padding="6,2"
+							CornerRadius="4"
+							Background="{DynamicResource BrushBgElevated}"
+							BorderBrush="{DynamicResource BrushBorderDefault}"
+							BorderThickness="1"
+							VerticalAlignment="Center">
+							<TextBlock
+								Text="{Binding Industry}"
+								FontSize="11"
+								FontWeight="Medium"
+								Foreground="{DynamicResource BrushTextMuted}"
+								VerticalAlignment="Center"/>
+						</Border>
+						<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="{Binding WorldTime}" VerticalAlignment="Center"/>
+					</StackPanel>
 				</StackPanel>
 				<Border
                     Grid.Column="1"
                     Padding="16,10"
-                    Background="#202633"
+                    Background="{DynamicResource BrushBgCard}"
                     CornerRadius="10"
                     VerticalAlignment="Center">
 					<StackPanel HorizontalAlignment="Center">
-						<TextBlock FontSize="11" Foreground="#6B7280" Text="COMPANY HEALTH" HorizontalAlignment="Center"/>
+						<TextBlock FontSize="11" Foreground="{DynamicResource BrushTextSecondary}" Text="COMPANY HEALTH" HorizontalAlignment="Center"/>
 						<TextBlock
                             FontSize="28"
                             FontWeight="Bold"
@@ -31,7 +47,7 @@
                             Maximum="100"
                             Height="6"
                             Width="120"
-                            Foreground="#10B981"/>
+                            Foreground="{DynamicResource BrushSuccess}"/>
 					</StackPanel>
 				</Border>
 			</Grid>
@@ -39,58 +55,58 @@
 			<!-- FINANCIAL KPIs -->
 			<WrapPanel>
 
-				<Border Width="220" Margin="10" Padding="20" Background="#202633" CornerRadius="12">
+				<Border Width="220" Margin="10" Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 					<StackPanel>
-						<TextBlock FontSize="13" Foreground="#9CA3AF" Text="Cash"/>
+						<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="Cash"/>
 						<TextBlock FontSize="28" FontWeight="Bold" Text="{Binding Cash, StringFormat='${0:N0}'}"/>
 					</StackPanel>
 				</Border>
 
-				<Border Width="220" Margin="10" Padding="20" Background="#202633" CornerRadius="12">
+				<Border Width="220" Margin="10" Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 					<StackPanel>
-						<TextBlock FontSize="13" Foreground="#9CA3AF" Text="Revenue"/>
+						<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="Revenue"/>
 						<TextBlock FontSize="28" FontWeight="Bold" Text="{Binding Revenue, StringFormat='${0:N0}'}"/>
 					</StackPanel>
 				</Border>
 
-				<Border Width="220" Margin="10" Padding="20" Background="#202633" CornerRadius="12">
+				<Border Width="220" Margin="10" Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 					<StackPanel>
-						<TextBlock FontSize="13" Foreground="#9CA3AF" Text="Expenses"/>
+						<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="Expenses"/>
 						<TextBlock FontSize="28" FontWeight="Bold" Text="{Binding Expenses, StringFormat='${0:N0}'}"/>
 					</StackPanel>
 				</Border>
 
-				<Border Width="220" Margin="10" Padding="20" Background="#202633" CornerRadius="12">
+				<Border Width="220" Margin="10" Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 					<StackPanel>
-						<TextBlock FontSize="13" Foreground="#9CA3AF" Text="Reputation"/>
+						<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="Reputation"/>
 						<TextBlock FontSize="28" FontWeight="Bold" Text="{Binding Reputation, StringFormat={}{0}/100}"/>
 					</StackPanel>
 				</Border>
 
-				<Border Width="220" Margin="10" Padding="20" Background="#202633" CornerRadius="12">
+				<Border Width="220" Margin="10" Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 					<StackPanel>
-						<TextBlock FontSize="13" Foreground="#9CA3AF" Text="Employees"/>
+						<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="Employees"/>
 						<TextBlock FontSize="28" FontWeight="Bold" Text="{Binding EmployeeCount}"/>
 					</StackPanel>
 				</Border>
 
-				<Border Width="220" Margin="10" Padding="20" Background="#202633" CornerRadius="12">
+				<Border Width="220" Margin="10" Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 					<StackPanel>
-						<TextBlock FontSize="13" Foreground="#9CA3AF" Text="Active Tasks"/>
+						<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="Active Tasks"/>
 						<TextBlock FontSize="28" FontWeight="Bold" Text="{Binding ActiveTasks}"/>
 					</StackPanel>
 				</Border>
 
-				<Border Width="220" Margin="10" Padding="20" Background="#202633" CornerRadius="12">
+				<Border Width="220" Margin="10" Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 					<StackPanel>
-						<TextBlock FontSize="13" Foreground="#9CA3AF" Text="Active Orders"/>
+						<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="Active Orders"/>
 						<TextBlock FontSize="28" FontWeight="Bold" Text="{Binding ActiveOrders}"/>
 					</StackPanel>
 				</Border>
 
-				<Border Width="220" Margin="10" Padding="20" Background="#202633" CornerRadius="12">
+				<Border Width="220" Margin="10" Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 					<StackPanel>
-						<TextBlock FontSize="13" Foreground="#9CA3AF" Text="Simulation Tick"/>
+						<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="Simulation Tick"/>
 						<TextBlock FontSize="28" FontWeight="Bold" Text="{Binding Tick}"/>
 					</StackPanel>
 				</Border>
@@ -98,13 +114,13 @@
 			</WrapPanel>
 
 			<!-- DEPARTMENT HEALTH GRID -->
-			<Border Padding="20" Background="#202633" CornerRadius="12">
+			<Border Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 				<StackPanel>
 					<TextBlock FontSize="22" FontWeight="Bold" Text="Department Status" Margin="0,0,0,16"/>
 					<ItemsControl ItemsSource="{Binding DepartmentHealth}">
 						<ItemsControl.ItemTemplate>
 							<DataTemplate>
-								<Border Margin="0,5" Padding="14" Background="#2B3242" CornerRadius="8">
+								<Border Margin="0,5" Padding="14" Background="{DynamicResource BrushBgNested}" CornerRadius="8">
 									<Grid ColumnDefinitions="30,160,*,*,80,90">
 
 										<!-- Emoji -->
@@ -115,16 +131,16 @@
 
 										<!-- Efficiency bar -->
 										<StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
-											<TextBlock Text="Eff" FontSize="11" Foreground="#6B7280" Width="24"/>
-											<ProgressBar Value="{Binding Efficiency}" Maximum="100" Height="6" Width="120" Foreground="#10B981"/>
-											<TextBlock Text="{Binding Efficiency, StringFormat={}{0}%}" FontSize="11" Foreground="#9CA3AF"/>
+											<TextBlock Text="Eff" FontSize="11" Foreground="{DynamicResource BrushTextSecondary}" Width="24"/>
+											<ProgressBar Value="{Binding Efficiency}" Maximum="100" Height="6" Width="120" Foreground="{DynamicResource BrushSuccess}"/>
+											<TextBlock Text="{Binding Efficiency, StringFormat={}{0}%}" FontSize="11" Foreground="{DynamicResource BrushTextSecondary}"/>
 										</StackPanel>
 
 										<!-- Stress bar -->
 										<StackPanel Grid.Column="3" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
-											<TextBlock Text="Stress" FontSize="11" Foreground="#6B7280" Width="36"/>
-											<ProgressBar Value="{Binding StressLevel}" Maximum="100" Height="6" Width="120" Foreground="#EF4444"/>
-											<TextBlock Text="{Binding StressLevel, StringFormat={}{0}%}" FontSize="11" Foreground="#9CA3AF"/>
+											<TextBlock Text="Stress" FontSize="11" Foreground="{DynamicResource BrushTextSecondary}" Width="36"/>
+											<ProgressBar Value="{Binding StressLevel}" Maximum="100" Height="6" Width="120" Foreground="{DynamicResource BrushDanger}"/>
+											<TextBlock Text="{Binding StressLevel, StringFormat={}{0}%}" FontSize="11" Foreground="{DynamicResource BrushTextSecondary}"/>
 										</StackPanel>
 
 										<!-- Staff count -->
@@ -132,7 +148,7 @@
                                             Grid.Column="4"
                                             Text="{Binding StaffCount, StringFormat='👤 {0}'}"
                                             FontSize="12"
-                                            Foreground="#6B7280"
+                                            Foreground="{DynamicResource BrushTextSecondary}"
                                             VerticalAlignment="Center"
                                             HorizontalAlignment="Center"/>
 
@@ -141,7 +157,7 @@
                                             Grid.Column="5"
                                             Text="{Binding StatusText}"
                                             FontSize="12"
-                                            Foreground="#9CA3AF"
+                                            Foreground="{DynamicResource BrushTextSecondary}"
                                             HorizontalAlignment="Right"
                                             VerticalAlignment="Center"/>
 
@@ -154,26 +170,26 @@
 			</Border>
 
 			<!-- CRITICAL ALERTS FEED -->
-			<Border Padding="20" Background="#202633" CornerRadius="12">
+			<Border Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 				<StackPanel>
 					<TextBlock FontSize="22" FontWeight="Bold" Text="Critical Alerts" Margin="0,0,0,12"/>
 					<TextBlock
                         IsVisible="{Binding !RecentAlerts.Count}"
                         Text="No critical alerts. Company is running smoothly."
-                        Foreground="#6B7280"/>
+                        Foreground="{DynamicResource BrushTextSecondary}"/>
 					<ItemsControl ItemsSource="{Binding RecentAlerts}">
 						<ItemsControl.ItemTemplate>
 							<DataTemplate>
-								<Border Margin="0,5" Padding="14" Background="#2B3242" CornerRadius="8">
+								<Border Margin="0,5" Padding="14" Background="{DynamicResource BrushBgNested}" CornerRadius="8">
 									<Grid ColumnDefinitions="*,Auto">
 										<StackPanel Grid.Column="0">
 											<TextBlock FontSize="14" FontWeight="Bold" Text="{Binding Title}"/>
-											<TextBlock FontSize="12" Foreground="#9CA3AF" Text="{Binding Description}" TextWrapping="Wrap" Margin="0,3,0,0"/>
+											<TextBlock FontSize="12" Foreground="{DynamicResource BrushTextSecondary}" Text="{Binding Description}" TextWrapping="Wrap" Margin="0,3,0,0"/>
 										</StackPanel>
 										<StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="12,0,0,0" Spacing="4">
-											<TextBlock FontSize="11" Foreground="#EF4444" HorizontalAlignment="Right"
+											<TextBlock FontSize="11" Foreground="{DynamicResource BrushDanger}" HorizontalAlignment="Right"
                                                 Text="{Binding Severity}"/>
-											<TextBlock FontSize="11" Foreground="#6B7280" HorizontalAlignment="Right"
+											<TextBlock FontSize="11" Foreground="{DynamicResource BrushTextSecondary}" HorizontalAlignment="Right"
                                                 Text="{Binding RemainingTicks, StringFormat={}{0} ticks}"/>
 										</StackPanel>
 									</Grid>

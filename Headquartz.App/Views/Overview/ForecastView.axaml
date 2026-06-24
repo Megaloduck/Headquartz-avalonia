@@ -2,144 +2,199 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             x:Class="Headquartz.App.ForecastView">
+             xmlns:vm="clr-namespace:Headquartz.App.ViewModels"
+             xmlns:conv="clr-namespace:Headquartz.App.Converters"
+             x:Class="Headquartz.App.ForecastView"
+             x:DataType="vm:ForecastViewModel">
 
-	<ScrollViewer>
-		<StackPanel Margin="30" Spacing="20">
+    <UserControl.Resources>
+        <conv:EventColorTagConverter x:Key="EventColorTagConverter"/>
+        <conv:BoolToHighlightBrushConverter x:Key="BoolToHighlightBrushConverter"/>
+        <conv:BoolToThicknessConverter x:Key="BoolToThicknessConverter"/>
+        <conv:StringNotNullOrEmptyConverter x:Key="StringNotNullOrEmptyConverter"/>
+        <conv:IntToBoolConverter x:Key="IntToBoolConverter"/>
+    </UserControl.Resources>
 
-			<TextBlock FontSize="34" FontWeight="Bold" Text="Forecast"/>
-			<TextBlock FontSize="13" Foreground="#6B7280" Text="30-tick cash flow projection based on current revenue and spending rate."/>
+    <ScrollViewer>
+        <StackPanel Margin="30" Spacing="20">
 
-			<!-- CRITICAL RUNWAY BANNER -->
-			<Border IsVisible="{Binding IsCritical}" Background="#7F1D1D" CornerRadius="12" Padding="20">
-				<StackPanel Orientation="Horizontal" Spacing="12">
-					<TextBlock Text="ðŸš¨" FontSize="22" VerticalAlignment="Center"/>
-					<StackPanel>
-						<TextBlock
-                            Text="BANKRUPTCY WARNING"
-                            FontSize="16" FontWeight="Bold" Foreground="#FCA5A5"/>
-						<TextBlock
-                            Text="{Binding RunwayLabel}"
-                            Foreground="#FCA5A5"/>
-					</StackPanel>
-				</StackPanel>
-			</Border>
+            <!-- HEADER -->
+            <StackPanel Spacing="4">
+                <TextBlock FontSize="34" FontWeight="Bold" Text="Forecast Overview"/>
+                <TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="Future event projection and calendar."/>
+            </StackPanel>
 
-			<!-- KPI ROW -->
-			<ItemsControl ItemsSource="{Binding Kpis}">
-				<ItemsControl.ItemsPanel>
-					<ItemsPanelTemplate>
-						<WrapPanel/>
-					</ItemsPanelTemplate>
-				</ItemsControl.ItemsPanel>
-				<ItemsControl.ItemTemplate>
-					<DataTemplate>
-						<Border Width="200" Margin="10" Padding="20" Background="#202633" CornerRadius="12">
-							<StackPanel>
-								<TextBlock FontSize="13" Foreground="#9CA3AF" Text="{Binding Title}"/>
-								<TextBlock FontSize="20" FontWeight="Bold" Text="{Binding Value}" TextWrapping="Wrap"/>
-							</StackPanel>
-						</Border>
-					</DataTemplate>
-				</ItemsControl.ItemTemplate>
-			</ItemsControl>
+            <!-- TOP STAT CARDS -->
+            <Grid ColumnDefinitions="*,*,*,*" Margin="0,0,0,8">
+                <!-- Upcoming Event -->
+                <Border Grid.Column="0" Margin="4" Padding="16" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
+                    <StackPanel Spacing="4">
+                        <TextBlock FontSize="12" Foreground="{DynamicResource BrushTextMuted}" FontWeight="SemiBold" Text="Upcoming Event"/>
+                        <TextBlock FontSize="22" FontWeight="Bold" Text="{Binding UpcomingEventTitle}" TextTrimming="CharacterEllipsis"/>
+                    </StackPanel>
+                </Border>
+                <!-- Item 2 placeholder (ticks) -->
+                <Border Grid.Column="1" Margin="4" Padding="16" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
+                    <StackPanel Spacing="4">
+                        <TextBlock FontSize="12" Foreground="{DynamicResource BrushTextMuted}" FontWeight="SemiBold" Text="Ticks Elapsed"/>
+                        <TextBlock FontSize="22" FontWeight="Bold" Text="{Binding TicksElapsed, StringFormat='{}{0} Ticks'}"/>
+                        <TextBlock FontSize="10" Foreground="{DynamicResource BrushTextMuted}" Text="5 seconds per tick"/>
+                    </StackPanel>
+                </Border>
+                <!-- Item 3 placeholder (simulation time) -->
+                <Border Grid.Column="2" Margin="4" Padding="16" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
+                    <StackPanel Spacing="4">
+                        <TextBlock FontSize="12" Foreground="{DynamicResource BrushTextMuted}" FontWeight="SemiBold" Text="Simulation Elapsed"/>
+                        <TextBlock FontSize="22" FontWeight="Bold" Text="{Binding SimulationElapsedDisplay}"/>
+                    </StackPanel>
+                </Border>
+                <!-- Current Cash -->
+                <Border Grid.Column="3" Margin="4" Padding="16" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
+                    <StackPanel Spacing="4">
+                        <TextBlock FontSize="12" Foreground="{DynamicResource BrushTextMuted}" FontWeight="SemiBold" Text="Current Cash"/>
+                        <TextBlock FontSize="22" FontWeight="Bold" Text="{Binding CurrentCash, StringFormat='${0:N0}'}"/>
+                    </StackPanel>
+                </Border>
+            </Grid> 
 
-			<!-- PROJECTION TABLE -->
-			<Border Padding="20" Background="#202633" CornerRadius="12">
-				<StackPanel>
-					<TextBlock FontSize="22" FontWeight="Bold" Text="30-Tick Projection" Margin="0,0,0,16"/>
+            <!-- EVENT CALENDAR -->
+            <Border Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
+                <StackPanel Spacing="16">
+                    <!-- Calendar Header -->
+                    <Grid ColumnDefinitions="*,Auto">
+                        <StackPanel Grid.Column="0" Spacing="2">
+                            <TextBlock FontSize="22" FontWeight="Bold" Text="Event Calendar"/>
+                            <TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="Scheduled events and holidays"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                            <Button Classes="ghost" Command="{Binding PreviousMonthCommand}" Padding="8,4">
+                                <TextBlock Text="◀" FontSize="14"/>
+                            </Button>
+                            <Border Background="{DynamicResource BrushBgNested}" CornerRadius="8" Padding="12,6">
+                                <TextBlock FontSize="14" FontWeight="SemiBold" Text="{Binding CurrentMonth, StringFormat='{}{0:dd MMMM yyyy}'}"/>
+                            </Border>
+                            <Button Classes="ghost" Command="{Binding NextMonthCommand}" Padding="8,4">
+                                <TextBlock Text="▶" FontSize="14"/>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
 
-					<!-- Header -->
-					<Border Padding="12,8" Background="#374151" CornerRadius="6" Margin="0,0,0,4">
-						<Grid ColumnDefinitions="60,120,*,100,100">
-							<TextBlock Grid.Column="0" Text="Tick"       FontSize="11" FontWeight="Bold" Foreground="#9CA3AF"/>
-							<TextBlock Grid.Column="1" Text="World Time" FontSize="11" FontWeight="Bold" Foreground="#9CA3AF"/>
-							<TextBlock Grid.Column="2" Text="Cash Balance" FontSize="11" FontWeight="Bold" Foreground="#9CA3AF"/>
-							<TextBlock Grid.Column="3" Text="Revenue"    FontSize="11" FontWeight="Bold" Foreground="#9CA3AF"/>
-							<TextBlock Grid.Column="4" Text="Expenses"   FontSize="11" FontWeight="Bold" Foreground="#9CA3AF"/>
-						</Grid>
-					</Border>
+                    <!-- Day-of-week headers -->
+                    <Grid ColumnDefinitions="*,*,*,*,*,*,*">
+                        <TextBlock Grid.Column="0" Text="SUN" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource BrushTextMuted}" HorizontalAlignment="Center"/>
+                        <TextBlock Grid.Column="1" Text="MON" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource BrushTextMuted}" HorizontalAlignment="Center"/>
+                        <TextBlock Grid.Column="2" Text="TUE" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource BrushTextMuted}" HorizontalAlignment="Center"/>
+                        <TextBlock Grid.Column="3" Text="WED" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource BrushTextMuted}" HorizontalAlignment="Center"/>
+                        <TextBlock Grid.Column="4" Text="THU" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource BrushTextMuted}" HorizontalAlignment="Center"/>
+                        <TextBlock Grid.Column="5" Text="FRI" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource BrushTextMuted}" HorizontalAlignment="Center"/>
+                        <TextBlock Grid.Column="6" Text="SAT" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource BrushTextMuted}" HorizontalAlignment="Center"/>
+                    </Grid>
 
-					<ItemsControl ItemsSource="{Binding Projection}">
-						<ItemsControl.ItemTemplate>
-							<DataTemplate>
-								<Border
-                                    Margin="0,2"
-                                    Padding="12,10"
-                                    CornerRadius="6"
-                                    Background="#2B3242">
-									<Grid ColumnDefinitions="60,120,*,100,100">
+                    <!-- Calendar Grid -->
+                    <ItemsControl ItemsSource="{Binding CalendarDays}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Columns="7" Rows="6"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border
+                                    Margin="2"
+                                    Padding="6"
+                                    Background="{DynamicResource BrushBgNested}"
+                                    CornerRadius="8"
+                                    MinHeight="80"
+                                    IsVisible="{Binding IsCurrentMonth}"
+                                    BorderBrush="{Binding IsToday, Converter={StaticResource BoolToHighlightBrushConverter}, ConverterParameter=BrushAccentPrimary}"
+                                    BorderThickness="{Binding IsToday, Converter={StaticResource BoolToThicknessConverter}, ConverterParameter=2}">
+                                    <StackPanel Spacing="4">
+                                        <TextBlock
+                                            Text="{Binding DayNumber}"
+                                            FontSize="14"
+                                            FontWeight="Bold"
+                                            Foreground="{DynamicResource BrushTextPrimary}"/>
+                                        <ItemsControl ItemsSource="{Binding Events}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Border
+                                                        Margin="0,2"
+                                                        Padding="4,3"
+                                                        CornerRadius="4"
+                                                        Background="{Binding ColorTag, Converter={StaticResource EventColorTagConverter}}"
+                                                        Opacity="0.85">
+                                                        <StackPanel>
+                                                            <TextBlock
+                                                                Text="{Binding Title}"
+                                                                FontSize="10"
+                                                                FontWeight="SemiBold"
+                                                                Foreground="White"
+                                                                TextTrimming="CharacterEllipsis"/>
+                                                            <TextBlock
+                                                                Text="{Binding EffectSummary}"
+                                                                FontSize="9"
+                                                                Foreground="#E2E8F0"
+                                                                TextTrimming="CharacterEllipsis"
+                                                                IsVisible="{Binding EffectSummary, Converter={StaticResource StringNotNullOrEmptyConverter}}"/>
+                                                        </StackPanel>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
 
-										<!-- Tick -->
-										<StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="4">
-											<TextBlock
-                                                FontSize="12"
-                                                Foreground="#6B7280"
-                                                Text="{Binding Tick}"
-                                                VerticalAlignment="Center"/>
-											<!-- Payroll indicator -->
-											<Border
-                                                IsVisible="{Binding IsPayrollTick}"
-                                                Background="#1E3A5F"
-                                                CornerRadius="4"
-                                                Padding="4,1"
-                                                VerticalAlignment="Center">
-												<TextBlock
-                                                    Text="PAY"
-                                                    FontSize="8"
-                                                    FontWeight="Bold"
-                                                    Foreground="#93C5FD"/>
-											</Border>
-										</StackPanel>
+            <!-- TODAY'S EVENT -->
+            <Border Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
+                <StackPanel Spacing="12">
+                    <TextBlock FontSize="18" FontWeight="Bold" Text="Today's Event"/>
+                    <ItemsControl ItemsSource="{Binding TodayEvents}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border
+                                    Margin="0,4"
+                                    Padding="14"
+                                    Background="{DynamicResource BrushBgNested}"
+                                    CornerRadius="10"
+                                    BorderThickness="2"
+                                    BorderBrush="{Binding ColorTag, Converter={StaticResource EventColorTagConverter}}">
+                                    <Grid ColumnDefinitions="Auto,*">
+                                        <Border
+                                            Grid.Column="0"
+                                            Width="8"
+                                            Height="8"
+                                            CornerRadius="4"
+                                            Background="{Binding ColorTag, Converter={StaticResource EventColorTagConverter}}"
+                                            VerticalAlignment="Center"
+                                            Margin="0,0,12,0"/>
+                                        <StackPanel Grid.Column="1" Spacing="2">
+                                            <TextBlock FontSize="15" FontWeight="Bold" Text="{Binding Title}"/>
+                                            <TextBlock FontSize="12" Foreground="{DynamicResource BrushTextSecondary}" Text="{Binding Subtitle}"/>
+                                            <TextBlock
+                                                FontSize="11"
+                                                Foreground="{DynamicResource BrushTextMuted}"
+                                                Text="{Binding EffectSummary}"
+                                                IsVisible="{Binding EffectSummary, Converter={StaticResource StringNotNullOrEmptyConverter}}"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <TextBlock
+                        IsVisible="{Binding HasNoTodayEvents}"
+                        FontSize="13"
+                        Foreground="{DynamicResource BrushTextMuted}"
+                        Text="No events scheduled for today."
+                        Margin="0,8"/>
+                </StackPanel>
+            </Border>
 
-										<!-- World Time -->
-										<TextBlock
-                                            Grid.Column="1"
-                                            FontSize="12"
-                                            Foreground="#6B7280"
-                                            Text="{Binding WorldTime}"
-                                            VerticalAlignment="Center"/>
-
-										<!-- Projected Cash -->
-										<Panel Grid.Column="2" VerticalAlignment="Center">
-											<TextBlock
-                                                FontSize="13"
-                                                FontWeight="Bold"
-                                                Foreground="#EF4444"
-                                                IsVisible="{Binding IsNegative}"
-                                                Text="{Binding CashDisplay}"/>
-											<TextBlock
-                                                FontSize="13"
-                                                FontWeight="Bold"
-                                                Foreground="#D1D5DB"
-                                                IsVisible="{Binding !IsNegative}"
-                                                Text="{Binding CashDisplay}"/>
-										</Panel>
-
-										<!-- Revenue -->
-										<TextBlock
-                                            Grid.Column="3"
-                                            FontSize="12"
-                                            Foreground="#10B981"
-                                            Text="{Binding Revenue, StringFormat='+${0:N0}'}"
-                                            VerticalAlignment="Center"/>
-
-										<!-- Expenses -->
-										<TextBlock
-                                            Grid.Column="4"
-                                            FontSize="12"
-                                            Foreground="#EF4444"
-                                            Text="{Binding Expenses, StringFormat='-${0:N0}'}"
-                                            VerticalAlignment="Center"/>
-
-									</Grid>
-								</Border>
-							</DataTemplate>
-						</ItemsControl.ItemTemplate>
-					</ItemsControl>
-
-				</StackPanel>
-			</Border>
 
 		</StackPanel>
 	</ScrollViewer>
