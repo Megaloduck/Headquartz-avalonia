@@ -32,47 +32,39 @@ public partial class DepartmentSelectionViewModel : ViewModelBase
     public ObservableCollection<DepartmentSelectionCard> Cards { get; } = [];
 
     private static readonly (PlayerRole Role, string Title, string Dept,
-        string Emoji, string Color, string Responsibilities, string Difficulty, int Stars)[] RoleData =
+        string Emoji, string Color, string Responsibilities)[] RoleData =
     [
         (PlayerRole.HumanResourcesManager,
             "HR Manager", "Human Resources", "👥", "#8B5CF6",
-            "Hiring · Morale · Training · Payroll · Resignations",
-            "Medium", 2),
+            "Workforce · Hiring · Morale · Training · Payroll · Resignations"),
 
         (PlayerRole.FinanceManager,
             "Finance Manager", "Finance", "💰", "#10B981",
-            "Budgets · Cash Flow · Loans · Payroll Risk · Audits",
-            "Hard", 3),
+            "Budgets · Cash Flow · Loans · Payroll Risk · Audits"),
 
         (PlayerRole.SalesManager,
             "Sales Manager", "Sales", "📈", "#3B82F6",
-            "Revenue · Orders · Clients · Pipeline · Deadlines",
-            "Medium", 2),
+            "Revenue · Orders · Clients · Pipeline · Deadlines"),
 
         (PlayerRole.MarketingManager,
             "Marketing Manager", "Marketing", "📣", "#F59E0B",
-            "Campaigns · Brand · Reputation · Research · Demand",
-            "Easy", 1),
+            "Campaigns · Brand · Reputation · Research · Demand"),
 
         (PlayerRole.ProductionManager,
             "Production Manager", "Production", "🏭", "#EF4444",
-            "Manufacturing · Work Orders · Maintenance · Quality",
-            "Hard", 3),
+            "Manufacturing · Maintenance · Quality and Quantity Controls"),
 
         (PlayerRole.WarehouseManager,
             "Warehouse Manager", "Warehouse", "📦", "#F97316",
-            "Inventory · Stock Levels · Restocking · Storage",
-            "Medium", 2),
+            "Inventory · Stock Levels · Resource Planning · Storage"),
 
         (PlayerRole.LogisticsManager,
             "Logistics Manager", "Logistics", "🚚", "#06B6D4",
-            "Shipments · Routes · Delivery SLAs · Fleet",
-            "Hard", 3),
+            "Shipments · Routes · Delivery SLAs · Fleet and Vehicle Controls"),
 
         (PlayerRole.Chairman,
             "Board Chairman", "Management", "🏛️", "#EAB308",
-            "Full Oversight · All Reports · Strategic Decisions",
-            "Expert", 4),
+            "Full Oversight · All Reports · Strategic Decisions"),
     ];
 
     public DepartmentSelectionViewModel(OnboardingFlowService flow)
@@ -96,7 +88,7 @@ public partial class DepartmentSelectionViewModel : ViewModelBase
             .Select(p => p.AssignedRole!.Value)
             .ToHashSet() ?? new HashSet<PlayerRole>();
 
-        foreach (var (role, title, dept, emoji, color, resp, diff, stars) in RoleData)
+        foreach (var (role, title, dept, emoji, color, resp) in RoleData)
         {
             bool taken = takenRoles.Contains(role);
             string? takenBy = config?.Players
@@ -110,8 +102,7 @@ public partial class DepartmentSelectionViewModel : ViewModelBase
                 Emoji = emoji,
                 AccentColor = color,
                 ResponsibilitiesSummary = resp,
-                DifficultyLabel = diff,
-                DifficultyStars = stars,
+
                 IsTaken = taken,
                 TakenByUsername = takenBy,
             });

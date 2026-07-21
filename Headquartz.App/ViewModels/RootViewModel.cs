@@ -32,8 +32,7 @@ public partial class RootViewModel : ViewModelBase
             flow.SessionConfig?.Difficulty
             ?? GameDifficulty.Manager);
 
-        var industry = flow.SessionConfig?.Industry
-            ?? IndustryType.Food;
+        var industry = flow.SessionConfig!.Industry;
 
         var simulation = new SimulationService(profile, industry);
 

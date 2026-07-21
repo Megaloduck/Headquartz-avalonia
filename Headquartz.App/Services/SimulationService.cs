@@ -15,7 +15,7 @@ public class SimulationService
     public SimulationService()
         : this(SimulationProfile.Manager, IndustryType.Food) { }
 
-    public SimulationService(SimulationProfile profile, IndustryType industry = IndustryType.Food)
+    public SimulationService(SimulationProfile profile, IndustryType industry)
     {
         Engine = new SimulationEngine(profile, industry);
     }

@@ -1,11 +1,12 @@
 using System;
 using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Linq;
+using Avalonia.Threading;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
-using Headquartz.App.Models.Onboarding;
 using Headquartz.App.Services;
 using Headquartz.App.ViewModels;
 using Headquartz.Domain.Enums;
@@ -31,6 +32,7 @@ public partial class CompanySetupViewModel : ViewModelBase
     [ObservableProperty] private string _capitalDisplay = "$100,000";
     [ObservableProperty] private string _difficultyDescription = "";
     [ObservableProperty] private string _industryDescription = "";
+    [ObservableProperty] private string _selectedIndustryEmoji = "🏢";
 
     // ── Selections ────────────────────────────────────────────
 
@@ -46,6 +48,21 @@ public partial class CompanySetupViewModel : ViewModelBase
         "Horizon Enterprises",
     ];
 
+    // -------------------------------------------------------------------------------------------------
+    // THEME
+    // -------------------------------------------------------------------------------------------------
+
+    [ObservableProperty] private bool _isDarkTheme = true;
+
+    // ── Computed Properties ──────────────────────────────────
+
+    [RelayCommand]
+    private void ToggleTheme()
+    {
+        ThemeService.Instance.Toggle();
+        IsDarkTheme = ThemeService.Instance.IsDark;
+    }
+
     public CompanySetupViewModel(OnboardingFlowService flow)
     {
         _flow = flow;
@@ -54,6 +71,8 @@ public partial class CompanySetupViewModel : ViewModelBase
         BuildDifficulties();
         UpdateDescriptions();
         BuildDepartmentRelevance();
+        UpdateIndustryEmoji();
+        IsDarkTheme = ThemeService.Instance.IsDark;
 
         // Pre-fill if returning
         if (!string.IsNullOrEmpty(flow.SessionConfig?.CompanyName))
@@ -83,6 +102,7 @@ public partial class CompanySetupViewModel : ViewModelBase
     {
         UpdateDescriptions();
         BuildDepartmentRelevance();
+        UpdateIndustryEmoji();
 
         foreach (var i in Industries)
             i.IsSelected = i.Industry == value;
@@ -107,6 +127,19 @@ public partial class CompanySetupViewModel : ViewModelBase
             IndustryType.Automotive => "Complex assembly with JIT supply chains. Quality control and precision production dominate. Capital-intensive.",
             IndustryType.Fashion => "Trend-driven with seasonal cycles. Fast fashion requires rapid turnaround; luxury rewards brand and scarcity.",
             _ => "",
+        };
+    }
+
+    private void UpdateIndustryEmoji()
+    {
+        SelectedIndustryEmoji = SelectedIndustry switch
+        {
+            IndustryType.Food => "🍞",
+            IndustryType.Beverage => "🥤",
+            IndustryType.Entertainment => "🎬",
+            IndustryType.Automotive => "🚗",
+            IndustryType.Fashion => "👗",
+            _ => "🏢",
         };
     }
 
@@ -235,13 +268,13 @@ public partial class CompanySetupViewModel : ViewModelBase
     {
         var items = new[]
         {
-            (GameDifficulty.Trainee,  "🟢", "Trainee",  "$150k start"),
-            (GameDifficulty.Manager,  "🟡", "Manager",  "$100k start"),
-            (GameDifficulty.Director, "🟠", "Director", "$60k start"),
-            (GameDifficulty.Chairman, "🔴", "Chairman", "$30k start"),
+            (GameDifficulty.Trainee,  "🟢", "Trainee",  "$150k start", "$150,000"),
+            (GameDifficulty.Manager,  "🟡", "Manager",  "$100k start", "$100,000"),
+            (GameDifficulty.Director, "🟠", "Director", "$60k start",  "$60,000"),
+            (GameDifficulty.Chairman, "🔴", "Chairman", "$30k start",  "$30,000"),
         };
 
-        foreach (var (diff, dot, label, sub) in items)
+        foreach (var (diff, dot, label, sub, capital) in items)
         {
             Difficulties.Add(new DifficultyOptionModel
             {
@@ -249,6 +282,7 @@ public partial class CompanySetupViewModel : ViewModelBase
                 DotEmoji = dot,
                 Label = label,
                 SubLabel = sub,
+                CapitalAmount = capital,
                 IsSelected = diff == SelectedDifficulty,
             });
         }
@@ -269,6 +303,7 @@ public partial class DifficultyOptionModel : ObservableObject
     public string DotEmoji { get; set; } = "";
     public string Label { get; set; } = "";
     public string SubLabel { get; set; } = "";
+    public string CapitalAmount { get; set; } = "";
     [ObservableProperty] private bool _isSelected;
 }
 

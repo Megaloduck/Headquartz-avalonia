@@ -160,13 +160,7 @@
                                                     TextWrapping="Wrap"/>
 
                                                 <!-- Footer: difficulty + taken -->
-                                                <Grid ColumnDefinitions="*,Auto" Margin="0,4,0,0">
-                                                    <TextBlock
-                                                        Grid.Column="0"
-                                                        Text="{Binding DifficultyLabel}"
-                                                        FontSize="11"
-                                                        Foreground="{DynamicResource BrushTextMuted}"
-                                                        VerticalAlignment="Center"/>
+                                                <Grid ColumnDefinitions="*,Auto" Margin="0,4,0,0">                                               
 
                                                     <!-- Taken badge -->
                                                     <Border
