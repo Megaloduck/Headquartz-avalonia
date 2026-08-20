@@ -137,20 +137,13 @@
                                                     <TextBlock Text="{Binding Emoji}" FontSize="22" VerticalAlignment="Center"/>
                                                     <TextBlock
                                                         Text="{Binding Department}"
-                                                        FontSize="10"
-                                                        FontWeight="SemiBold"
-                                                        Foreground="{DynamicResource BrushBorderStrong}"
-                                                        VerticalAlignment="Center"
-                                                        LetterSpacing="1"/>
+                                                        FontSize="15"
+                                                    FontWeight="Bold"
+                                                       Foreground="{DynamicResource BrushTextPrimary}"
+                                                        VerticalAlignment="Center"/>
                                                 </StackPanel>
 
-                                                <!-- Title -->
-                                                <TextBlock
-                                                    Text="{Binding Title}"
-                                                    FontSize="15"
-                                                    FontWeight="Bold"
-                                                    Foreground="{DynamicResource BrushTextPrimary}"
-                                                    TextWrapping="Wrap"/>
+                                               
 
                                                 <!-- Responsibilities -->
                                                 <TextBlock
