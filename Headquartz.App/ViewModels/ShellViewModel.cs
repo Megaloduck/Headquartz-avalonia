@@ -44,6 +44,8 @@ public partial class ShellViewModel : ViewModelBase
     [ObservableProperty] private string _sectionLabel = "Overview";
     [ObservableProperty] private string _companyName = "Company Name";
     [ObservableProperty] private string _industry = "";
+    [ObservableProperty] private string _difficultyLabel = "";
+    [ObservableProperty] private string _roleDifficultyLabel = "";
 
     // =========================================================
     // TICK STATUS CARD
@@ -130,6 +132,7 @@ public partial class ShellViewModel : ViewModelBase
         CompanyName = _simulation.Engine.Company.Name;
         Industry = _simulation.Engine.Company.Industry.ToString();
         TicksPerWorkHour = _simulation.Engine.Profile.TicksPerWorkHour;
+        DifficultyLabel = _simulation.Engine.Profile.Difficulty.ToString();
 
         // Sub-tick timer — 100 ms resolution for smooth partial-pill animation
         _subTickTimer = new DispatcherTimer(
@@ -431,6 +434,8 @@ public partial class ShellViewModel : ViewModelBase
             PlayerRole.Chairman => "Board Chairman",
             _ => "Unknown Role",
         };
+
+        RoleDifficultyLabel = $"{RoleName} · {DifficultyLabel}";
 
         foreach (var section in SidebarService.GetSections(CurrentRole))
             SidebarSections.Add(section);

@@ -8,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Reflection.Metadata;
 using System.Text;
 
 namespace Headquartz.App.ViewModels;
@@ -26,6 +25,20 @@ public partial class LobbyViewModel : ViewModelBase
     [ObservableProperty] private bool _canStart;
     [ObservableProperty] private string _statusMessage = "Waiting for players...";
     [ObservableProperty] private int _localPing = 0;
+
+    // ── Flow gating ──────────────────────────────────────────
+    //
+    // The lobby now gates progression on two things before anyone can
+    // ready up: the host must have configured the company, and the local
+    // player must have picked a department. Joiners skip the company step
+    // entirely (only the host configures it) and go straight to picking
+    // a department.
+
+    [ObservableProperty] private bool _isCompanyConfigured;
+    [ObservableProperty] private bool _hasLocalDepartment;
+    [ObservableProperty] private bool _showConfigureCompanyButton;
+    [ObservableProperty] private bool _showPickDepartmentButton;
+    [ObservableProperty] private string _companyConfigSummary = "";
 
     // ── Collections ──────────────────────────────────────────
 
@@ -56,6 +69,7 @@ public partial class LobbyViewModel : ViewModelBase
 
         BuildSlots();
         SyncPlayers();
+        RefreshFlowState();
 
         // Simulate ping updates
         _pingTimer = new DispatcherTimer
@@ -74,9 +88,29 @@ public partial class LobbyViewModel : ViewModelBase
         // Clipboard copy — wired in code-behind
     }
 
+    /// <summary>Host-only: leaves the lobby to configure company/industry/difficulty.</summary>
+    [RelayCommand]
+    private void ConfigureCompany()
+    {
+        _flow.ProceedToCompanySetup();
+    }
+
+    /// <summary>
+    /// Leaves the lobby to pick a department. Used by both the host
+    /// (after configuring the company) and joining players (immediately).
+    /// </summary>
+    [RelayCommand]
+    private void PickDepartment()
+    {
+        _flow.ProceedToDepartmentSelection();
+    }
+
     [RelayCommand]
     private void ToggleReady()
     {
+        // Can't ready up without a department assigned yet.
+        if (!HasLocalDepartment) return;
+
         IsReady = !IsReady;
 
         var local = _flow.SessionConfig?.Players
@@ -103,7 +137,7 @@ public partial class LobbyViewModel : ViewModelBase
         if (!CanStart) return;
 
         _pingTimer.Stop();
-        _flow.ConfirmLobby();
+        _flow.LaunchGame();
     }
 
     [RelayCommand]
@@ -174,13 +208,39 @@ public partial class LobbyViewModel : ViewModelBase
         }
     }
 
+    /// <summary>
+    /// Recomputes the company-configured / department-picked gating state.
+    /// Called on construction; since a fresh LobbyViewModel is created each
+    /// time the onboarding shell routes back to the Lobby screen, this is
+    /// sufficient to reflect state after a detour to CompanySetup or
+    /// DepartmentSelection.
+    /// </summary>
+    private void RefreshFlowState()
+    {
+        IsCompanyConfigured = _flow.IsCompanyConfigured;
+        HasLocalDepartment = _flow.LocalPlayerHasDepartment;
+
+        // Host must configure the company before picking a department.
+        // Joiners skip straight to department picking.
+        ShowConfigureCompanyButton = IsHost && !IsCompanyConfigured;
+        ShowPickDepartmentButton = (!IsHost || IsCompanyConfigured) && !HasLocalDepartment;
+
+        CompanyConfigSummary = IsCompanyConfigured
+            ? $"{_flow.SessionConfig?.CompanyName} · {_flow.SessionConfig?.Industry} · {_flow.SessionConfig?.Difficulty} Difficulty"
+            : IsHost
+                ? "Configure your company to continue."
+                : "Waiting for the host to configure the company...";
+    }
+
     private void EvaluateCanStart()
     {
         if (!IsHost) return;
 
         var players = _flow.SessionConfig?.Players ?? [];
-        CanStart = players.Count >= 1 &&
-                   players.All(p => p.Status == LobbyPlayerStatus.Ready);
+        CanStart = IsCompanyConfigured
+                   && HasLocalDepartment
+                   && players.Count >= 1
+                   && players.All(p => p.Status == LobbyPlayerStatus.Ready);
     }
 
     private void SimulatePingUpdate()

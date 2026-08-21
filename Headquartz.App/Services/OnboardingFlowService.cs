@@ -1,28 +1,45 @@
 ﻿using Headquartz.App.Models.Onboarding;
 using Headquartz.Domain.Enums;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Headquartz.App.Services;
 
 /// <summary>
 /// Central state for the onboarding flow.
-/// Lives as a singleton shared by all onboarding ViewModels.
+///
+/// Host path:   MainMenu -> Lobby -> CompanySetup -> DepartmentSelection -> Lobby -> Gameplay
+/// Joiner path: MainMenu -> Lobby -> DepartmentSelection -> Lobby -> Gameplay
+/// Solo path:   MainMenu -> CompanySetup -> DepartmentSelection -> Gameplay (no lobby)
+///
+/// Only the host ever configures the company. Joiners connect to the lobby
+/// and go straight to picking a department. Both paths route back through
+/// the lobby afterward — only the host's explicit LaunchGame() call ends
+/// onboarding and enters the simulation.
 /// </summary>
 public class OnboardingFlowService
 {
-    // ── Current player ────────────────────────────────────────
     public PlayerProfile? CurrentProfile { get; private set; }
-
-    // ── Active session config ─────────────────────────────────
     public GameSessionConfig? SessionConfig { get; private set; }
 
-    // ── Navigation ────────────────────────────────────────────
     public event Action<OnboardingScreen>? ScreenChanged;
 
-    public OnboardingScreen CurrentScreen { get; private set; }
-        = OnboardingScreen.Splash;
+    public OnboardingScreen CurrentScreen { get; private set; } = OnboardingScreen.Splash;
+
+    // ── Derived flow state ───────────────────────────────────
+
+    /// <summary>True for the lobby host, and always true in solo play.</summary>
+    public bool IsLocalPlayerHost =>
+        SessionConfig == null ||
+        (SessionConfig.Players.FirstOrDefault(p => p.IsLocalPlayer)?.IsHost ?? true);
+
+    /// <summary>True once the host has confirmed company/industry/difficulty.</summary>
+    public bool IsCompanyConfigured =>
+        !string.IsNullOrWhiteSpace(SessionConfig?.CompanyName);
+
+    /// <summary>True once the local player has picked a department to run.</summary>
+    public bool LocalPlayerHasDepartment =>
+        SessionConfig?.Players.FirstOrDefault(p => p.IsLocalPlayer)?.AssignedRole.HasValue ?? false;
 
     // ── Actions ───────────────────────────────────────────────
 
@@ -51,6 +68,8 @@ public class OnboardingFlowService
             IsLocalPlayer = true,
         });
 
+        // Host lands in the Lobby first. Company setup is a deliberate
+        // next step triggered from there via ProceedToCompanySetup().
         NavigateTo(OnboardingScreen.Lobby);
     }
 
@@ -73,6 +92,11 @@ public class OnboardingFlowService
             IsLocalPlayer = true,
         });
 
+        // Non-host players never configure the company — they connect to
+        // the lobby and go straight to picking a department.
+        // NOTE: once lobby state is synced over SignalR, the joiner's view
+        // of CompanyName/Industry/Difficulty will reflect the host's setup;
+        // today this is a single-process stub with no cross-client sync.
         NavigateTo(OnboardingScreen.Lobby);
     }
 
@@ -95,12 +119,25 @@ public class OnboardingFlowService
             IsLocalPlayer = true,
         });
 
+        // Solo play skips the lobby entirely.
         NavigateTo(OnboardingScreen.CompanySetup);
     }
 
-    public void ConfirmLobby()
+    /// <summary>Host-only: leaves the lobby to configure the company.</summary>
+    public void ProceedToCompanySetup()
     {
+        if (!IsLocalPlayerHost) return;
         NavigateTo(OnboardingScreen.CompanySetup);
+    }
+
+    /// <summary>
+    /// Sent to DepartmentSelection either by the host (right after
+    /// configuring the company) or by a joining player (right after
+    /// connecting to the lobby).
+    /// </summary>
+    public void ProceedToDepartmentSelection()
+    {
+        NavigateTo(OnboardingScreen.DepartmentSelection);
     }
 
     public void ConfirmCompanySetup(
@@ -116,17 +153,38 @@ public class OnboardingFlowService
         SessionConfig.Difficulty = difficulty;
         SessionConfig.InitialCapital = capital;
 
+        // The host picks their own department immediately after setup.
         NavigateTo(OnboardingScreen.DepartmentSelection);
     }
 
     public void SelectDepartment(PlayerRole role)
     {
-        var local = SessionConfig?.Players
-            .FirstOrDefault(p => p.IsLocalPlayer);
+        var local = SessionConfig?.Players.FirstOrDefault(p => p.IsLocalPlayer);
 
         if (local != null)
+        {
             local.AssignedRole = role;
 
+            if (local.Status == LobbyPlayerStatus.Connecting)
+                local.Status = LobbyPlayerStatus.Connected;
+        }
+
+        if (SessionConfig == null || !SessionConfig.IsMultiplayer)
+        {
+            // Solo: no lobby — straight into the simulation.
+            NavigateTo(OnboardingScreen.Gameplay);
+        }
+        else
+        {
+            // Multiplayer: back to the lobby to ready up / wait for others.
+            NavigateTo(OnboardingScreen.Lobby);
+        }
+    }
+
+    /// <summary>Host-only: launches the simulation once everyone is ready.</summary>
+    public void LaunchGame()
+    {
+        if (!IsLocalPlayerHost) return;
         NavigateTo(OnboardingScreen.Gameplay);
     }
 

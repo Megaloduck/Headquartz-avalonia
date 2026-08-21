@@ -27,6 +27,13 @@ public partial class DepartmentSelectionViewModel : ViewModelBase
     [ObservableProperty] private string _initialBudgetDisplay = "";
     [ObservableProperty] private bool _showPreMeetingPanel;
 
+    /// <summary>
+    /// Label for the confirm button at the bottom of the pre-meeting panel.
+    /// Multiplayer players return to the Lobby to ready up; solo players
+    /// go straight into the simulation.
+    /// </summary>
+    [ObservableProperty] private string _confirmButtonLabel = "Enter Simulation";
+
     // ── Collections ──────────────────────────────────────────
 
     public ObservableCollection<DepartmentSelectionCard> Cards { get; } = [];
@@ -77,6 +84,13 @@ public partial class DepartmentSelectionViewModel : ViewModelBase
         IndustryLabel = config?.Industry.ToString() ?? "";
         DifficultyLabel = config?.Difficulty.ToString() ?? "";
         CapitalDisplay = $"${config?.InitialCapital:N0}";
+
+        // Multiplayer players (host or joiner) return to the Lobby after
+        // picking — only the host's later "Start Game" actually launches
+        // the simulation. Solo players go straight in.
+        ConfirmButtonLabel = config?.IsMultiplayer == true
+            ? "Confirm & Return to Lobby"
+            : "Enter Simulation";
 
         BuildCards(config);
     }
@@ -144,12 +158,23 @@ public partial class DepartmentSelectionViewModel : ViewModelBase
     private void EnterGame()
     {
         if (SelectedCard == null) return;
+
+        // SelectDepartment() itself decides where to go next:
+        //   - multiplayer  -> back to Lobby (wait/ready)
+        //   - solo         -> straight to Gameplay
         _flow.SelectDepartment(SelectedCard.Role);
     }
 
     [RelayCommand]
     private void GoBack()
     {
-        _flow.NavigateTo(OnboardingScreen.CompanySetup);
+        // Multiplayer players (host or joiner) never left the Lobby to get
+        // here except via the host's CompanySetup detour or a joiner's
+        // direct connect — either way, "back" means the Lobby.
+        // Solo players came from CompanySetup and should return there.
+        if (_flow.SessionConfig?.IsMultiplayer == true)
+            _flow.NavigateTo(OnboardingScreen.Lobby);
+        else
+            _flow.NavigateTo(OnboardingScreen.CompanySetup);
     }
 }

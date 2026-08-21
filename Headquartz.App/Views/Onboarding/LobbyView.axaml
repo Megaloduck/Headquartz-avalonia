@@ -85,7 +85,7 @@
             ColumnDefinitions="*,320"
             Margin="0,24,0,0">
 
-			<!-- Left: player list + room code -->
+			<!-- Left: company config + player list + room code -->
 			<StackPanel Grid.Column="0" Spacing="16" Margin="0,0,16,0">
 
 				<!-- Room code card -->
@@ -127,6 +127,69 @@
 						</Button>
 
 					</Grid>
+				</Border>
+
+				<!-- Company config summary / gating actions -->
+				<Border
+                    Padding="20"
+                    Background="{DynamicResource BrushBgSurface}"
+                    BorderBrush="{DynamicResource BrushBgInput}"
+                    BorderThickness="1"
+                    CornerRadius="14">
+					<StackPanel Spacing="10">
+
+						<TextBlock
+                            Text="COMPANY"
+                            FontSize="11"
+                            FontWeight="Bold"
+                            Foreground="{DynamicResource BrushBorderStrong}"
+                            LetterSpacing="2"/>
+
+						<TextBlock
+                            Text="{Binding CompanyConfigSummary}"
+                            FontSize="14"
+                            FontWeight="SemiBold"
+                            Foreground="{DynamicResource BrushTextPrimary}"
+                            TextWrapping="Wrap"/>
+
+						<!-- Host: configure the company before anything else -->
+						<Button
+                            IsVisible="{Binding ShowConfigureCompanyButton}"
+                            HorizontalAlignment="Stretch"
+                            Padding="0,12"
+                            CornerRadius="10"
+                            Command="{Binding ConfigureCompanyCommand}">
+							<Button.Background>
+								<LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,0%">
+									<GradientStop Color="{DynamicResource ColorAccentPrimary}" Offset="0"/>
+									<GradientStop Color="{DynamicResource ColorAccentPrimaryHover}" Offset="1"/>
+								</LinearGradientBrush>
+							</Button.Background>
+							<TextBlock
+                                Text="Configure Company →"
+                                FontSize="14"
+                                FontWeight="Bold"
+                                Foreground="{DynamicResource BrushTextPrimary}"
+                                HorizontalAlignment="Center"/>
+						</Button>
+
+						<!-- Host (once configured) or any joiner: pick a department -->
+						<Button
+                            IsVisible="{Binding ShowPickDepartmentButton}"
+                            HorizontalAlignment="Stretch"
+                            Padding="0,12"
+                            CornerRadius="10"
+                            Background="{DynamicResource BrushAccentPrimary}"
+                            Command="{Binding PickDepartmentCommand}">
+							<TextBlock
+                                Text="Pick Your Department →"
+                                FontSize="14"
+                                FontWeight="Bold"
+                                Foreground="{DynamicResource BrushTextPrimary}"
+                                HorizontalAlignment="Center"/>
+						</Button>
+
+					</StackPanel>
 				</Border>
 
 				<!-- Player list -->
@@ -340,9 +403,10 @@
 			<Grid ColumnDefinitions="*,560,*">
 				<Grid Grid.Column="1" ColumnDefinitions="*,16,*">
 
-					<!-- Ready toggle -->
+					<!-- Ready toggle — only shown once the local player has a department -->
 					<Button
                         Grid.Column="0"
+                        IsVisible="{Binding HasLocalDepartment}"
                         HorizontalAlignment="Stretch"
                         Padding="0,14"
                         CornerRadius="10"
@@ -371,15 +435,21 @@
 						</TextBlock>
 					</Button>
 
-					<!-- Start game (host only) -->
+					<!-- Start game (host only, once ready to start) -->
 					<Button
                         Grid.Column="2"
+                        IsVisible="{Binding HasLocalDepartment}"
                         HorizontalAlignment="Stretch"
                         Padding="0,14"
                         CornerRadius="10"
-                        IsVisible="{Binding IsHost}"
                         IsEnabled="{Binding CanStart}"
                         Command="{Binding StartGameCommand}">
+						<Button.IsVisible>
+							<MultiBinding Converter="{x:Static BoolConverters.And}">
+								<Binding Path="HasLocalDepartment"/>
+								<Binding Path="IsHost"/>
+							</MultiBinding>
+						</Button.IsVisible>
 						<Button.Background>
 							<LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,0%">
 								<GradientStop Color="{DynamicResource ColorSuccess}" Offset="0"/>
