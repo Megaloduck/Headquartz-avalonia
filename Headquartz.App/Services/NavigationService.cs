@@ -19,7 +19,7 @@ public class NavigationService
 
     public void Navigate(
         string route,
-        PlayerRole currentRole = PlayerRole.HumanResourcesManager)
+        DepartmentType currentDepartment = DepartmentType.HumanResources)
     {
         CurrentView = route switch
         {
@@ -27,7 +27,7 @@ public class NavigationService
             "company" => new CompanyViewModel(_simulation),
             "forecast" => new ForecastViewModel(_simulation),
             "settings" => new SettingsViewModel(_simulation),
-            "communication" => new CommunicationViewModel(_simulation, currentRole),
+            "communication" => new CommunicationViewModel(_simulation, currentDepartment),
 
             // ── Human Resources ───────────────────────────────
             "hr/dashboard" => new HRDashboardViewModel(_simulation),
@@ -45,7 +45,7 @@ public class NavigationService
             "finance/receivable" => new FinanceAccountReceivableViewModel(_simulation),
             "finance/payable" => new FinanceAccountPayableViewModel(_simulation),
             "finance/audits" => new FinanceAuditsViewModel(_simulation),
-            "finance/reports" => new DepartmentReportViewModel(_simulation, DepartmentType.Finance),    
+            "finance/reports" => new DepartmentReportViewModel(_simulation, DepartmentType.Finance),
 
             // ── Sales ─────────────────────────────────────────
             "sales/dashboard" => new SalesDashboardViewModel(_simulation),

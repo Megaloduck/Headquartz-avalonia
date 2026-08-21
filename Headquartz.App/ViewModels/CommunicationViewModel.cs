@@ -15,7 +15,7 @@ namespace Headquartz.App.ViewModels;
 public partial class CommunicationViewModel : ViewModelBase
 {
     private readonly SimulationService _simulation;
-    private readonly PlayerRole _currentRole;
+    private readonly DepartmentType _currentDepartment;
 
     [ObservableProperty] private string _newMessage = "";
     [ObservableProperty] private long _currentTick;
@@ -29,10 +29,10 @@ public partial class CommunicationViewModel : ViewModelBase
 
     public CommunicationViewModel(
         SimulationService simulation,
-        PlayerRole currentRole)
+        DepartmentType currentDepartment)
     {
         _simulation = simulation;
-        _currentRole = currentRole;
+        _currentDepartment = currentDepartment;
 
         // Mirror shared messages
         foreach (var m in _sharedMessages)
@@ -56,8 +56,8 @@ public partial class CommunicationViewModel : ViewModelBase
 
         var msg = new MessageModel
         {
-            SenderRole = RoleDisplayName(_currentRole),
-            SenderEmoji = RoleEmoji(_currentRole),
+            SenderRole = RoleDisplayName(_currentDepartment),
+            SenderEmoji = RoleEmoji(_currentDepartment),
             Text = text,
             Timestamp = _simulation.Engine.Clock.WorldTime
                               .ToString("MM/dd HH:mm"),
@@ -127,29 +127,32 @@ public partial class CommunicationViewModel : ViewModelBase
         }
     }
 
-    private static string RoleDisplayName(PlayerRole role) => role switch
+    // NOTE: "Manager" intentionally dropped from every label — reserved
+    // for GameDifficulty.Manager. Management is special-cased as
+    // "Board Chairman", matching every other department-facing title.
+    private static string RoleDisplayName(DepartmentType department) => department switch
     {
-        PlayerRole.HumanResourcesManager => "HR Manager",
-        PlayerRole.FinanceManager => "Finance Manager",
-        PlayerRole.SalesManager => "Sales Manager",
-        PlayerRole.MarketingManager => "Marketing Manager",
-        PlayerRole.ProductionManager => "Production Manager",
-        PlayerRole.WarehouseManager => "Warehouse Manager",
-        PlayerRole.LogisticsManager => "Logistics Manager",
-        PlayerRole.Chairman => "Board Chairman",
+        DepartmentType.HumanResources => "Human Resources",
+        DepartmentType.Finance => "Finance",
+        DepartmentType.Sales => "Sales",
+        DepartmentType.Marketing => "Marketing",
+        DepartmentType.Production => "Production",
+        DepartmentType.Warehouse => "Warehouse",
+        DepartmentType.Logistics => "Logistics",
+        DepartmentType.Management => "Board Chairman",
         _ => "Unknown",
     };
 
-    private static string RoleEmoji(PlayerRole role) => role switch
+    private static string RoleEmoji(DepartmentType department) => department switch
     {
-        PlayerRole.HumanResourcesManager => "👥",
-        PlayerRole.FinanceManager => "💰",
-        PlayerRole.SalesManager => "📈",
-        PlayerRole.MarketingManager => "📣",
-        PlayerRole.ProductionManager => "🏭",
-        PlayerRole.WarehouseManager => "📦",
-        PlayerRole.LogisticsManager => "🚚",
-        PlayerRole.Chairman => "🏛️",
+        DepartmentType.HumanResources => "👥",
+        DepartmentType.Finance => "💰",
+        DepartmentType.Sales => "📈",
+        DepartmentType.Marketing => "📣",
+        DepartmentType.Production => "🏭",
+        DepartmentType.Warehouse => "📦",
+        DepartmentType.Logistics => "🚚",
+        DepartmentType.Management => "🏛️",
         _ => "👤",
     };
 }

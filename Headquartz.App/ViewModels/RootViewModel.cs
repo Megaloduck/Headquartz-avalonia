@@ -40,17 +40,17 @@ public partial class RootViewModel : ViewModelBase
         if (!string.IsNullOrEmpty(flow.SessionConfig?.CompanyName))
             simulation.Engine.Company.Name = flow.SessionConfig.CompanyName;
 
-        // Determine starting role for the local player
+        // Determine starting department for the local player
         var localPlayer = flow.SessionConfig?.Players
             .FirstOrDefault(p => p.IsLocalPlayer);
 
-        var startingRole = localPlayer?.AssignedRole
-            ?? PlayerRole.Chairman;
+        var startingDepartment = localPlayer?.AssignedRole
+            ?? DepartmentType.Management;
 
         // Start simulation loop
         _ = simulation.StartAsync();
 
         // Swap shell to gameplay
-        ActiveShell = new ShellViewModel(simulation, startingRole);
+        ActiveShell = new ShellViewModel(simulation, startingDepartment);
     }
 }

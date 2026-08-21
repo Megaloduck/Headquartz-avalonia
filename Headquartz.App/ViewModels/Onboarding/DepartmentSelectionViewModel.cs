@@ -28,9 +28,8 @@ public partial class DepartmentSelectionViewModel : ViewModelBase
     [ObservableProperty] private bool _showPreMeetingPanel;
 
     /// <summary>
-    /// Label for the confirm button at the bottom of the pre-meeting panel.
-    /// Multiplayer players return to the Lobby to ready up; solo players
-    /// go straight into the simulation.
+    /// Multiplayer players return to the Lobby to ready up after picking;
+    /// solo players go straight into the simulation.
     /// </summary>
     [ObservableProperty] private string _confirmButtonLabel = "Enter Simulation";
 
@@ -38,38 +37,41 @@ public partial class DepartmentSelectionViewModel : ViewModelBase
 
     public ObservableCollection<DepartmentSelectionCard> Cards { get; } = [];
 
-    private static readonly (PlayerRole Role, string Title, string Dept,
-        string Emoji, string Color, string Responsibilities)[] RoleData =
+    // NOTE: "Manager" is intentionally omitted from every Title here — it's
+    // reserved for GameDifficulty.Manager. Management is special-cased as
+    // "Board Chairman" for its player-facing title.
+    private static readonly (DepartmentType Department, string Title, string DeptLabel,
+        string Emoji, string Color, string Responsibilities)[] DepartmentData =
     [
-        (PlayerRole.HumanResourcesManager,
-            "HR Manager", "Human Resources", "👥", "#8B5CF6",
+        (DepartmentType.HumanResources,
+            "Human Resources", "Human Resources", "👥", "#8B5CF6",
             "Workforce · Hiring · Morale · Training · Payroll · Resignations"),
 
-        (PlayerRole.FinanceManager,
-            "Finance Manager", "Finance", "💰", "#10B981",
+        (DepartmentType.Finance,
+            "Finance", "Finance", "💰", "#10B981",
             "Budgets · Cash Flow · Loans · Payroll Risk · Audits"),
 
-        (PlayerRole.SalesManager,
-            "Sales Manager", "Sales", "📈", "#3B82F6",
+        (DepartmentType.Sales,
+            "Sales", "Sales", "📈", "#3B82F6",
             "Revenue · Orders · Clients · Pipeline · Deadlines"),
 
-        (PlayerRole.MarketingManager,
-            "Marketing Manager", "Marketing", "📣", "#F59E0B",
+        (DepartmentType.Marketing,
+            "Marketing", "Marketing", "📣", "#F59E0B",
             "Campaigns · Brand · Reputation · Research · Demand"),
 
-        (PlayerRole.ProductionManager,
-            "Production Manager", "Production", "🏭", "#EF4444",
+        (DepartmentType.Production,
+            "Production", "Production", "🏭", "#EF4444",
             "Manufacturing · Maintenance · Quality and Quantity Controls"),
 
-        (PlayerRole.WarehouseManager,
-            "Warehouse Manager", "Warehouse", "📦", "#F97316",
+        (DepartmentType.Warehouse,
+            "Warehouse", "Warehouse", "📦", "#F97316",
             "Inventory · Stock Levels · Resource Planning · Storage"),
 
-        (PlayerRole.LogisticsManager,
-            "Logistics Manager", "Logistics", "🚚", "#06B6D4",
+        (DepartmentType.Logistics,
+            "Logistics", "Logistics", "🚚", "#06B6D4",
             "Shipments · Routes · Delivery SLAs · Fleet and Vehicle Controls"),
 
-        (PlayerRole.Chairman,
+        (DepartmentType.Management,
             "Board Chairman", "Management", "🏛️", "#EAB308",
             "Full Oversight · All Reports · Strategic Decisions"),
     ];
@@ -97,22 +99,22 @@ public partial class DepartmentSelectionViewModel : ViewModelBase
 
     private void BuildCards(GameSessionConfig? config)
     {
-        var takenRoles = config?.Players
+        var takenDepartments = config?.Players
             .Where(p => !p.IsLocalPlayer && p.AssignedRole.HasValue)
             .Select(p => p.AssignedRole!.Value)
-            .ToHashSet() ?? new HashSet<PlayerRole>();
+            .ToHashSet() ?? new HashSet<DepartmentType>();
 
-        foreach (var (role, title, dept, emoji, color, resp) in RoleData)
+        foreach (var (department, title, deptLabel, emoji, color, resp) in DepartmentData)
         {
-            bool taken = takenRoles.Contains(role);
+            bool taken = takenDepartments.Contains(department);
             string? takenBy = config?.Players
-                .FirstOrDefault(p => p.AssignedRole == role && !p.IsLocalPlayer)?.Username;
+                .FirstOrDefault(p => p.AssignedRole == department && !p.IsLocalPlayer)?.Username;
 
             Cards.Add(new DepartmentSelectionCard
             {
-                Role = role,
+                Role = department,
                 Title = title,
-                Department = dept,
+                Department = deptLabel,
                 Emoji = emoji,
                 AccentColor = color,
                 ResponsibilitiesSummary = resp,
@@ -136,12 +138,12 @@ public partial class DepartmentSelectionViewModel : ViewModelBase
         SelectedCard = card;
         HasSelection = true;
 
-        // Show initial budget for selected role
+        // Show initial budget for selected department
         InitialBudgetDisplay = card.Role switch
         {
-            PlayerRole.FinanceManager => "Controls the company treasury",
-            PlayerRole.HumanResourcesManager => "Manages workforce budget",
-            PlayerRole.ProductionManager => "Allocates production resources",
+            DepartmentType.Finance => "Controls the company treasury",
+            DepartmentType.HumanResources => "Manages workforce budget",
+            DepartmentType.Production => "Allocates production resources",
             _ => $"Manages {card.Department} operations",
         };
     }
@@ -168,9 +170,8 @@ public partial class DepartmentSelectionViewModel : ViewModelBase
     [RelayCommand]
     private void GoBack()
     {
-        // Multiplayer players (host or joiner) never left the Lobby to get
-        // here except via the host's CompanySetup detour or a joiner's
-        // direct connect — either way, "back" means the Lobby.
+        // Multiplayer players (host or joiner) came from the Lobby, either
+        // directly (joiners) or via the host's CompanySetup detour.
         // Solo players came from CompanySetup and should return there.
         if (_flow.SessionConfig?.IsMultiplayer == true)
             _flow.NavigateTo(OnboardingScreen.Lobby);

@@ -9,44 +9,44 @@ namespace Headquartz.Infrastructure.Security;
 public static class PermissionService
 {
     public static bool HasPermission(
-        PlayerRole role,
+        DepartmentType department,
         Permission permission)
     {
-        if (role == PlayerRole.Chairman)
+        if (department == DepartmentType.Management)
         {
             return true;
         }
 
-        return role switch
+        return department switch
         {
-            PlayerRole.HumanResourcesManager =>
+            DepartmentType.HumanResources =>
                 permission is
                     Permission.HireEmployee or
                     Permission.FireEmployee,
 
-            PlayerRole.FinanceManager =>
+            DepartmentType.Finance =>
                 permission is
                     Permission.AllocateBudget or
                     Permission.TakeLoan,
 
-            PlayerRole.MarketingManager =>
+            DepartmentType.Marketing =>
                 permission is
                     Permission.CreateCampaign,
 
-            PlayerRole.SalesManager =>
+            DepartmentType.Sales =>
                 permission is
                     Permission.CreateOrder or
                     Permission.ApproveOrder,
 
-            PlayerRole.ProductionManager =>
+            DepartmentType.Production =>
                 permission is
                     Permission.StartProduction,
 
-            PlayerRole.WarehouseManager =>
+            DepartmentType.Warehouse =>
                 permission is
                     Permission.ManageInventory,
 
-            PlayerRole.LogisticsManager =>
+            DepartmentType.Logistics =>
                 permission is
                     Permission.DispatchShipment,
 

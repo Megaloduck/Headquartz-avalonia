@@ -94,9 +94,6 @@ public class OnboardingFlowService
 
         // Non-host players never configure the company — they connect to
         // the lobby and go straight to picking a department.
-        // NOTE: once lobby state is synced over SignalR, the joiner's view
-        // of CompanyName/Industry/Difficulty will reflect the host's setup;
-        // today this is a single-process stub with no cross-client sync.
         NavigateTo(OnboardingScreen.Lobby);
     }
 
@@ -157,13 +154,13 @@ public class OnboardingFlowService
         NavigateTo(OnboardingScreen.DepartmentSelection);
     }
 
-    public void SelectDepartment(PlayerRole role)
+    public void SelectDepartment(DepartmentType department)
     {
         var local = SessionConfig?.Players.FirstOrDefault(p => p.IsLocalPlayer);
 
         if (local != null)
         {
-            local.AssignedRole = role;
+            local.AssignedRole = department;
 
             if (local.Status == LobbyPlayerStatus.Connecting)
                 local.Status = LobbyPlayerStatus.Connected;

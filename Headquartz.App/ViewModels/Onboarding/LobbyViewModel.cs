@@ -50,15 +50,15 @@ public partial class LobbyViewModel : ViewModelBase
 
     private static readonly (string Role, string Emoji, string Color)[] RoleSlots =
     [
-        ("HR Manager",          "👥", "#8B5CF6"),
-        ("Finance Manager",     "💰", "#10B981"),
-        ("Sales Manager",       "📈", "#3B82F6"),
-        ("Marketing Manager",   "📣", "#F59E0B"),
-        ("Production Manager",  "🏭", "#EF4444"),
-        ("Warehouse Manager",   "📦", "#F97316"),
-        ("Logistics Manager",   "🚚", "#06B6D4"),
+        ("Human Resources", "👥", "#8B5CF6"),
+        ("Finance",         "💰", "#10B981"),
+        ("Sales",           "📈", "#3B82F6"),
+        ("Marketing",       "📣", "#F59E0B"),
+        ("Production",      "🏭", "#EF4444"),
+        ("Warehouse",       "📦", "#F97316"),
+        ("Logistics",       "🚚", "#06B6D4"),
         ("Board Chairman",      "🏛️", "#EAB308"),
-    ];
+  ];
 
     public LobbyViewModel(OnboardingFlowService flow)
     {

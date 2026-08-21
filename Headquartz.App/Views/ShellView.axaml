@@ -156,7 +156,7 @@
                                         Stretch="Uniform"
                                         VerticalAlignment="Center"/>
                                     <TextBlock
-                                        Text="{Binding Converter={x:Static conv:PlayerRoleToNameConverter.Instance}}"
+                                        Text="{Binding Converter={x:Static conv:DepartmentTypeToNameConverter.Instance}}"
                                         FontSize="12"
                                         Foreground="{DynamicResource BrushTextSecondary}"
                                         VerticalAlignment="Center"/>

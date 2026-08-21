@@ -51,7 +51,18 @@ public class LobbyPlayer
     public string Username { get; set; } = "";
     public string AvatarEmoji { get; set; } = "👤";
     public int Level { get; set; } = 1;
-    public PlayerRole? AssignedRole { get; set; }
+
+    /// <summary>
+    /// Which department this player is running. A "role" is now purely
+    /// "which department do I run" — PlayerRole has been retired in favor
+    /// of reusing DepartmentType directly, since the two enums represented
+    /// the exact same eight values and kept drifting out of sync (most
+    /// visibly: PlayerRole titles all said "X Manager", which collided
+    /// with GameDifficulty.Manager once the shell started showing
+    /// "Role · Difficulty" together).
+    /// </summary>
+    public DepartmentType? AssignedRole { get; set; }
+
     public LobbyPlayerStatus Status { get; set; } = LobbyPlayerStatus.Connecting;
     public int PingMs { get; set; }
     public bool IsHost { get; set; }
@@ -73,7 +84,9 @@ public static class AvatarOptions
 
 public class DepartmentSelectionCard
 {
-    public PlayerRole Role { get; set; }
+    /// <summary>Which department this card represents.</summary>
+    public DepartmentType Role { get; set; }
+
     public string Title { get; set; } = "";
     public string Department { get; set; } = "";
     public string Description { get; set; } = "";
@@ -85,4 +98,4 @@ public class DepartmentSelectionCard
     public bool IsTaken { get; set; }
     public string? TakenByUsername { get; set; }
     public bool IsSelected { get; set; }
-}
+}   

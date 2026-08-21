@@ -12,8 +12,6 @@ public class Player
 
     public string Username { get; set; } = "";
 
-    public PlayerRole Role { get; set; }
-
     public bool IsConnected { get; set; }
 
     public DateTime JoinedAt { get; set; }

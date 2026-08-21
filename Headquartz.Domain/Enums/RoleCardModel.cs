@@ -8,7 +8,7 @@ namespace Headquartz.App.Models;
 
 public class RoleCardModel
 {
-    public PlayerRole Role { get; set; }
+    public DepartmentType Role { get; set; }
 
     public string Title { get; set; } = "";
 
@@ -19,4 +19,4 @@ public class RoleCardModel
     public string Emoji { get; set; } = "";
 
     public string AccentColor { get; set; } = "";
-}
+}   

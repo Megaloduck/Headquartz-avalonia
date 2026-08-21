@@ -13,12 +13,12 @@ public static class SidebarService
     // MAIN ENTRY POINT
     // =========================================================
 
-    public static List<SidebarSection> GetSections(PlayerRole role)
+    public static List<SidebarSection> GetSections(DepartmentType department)
     {
         return
         [
             BuildOverviewSection(),
-            BuildManagementSection(role),
+            BuildManagementSection(department),
             BuildPersonalizationSection(),
         ];
     }
@@ -54,24 +54,24 @@ public static class SidebarService
     }
 
     // =========================================================
-    // ROLE-SPECIFIC MANAGEMENT SECTIONS
+    // DEPARTMENT-SPECIFIC MANAGEMENT SECTIONS
     // =========================================================
 
-    private static SidebarSection BuildManagementSection(PlayerRole role)
+    private static SidebarSection BuildManagementSection(DepartmentType department)
     {
         return new SidebarSection
         {
             Title = "Managements",
-            Items = role switch
+            Items = department switch
             {
-                PlayerRole.HumanResourcesManager => HRItems(),
-                PlayerRole.FinanceManager => FinanceItems(),
-                PlayerRole.SalesManager => SalesItems(),
-                PlayerRole.MarketingManager => MarketingItems(),
-                PlayerRole.ProductionManager => ProductionItems(),
-                PlayerRole.WarehouseManager => WarehouseItems(),
-                PlayerRole.LogisticsManager => LogisticsItems(),
-                PlayerRole.Chairman => ChairmanItems(),
+                DepartmentType.HumanResources => HRItems(),
+                DepartmentType.Finance => FinanceItems(),
+                DepartmentType.Sales => SalesItems(),
+                DepartmentType.Marketing => MarketingItems(),
+                DepartmentType.Production => ProductionItems(),
+                DepartmentType.Warehouse => WarehouseItems(),
+                DepartmentType.Logistics => LogisticsItems(),
+                DepartmentType.Management => ManagementItems(),
                 _ => [],
             }
         };
@@ -183,10 +183,10 @@ public static class SidebarService
     ];
 
     // =========================================================
-    // CHAIRMAN
+    // MANAGEMENT (formerly "Chairman")
     // =========================================================
 
-    private static List<SidebarItem> ChairmanItems() =>
+    private static List<SidebarItem> ManagementItems() =>
     [
         new() { Title = "HR Reports",          Icon = "BarChart2",       Route = "hr/reports"           },
         new() { Title = "Finance Reports",     Icon = "BarChart2",       Route = "finance/reports"      },

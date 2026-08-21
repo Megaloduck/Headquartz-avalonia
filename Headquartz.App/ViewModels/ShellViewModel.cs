@@ -44,8 +44,6 @@ public partial class ShellViewModel : ViewModelBase
     [ObservableProperty] private string _sectionLabel = "Overview";
     [ObservableProperty] private string _companyName = "Company Name";
     [ObservableProperty] private string _industry = "";
-    [ObservableProperty] private string _difficultyLabel = "";
-    [ObservableProperty] private string _roleDifficultyLabel = "";
 
     // =========================================================
     // TICK STATUS CARD
@@ -85,7 +83,14 @@ public partial class ShellViewModel : ViewModelBase
     // SHELL STATE
     // =========================================================
 
-    [ObservableProperty] private PlayerRole _currentRole = PlayerRole.HumanResourcesManager;
+    /// <summary>
+    /// Which department the local player is running. This doubles as the
+    /// "role" concept — a role is now purely "which department do I run",
+    /// so PlayerRole was retired and this property reuses DepartmentType
+    /// directly. Property name kept as CurrentRole to avoid unrelated
+    /// XAML/binding churn; only its type changed.
+    /// </summary>
+    [ObservableProperty] private DepartmentType _currentRole = DepartmentType.HumanResources;
 
     private string _roleName = "";
     public string RoleName
@@ -93,6 +98,19 @@ public partial class ShellViewModel : ViewModelBase
         get => _roleName;
         set => SetProperty(ref _roleName, value);
     }
+
+    /// <summary>The session's difficulty preset, e.g. "Manager", "Director".</summary>
+    [ObservableProperty] private string _difficultyLabel = "";
+
+    /// <summary>
+    /// "Department + Difficulty" label shown top-right in the shell, e.g.
+    /// "Human Resources · Director". This exists specifically because a
+    /// bare department name used to double as difficulty ("HR Manager"),
+    /// which collided with GameDifficulty.Manager. Department names no
+    /// longer contain "Manager" at all — this label carries both pieces
+    /// of information unambiguously.
+    /// </summary>
+    [ObservableProperty] private string _roleDifficultyLabel = "";
 
     private ViewModelBase? _currentView;
     public ViewModelBase? CurrentView
@@ -104,7 +122,7 @@ public partial class ShellViewModel : ViewModelBase
     public ObservableCollection<SidebarSection> SidebarSections { get; } = [];
     public ObservableCollection<NotificationModel> Notifications { get; } = [];
 
-    public ObservableCollection<PlayerRole> AvailableRoles { get; } = [];
+    public ObservableCollection<DepartmentType> AvailableRoles { get; } = [];
 
     private readonly List<NotificationModel> _allNotifications = [];
 
@@ -112,8 +130,8 @@ public partial class ShellViewModel : ViewModelBase
     // CONSTRUCTORS
     // =========================================================
 
-    /// <summary>Post-onboarding constructor — role and profile already chosen.</summary>
-    public ShellViewModel(SimulationService simulation, PlayerRole startingRole)
+    /// <summary>Post-onboarding constructor — department and profile already chosen.</summary>
+    public ShellViewModel(SimulationService simulation, DepartmentType startingDepartment)
     {
         _simulation = simulation;
         _navigation = new NavigationService(_simulation);
@@ -142,13 +160,13 @@ public partial class ShellViewModel : ViewModelBase
 
         _subTickTimer.Start();
 
-        CurrentRole = startingRole;
+        CurrentRole = startingDepartment;
         LoadSidebar();
-        _navigation.Navigate("company", startingRole);
+        _navigation.Navigate("company", startingDepartment);
         RefreshStaticTickValues();
 
-        foreach (var role in Enum.GetValues<PlayerRole>())
-            AvailableRoles.Add(role);
+        foreach (var department in Enum.GetValues<DepartmentType>())
+            AvailableRoles.Add(department);
     }
 
     /// <summary>Parameterless — design-time / standalone use.</summary>
@@ -173,6 +191,7 @@ public partial class ShellViewModel : ViewModelBase
         CompanyName = _simulation.Engine.Company.Name;
         Industry = _simulation.Engine.Company.Industry.ToString();
         TicksPerWorkHour = _simulation.Engine.Profile.TicksPerWorkHour;
+        DifficultyLabel = _simulation.Engine.Profile.Difficulty.ToString();
 
         _subTickTimer = new DispatcherTimer(
             TimeSpan.FromMilliseconds(100),
@@ -181,10 +200,11 @@ public partial class ShellViewModel : ViewModelBase
 
         _subTickTimer.Start();
 
+        LoadSidebar();
         RefreshStaticTickValues();
 
-        foreach (var role in Enum.GetValues<PlayerRole>())
-            AvailableRoles.Add(role);
+        foreach (var department in Enum.GetValues<DepartmentType>())
+            AvailableRoles.Add(department);
     }
 
     // =========================================================
@@ -198,13 +218,11 @@ public partial class ShellViewModel : ViewModelBase
     /// </summary>
     private void OnSimulationTick()
     {
-        // Record exactly when this tick fired so elapsed-ms is accurate
         _lastTickAt = DateTime.UtcNow;
 
         Dispatcher.UIThread.Post(() =>
         {
             RefreshStaticTickValues();
-            // Reset partial ratio instantly so the pill doesn't jump backwards
             TickPartialFillRatio = 0.0;
         });
     }
@@ -249,8 +267,6 @@ public partial class ShellViewModel : ViewModelBase
         double tickDelayMs = _simulation.Engine.Profile.TickDelayMs;
         double elapsedMs = (DateTime.UtcNow - _lastTickAt).TotalMilliseconds;
 
-        // Clamp to [0, 1] — the simulation tick will reset _lastTickAt before
-        // this can overshoot significantly, but guard anyway.
         TickPartialFillRatio = Math.Clamp(elapsedMs / tickDelayMs, 0.0, 1.0);
     }
 
@@ -310,25 +326,22 @@ public partial class ShellViewModel : ViewModelBase
     // =========================================================
     // NOTIFICATIONS
     // =========================================================
+    //
+    // NOTE: this used to route through MapRoleToDepartment(PlayerRole) to
+    // translate a role into the department it corresponds to. That mapping
+    // is gone entirely now — CurrentRole *is* a DepartmentType, so the
+    // comparison below is direct.
 
-    private static DepartmentType MapRoleToDepartment(PlayerRole role) => role switch
+    /// <summary>
+    /// Management (formerly "Chairman") sees every notification, since it's
+    /// the full-oversight department. Everyone else only sees notifications
+    /// tagged for their own department.
+    /// </summary>
+    private bool IsNotificationForRole(NotificationModel notification, DepartmentType department)
     {
-        PlayerRole.HumanResourcesManager => DepartmentType.HumanResources,
-        PlayerRole.FinanceManager => DepartmentType.Finance,
-        PlayerRole.SalesManager => DepartmentType.Sales,
-        PlayerRole.MarketingManager => DepartmentType.Marketing,
-        PlayerRole.ProductionManager => DepartmentType.Production,
-        PlayerRole.WarehouseManager => DepartmentType.Warehouse,
-        PlayerRole.LogisticsManager => DepartmentType.Logistics,
-        PlayerRole.Chairman => DepartmentType.Management,
-        _ => DepartmentType.Management,
-    };
-
-    private bool IsNotificationForRole(NotificationModel notification, PlayerRole role)
-    {
-        if (role == PlayerRole.Chairman)
+        if (department == DepartmentType.Management)
             return true;
-        return notification.Department == MapRoleToDepartment(role);
+        return notification.Department == department;
     }
 
     private void RebuildNotifications()
@@ -412,7 +425,7 @@ public partial class ShellViewModel : ViewModelBase
     // SIDEBAR
     // =========================================================
 
-    partial void OnCurrentRoleChanged(PlayerRole value)
+    partial void OnCurrentRoleChanged(DepartmentType value)
     {
         LoadSidebar();
         RebuildNotifications();
@@ -422,17 +435,21 @@ public partial class ShellViewModel : ViewModelBase
     {
         SidebarSections.Clear();
 
+        // NOTE: none of these labels contain the word "Manager" — that word
+        // is reserved for GameDifficulty.Manager. Management is special-
+        // cased as "Board Chairman" since that's the player-facing title
+        // for the full-oversight role.
         RoleName = CurrentRole switch
         {
-            PlayerRole.HumanResourcesManager => "HR Manager",
-            PlayerRole.FinanceManager => "Finance Manager",
-            PlayerRole.SalesManager => "Sales Manager",
-            PlayerRole.MarketingManager => "Marketing Manager",
-            PlayerRole.ProductionManager => "Production Manager",
-            PlayerRole.WarehouseManager => "Warehouse Manager",
-            PlayerRole.LogisticsManager => "Logistics Manager",
-            PlayerRole.Chairman => "Board Chairman",
-            _ => "Unknown Role",
+            DepartmentType.HumanResources => "Human Resources",
+            DepartmentType.Finance => "Finance",
+            DepartmentType.Sales => "Sales",
+            DepartmentType.Marketing => "Marketing",
+            DepartmentType.Production => "Production",
+            DepartmentType.Warehouse => "Warehouse",
+            DepartmentType.Logistics => "Logistics",
+            DepartmentType.Management => "Board Chairman",
+            _ => "Unknown Department",
         };
 
         RoleDifficultyLabel = $"{RoleName} · {DifficultyLabel}";
