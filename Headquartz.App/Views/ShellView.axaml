@@ -47,10 +47,7 @@
                         </Border>
                         <TextBlock
                             Text="Headquartz"
-                            FontSize="14"
-                            FontWeight="SemiBold"
-                            Foreground="{DynamicResource BrushTextPrimary}"
-                            VerticalAlignment="Center"/>
+                            Classes="sidebar-title"/>
                     </StackPanel>
                 </Border>
 
@@ -91,10 +88,7 @@
                         VerticalAlignment="Center">
                         <TextBlock
                             Text="{Binding CompanyName}"
-                            FontSize="13"
-                            FontWeight="SemiBold"
-                            Foreground="{DynamicResource BrushTextSecondary}"
-                            VerticalAlignment="Center"/>
+                            Classes="secondary-text"/>
                         <Border
                             Padding="6,2"
                             CornerRadius="4"
@@ -130,10 +124,7 @@
     VerticalAlignment="Center">
     <TextBlock
         Text="{Binding RoleDifficultyLabel}"
-        FontSize="11"
-        FontWeight="Medium"
-        Foreground="{DynamicResource BrushTextMuted}"
-        VerticalAlignment="Center"/>
+        Classes="base-text"/>
 </Border>
 
                     <!-- Role dropdown (solo player can switch departments) -->

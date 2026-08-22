@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
+    <AvaloniaXaml Remove="Assets\Styles\IconResources.axaml" />
     <AvaloniaXaml Remove="Assets\Styles\StyleResources.axaml" />
     <AvaloniaXaml Remove="Assets\Themes\DarkTheme.axaml" />
     <AvaloniaXaml Remove="Assets\Themes\LightTheme.axaml" />
@@ -41,6 +42,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <AvaloniaResource Update="Assets\Styles\IconResources.axaml">
+	    <SubType>Designer</SubType>
+	  </AvaloniaResource>
 	  <AvaloniaResource Update="Assets\Styles\StyleResources.axaml">
 	    <SubType>Designer</SubType>
 	  </AvaloniaResource>
