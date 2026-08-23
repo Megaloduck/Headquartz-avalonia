@@ -218,6 +218,7 @@
 		<Setter Property="LineHeight" Value="{DynamicResource LineHeightBody}"/>
 		<Setter Property="LetterSpacing" Value="{DynamicResource LetterSpacingBody}"/>
 		<Setter Property="Foreground" Value="{DynamicResource BrushTextPrimary}"/>
+	</Style>
 
     <Style Selector="TextBlock.label">
 		<Setter Property="FontFamily" Value="{DynamicResource FontFamilyBody}"/>
@@ -270,6 +271,7 @@
 		<Setter Property="FontSize" Value="{DynamicResource FontSizeFigure}"/>
 		<Setter Property="FontWeight" Value="Medium"/>
 		<Setter Property="Foreground" Value="{DynamicResource BrushTextPrimary}"/>
+	</Style>
 </Styles>
 
 
