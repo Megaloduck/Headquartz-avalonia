@@ -9,15 +9,21 @@
 	</Application.DataTemplates>
 
 	<Application.Resources>
-		<ResourceDictionary>
-			 <ResourceInclude x:Key="Dark" Source="avares://Headquartz.App/Assets/Themes/DarkTheme.axaml"/>
-			<ResourceInclude x:Key="Light" Source="avares://Headquartz.App/Assets/Themes/LightTheme.axaml"/>	   
-		</ResourceDictionary>
-	</Application.Resources>
+    <ResourceDictionary>
+        <ResourceDictionary.MergedDictionaries>
+            <ResourceInclude Source="avares://Headquartz.App/Assets/Styles/IconResources.axaml"/>
+            <ResourceInclude Source="avares://Headquartz.App/Assets/Styles/TypographyResources.axaml"/>
+        </ResourceDictionary.MergedDictionaries>
+
+        <ResourceInclude x:Key="Dark" Source="avares://Headquartz.App/Assets/Themes/DarkTheme.axaml"/>
+        <ResourceInclude x:Key="Light" Source="avares://Headquartz.App/Assets/Themes/LightTheme.axaml"/>
+    </ResourceDictionary>
+</Application.Resources>
 
 	<Application.Styles>
 		<FluentTheme />
-		<StyleInclude Source="avares://Headquartz.App/Assets/Styles/StyleResources.axaml"/>
+        <StyleInclude Source="avares://Headquartz.App/Assets/Styles/TypographyStyles.axaml"/>
+		<StyleInclude Source="avares://Headquartz.App/Assets/Styles/AppStyles.axaml"/>
 	</Application.Styles>
 
 

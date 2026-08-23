@@ -10,7 +10,7 @@
 			<!-- TITLE + WORLD TIME -->
 			<Grid ColumnDefinitions="*,Auto">
 				<StackPanel Grid.Column="0">
-					<TextBlock FontSize="34" FontWeight="Bold" Text="Company Overview"/>
+					<TextBlock Classes="page-title" Text="Company Overview"/>
 					<StackPanel Orientation="Horizontal" Spacing="8" Margin="0,4,0,0">
 						<Border
 							Padding="6,2"
@@ -26,7 +26,7 @@
 								Foreground="{DynamicResource BrushTextMuted}"
 								VerticalAlignment="Center"/>
 						</Border>
-						<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="{Binding WorldTime}" VerticalAlignment="Center"/>
+						<TextBlock Classes="page-subtitle" Text="{Binding WorldTime}" />
 					</StackPanel>
 				</StackPanel>
 				<Border

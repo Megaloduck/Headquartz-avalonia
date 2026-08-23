@@ -10,8 +10,10 @@
 
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
+    <AvaloniaXaml Remove="Assets\Styles\AppStyles.axaml" />
     <AvaloniaXaml Remove="Assets\Styles\IconResources.axaml" />
-    <AvaloniaXaml Remove="Assets\Styles\StyleResources.axaml" />
+    <AvaloniaXaml Remove="Assets\Styles\TypographyResources.axaml" />
+    <AvaloniaXaml Remove="Assets\Styles\TypographyStyles.axaml" />
     <AvaloniaXaml Remove="Assets\Themes\DarkTheme.axaml" />
     <AvaloniaXaml Remove="Assets\Themes\LightTheme.axaml" />
   </ItemGroup>
@@ -45,7 +47,13 @@
 	  <AvaloniaResource Update="Assets\Styles\IconResources.axaml">
 	    <SubType>Designer</SubType>
 	  </AvaloniaResource>
-	  <AvaloniaResource Update="Assets\Styles\StyleResources.axaml">
+	  <AvaloniaResource Update="Assets\Styles\AppStyles.axaml">
+	    <SubType>Designer</SubType>
+	  </AvaloniaResource>
+	  <AvaloniaResource Update="Assets\Styles\TypographyResources.axaml">
+	    <SubType>Designer</SubType>
+	  </AvaloniaResource>
+	  <AvaloniaResource Update="Assets\Styles\TypographyStyles.axaml">
 	    <SubType>Designer</SubType>
 	  </AvaloniaResource>
 	  <AvaloniaResource Update="Assets\Themes\DarkTheme.axaml">
@@ -78,5 +86,9 @@
 	  <Compile Update="Views\Managements\Warehouse\WarehouseDashboardView.axaml.cs">
 	    <DependentUpon>WarehouseDashboardView.axaml</DependentUpon>
 	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Assets\Fonts\" />
 	</ItemGroup>
 </Project>

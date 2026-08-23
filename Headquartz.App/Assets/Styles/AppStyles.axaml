@@ -18,93 +18,7 @@
 		<Setter Property="Background" Value="Transparent"/>
 	</Style>
 
-	<!-- TEXTBLOCK -->
-	<Style Selector="TextBlock">
-		<Setter Property="Foreground" Value="{DynamicResource BrushTextPrimary}"/>
-	</Style>
-
-	<!-- Semantic text variants -->
-	<Style Selector="TextBlock.sidebar-title">
-		<Setter Property="FontWeight" Value="SemiBold"/>
-		<Setter Property ="FontSize" Value="14"/>
-		<Setter Property="VerticalAlignment" Value="Center"/>
-		<Setter Property="Foreground" Value="{DynamicResource BrushTextPrimary}"/>
-	</Style>
 	
-	<Style Selector="TextBlock.base-text">
-		<Setter Property="FontSize"   Value="13"/>
-		<Setter Property="FontWeight" Value="Medium"/>
-		<Setter Property="VerticalAlignment" Value="Center"/>
-		<Setter Property="Foreground" Value="{DynamicResource BrushTextMuted}"/>
-	</Style>
-
-	<Style Selector="TextBlock.secondary-text">
-		<Setter Property="FontWeight" Value="SemiBold"/>
-		<Setter Property ="FontSize" Value="13"/>
-		<Setter Property="VerticalAlignment" Value="Center"/>
-		<Setter Property="Foreground" Value="{DynamicResource BrushTextSecondary}"/>
-	</Style>
-
-
-
-	<Style Selector="TextBlock.section-header">
-		<Setter Property="FontSize"   Value="{DynamicResource FontSizeH2}"/>
-		<Setter Property="FontWeight" Value="Bold"/>
-		<Setter Property="Margin"     Value="0,0,0,16"/>
-		<Setter Property="Foreground" Value="{DynamicResource BrushTextPrimary}"/>
-	</Style>
-
-	<Style Selector="TextBlock.subsection-header">
-		<Setter Property="FontSize"   Value="{DynamicResource FontSizeH3}"/>
-		<Setter Property="FontWeight" Value="Bold"/>
-		<Setter Property="Foreground" Value="{DynamicResource BrushTextPrimary}"/>
-	</Style>
-
-	<Style Selector="TextBlock.kpi-label">
-		<Setter Property="FontSize"   Value="{DynamicResource FontSizeBase}"/>
-		<Setter Property="Foreground" Value="{DynamicResource BrushTextSecondary}"/>
-	</Style>
-
-	<Style Selector="TextBlock.kpi-value">
-		<Setter Property="FontSize"   Value="{DynamicResource FontSizeKpi}"/>
-		<Setter Property="FontWeight" Value="Bold"/>
-		<Setter Property="Foreground" Value="{DynamicResource BrushTextPrimary}"/>
-	</Style>
-
-	<Style Selector="TextBlock.caption">
-		<Setter Property="FontSize"   Value="{DynamicResource FontSizeSm}"/>
-		<Setter Property="Foreground" Value="{DynamicResource BrushTextMuted}"/>
-	</Style>
-
-	<Style Selector="TextBlock.label-upper">
-		<Setter Property="FontSize"   Value="{DynamicResource FontSizeSm}"/>
-		<Setter Property="FontWeight" Value="SemiBold"/>
-		<Setter Property="Foreground" Value="{DynamicResource BrushTextMuted}"/>
-	</Style>
-
-	<Style Selector="TextBlock.text-muted">
-		<Setter Property="Foreground" Value="{DynamicResource BrushTextMuted}"/>
-	</Style>
-
-	<Style Selector="TextBlock.text-secondary">
-		<Setter Property="Foreground" Value="{DynamicResource BrushTextSecondary}"/>
-	</Style>
-
-	<Style Selector="TextBlock.text-success">
-		<Setter Property="Foreground" Value="{DynamicResource BrushSuccess}"/>
-	</Style>
-
-	<Style Selector="TextBlock.text-danger">
-		<Setter Property="Foreground" Value="{DynamicResource BrushDanger}"/>
-	</Style>
-
-	<Style Selector="TextBlock.text-warning">
-		<Setter Property="Foreground" Value="{DynamicResource BrushWarning}"/>
-	</Style>
-
-	<Style Selector="TextBlock.text-accent">
-		<Setter Property="Foreground" Value="{DynamicResource BrushAccentPrimary}"/>
-	</Style>
 
 	<!-- BASE BUTTON -->
 
@@ -129,7 +43,6 @@
 		<Setter Property="Opacity" Value="0.82"/>
 	</Style>
 
-	<!-- BUTTON - Primary (indigo accent) -->
 	<Style Selector="Button.primary">
 		<Setter Property="Background"      Value="{DynamicResource BrushAccentPrimary}"/>
 		<Setter Property="Foreground"      Value="White"/>
@@ -139,7 +52,6 @@
 		<Setter Property="Background" Value="{DynamicResource BrushAccentPrimaryHover}"/>
 	</Style>
 
-	<!-- BUTTON - Danger (red) -->
 	<Style Selector="Button.danger">
 		<Setter Property="Background"      Value="{DynamicResource BrushBadgeDangerBg}"/>
 		<Setter Property="Foreground"      Value="{DynamicResource BrushBadgeDangerFg}"/>
@@ -149,7 +61,6 @@
 		<Setter Property="Background" Value="{DynamicResource BrushAlertCriticalBg}"/>
 	</Style>
 
-	<!-- BUTTON - Ghost (transparent) -->
 	<Style Selector="Button.ghost">
 		<Setter Property="Background"      Value="Transparent"/>
 		<Setter Property="BorderThickness" Value="0"/>
@@ -159,14 +70,12 @@
 		<Setter Property="Background" Value="{DynamicResource BrushBgElevated}"/>
 	</Style>
 
-	<!-- BUTTON - Success (green) -->
 	<Style Selector="Button.success">
 		<Setter Property="Background"      Value="{DynamicResource BrushSuccess}"/>
 		<Setter Property="Foreground"      Value="White"/>
 		<Setter Property="BorderThickness" Value="0"/>
 	</Style>
 
-	<!-- BUTTON - Sidebar item -->
 	<Style Selector="Button.sidebar-item">
 		<Setter Property="Background"                 Value="Transparent"/>
 		<Setter Property="BorderThickness"            Value="0"/>
@@ -182,7 +91,7 @@
 	</Style>
 
 	<!-- TEXTBOX -->
-	
+
 	<Style Selector="TextBox">
 		<Setter Property="Background"      Value="{DynamicResource BrushBgInput}"/>
 		<Setter Property="Foreground"      Value="{DynamicResource BrushTextPrimary}"/>
@@ -208,8 +117,8 @@
 		<Setter Property="Padding"         Value="{DynamicResource PaddingInput}"/>
 	</Style>
 
-<!-- PROGRESS BAR -->
-	
+	<!-- PROGRESS BAR -->
+
 	<Style Selector="ProgressBar">
 		<Setter Property="Background"   Value="{DynamicResource BrushBorderSubtle}"/>
 		<Setter Property="CornerRadius" Value="9999"/>
@@ -218,7 +127,7 @@
 	</Style>
 
 	<!-- SCROLLVIEWER -->
-	
+
 	<Style Selector="ScrollViewer">
 		<Setter Property="Background"                    Value="Transparent"/>
 		<Setter Property="HorizontalScrollBarVisibility" Value="Disabled"/>
@@ -227,7 +136,6 @@
 
 	<!-- BORDER CARD CLASSES -->
 
-	<!-- Primary card surface -->
 	<Style Selector="Border.card">
 		<Setter Property="Background"      Value="{DynamicResource BrushBgCard}"/>
 		<Setter Property="CornerRadius"    Value="{DynamicResource RadiusLg}"/>
@@ -236,7 +144,6 @@
 		<Setter Property="BorderThickness" Value="1"/>
 	</Style>
 
-	<!-- Nested / inner card -->
 	<Style Selector="Border.card-inner">
 		<Setter Property="Background"      Value="{DynamicResource BrushBgNested}"/>
 		<Setter Property="CornerRadius"    Value="{DynamicResource RadiusMd}"/>
@@ -245,7 +152,6 @@
 		<Setter Property="BorderThickness" Value="1"/>
 	</Style>
 
-	<!-- Alert: Critical (red) -->
 	<Style Selector="Border.alert-critical">
 		<Setter Property="Background"      Value="{DynamicResource BrushAlertCriticalBg}"/>
 		<Setter Property="CornerRadius"    Value="{DynamicResource RadiusLg}"/>
@@ -254,7 +160,6 @@
 		<Setter Property="BorderThickness" Value="1"/>
 	</Style>
 
-	<!-- Alert: Warning (amber) -->
 	<Style Selector="Border.alert-warning">
 		<Setter Property="Background"      Value="{DynamicResource BrushAlertWarningBg}"/>
 		<Setter Property="CornerRadius"    Value="{DynamicResource RadiusLg}"/>
@@ -263,7 +168,6 @@
 		<Setter Property="BorderThickness" Value="1"/>
 	</Style>
 
-	<!-- Alert: Info (blue) -->
 	<Style Selector="Border.alert-info">
 		<Setter Property="Background"      Value="{DynamicResource BrushAlertInfoBg}"/>
 		<Setter Property="CornerRadius"    Value="{DynamicResource RadiusLg}"/>
@@ -271,8 +175,6 @@
 		<Setter Property="BorderBrush"     Value="{DynamicResource BrushAlertInfoBorder}"/>
 		<Setter Property="BorderThickness" Value="1"/>
 	</Style>
-
-	<!-- BADGE CLASSES -->
 
 	<Style Selector="Border.badge-danger">
 		<Setter Property="Background"   Value="{DynamicResource BrushBadgeDangerBg}"/>
@@ -298,7 +200,7 @@
 		<Setter Property="Padding"      Value="6,2"/>
 	</Style>
 
-	<!-- DIVIDER  -->
+	<!-- DIVIDER -->
 
 	<Style Selector="Border.divider">
 		<Setter Property="Height"      Value="1"/>

@@ -1,21 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
 using System.Globalization;
+using Avalonia;
 using Avalonia.Data.Converters;
-using Headquartz.App.Models;
+using Avalonia.Media;
 
 namespace Headquartz.App.Converters;
 
 /// <summary>
-/// Converts a Lucide icon name string (e.g. "LayoutDashboard")
-/// into the corresponding SVG path data string for use with
-/// Avalonia's <Path Data="..."/> element.
+/// Converts a Lucide-style icon name string (e.g. "LayoutDashboard") into the
+/// matching "Icon{Name}" StreamGeometry resource defined in IconResources.axaml,
+/// for use with Avalonia's <Path Data="..."/> element.
+/// Falls back to "IconSquare" if the name isn't found.
 /// </summary>
 public class IconPathConverter : IValueConverter
 {
     public static readonly IconPathConverter Instance = new();
+
+    private const string FallbackKey = "IconSquare";
 
     public object? Convert(
         object? value,
@@ -23,10 +24,28 @@ public class IconPathConverter : IValueConverter
         object? parameter,
         CultureInfo culture)
     {
-        if (value is string iconName)
-            return IconPaths.Get(iconName);
+        string key = value is string iconName && !string.IsNullOrWhiteSpace(iconName)
+            ? $"Icon{iconName}"
+            : FallbackKey;
 
-        return IconPaths.Get("Square");
+        return ResolveGeometry(key) ?? ResolveGeometry(FallbackKey);
+    }
+
+    private static Geometry? ResolveGeometry(string key)
+    {
+        if (Application.Current?.Resources.TryGetResource(key, null, out var resource) == true
+            && resource is Geometry geometry)
+        {
+            return geometry;
+        }
+
+        foreach (var dict in Application.Current?.Resources.MergedDictionaries ?? [])
+        {
+            if (dict.TryGetResource(key, null, out var themeResource) && themeResource is Geometry themeGeometry)
+                return themeGeometry;
+        }
+
+        return null;
     }
 
     public object? ConvertBack(
@@ -35,4 +54,4 @@ public class IconPathConverter : IValueConverter
         object? parameter,
         CultureInfo culture) =>
         throw new NotSupportedException();
-}
+}   

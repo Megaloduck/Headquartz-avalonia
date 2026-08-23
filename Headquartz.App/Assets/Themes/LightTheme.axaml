@@ -150,20 +150,6 @@
 	<CornerRadius x:Key="RadiusLg">12</CornerRadius>
 	<CornerRadius x:Key="RadiusXl">16</CornerRadius>
 
-	<!-- ─────────────────────────────────────────────────────────── -->
-	<!-- TYPOGRAPHY (identical values to dark)                     -->
-	<!-- ─────────────────────────────────────────────────────────── -->
-
-	<x:Double x:Key="FontSizeXs">10</x:Double>
-	<x:Double x:Key="FontSizeSm">11</x:Double>
-	<x:Double x:Key="FontSizeMd">12</x:Double>
-	<x:Double x:Key="FontSizeBase">13</x:Double>
-	<x:Double x:Key="FontSizeLg">14</x:Double>
-	<x:Double x:Key="FontSizeXl">16</x:Double>
-	<x:Double x:Key="FontSizeH3">18</x:Double>
-	<x:Double x:Key="FontSizeH2">22</x:Double>
-	<x:Double x:Key="FontSizeH1">28</x:Double>
-	<x:Double x:Key="FontSizeDisplay">34</x:Double>
-	<x:Double x:Key="FontSizeKpi">28</x:Double>
+	
 
 </ResourceDictionary>

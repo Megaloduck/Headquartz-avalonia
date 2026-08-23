@@ -138,8 +138,7 @@
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal" Spacing="6">
-                                    <Path
-                                        Data="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z"
+                                    <Path Data="{DynamicResource IconUser}"
                                         Stroke="{DynamicResource BrushTextMuted}"
                                         StrokeThickness="1.5"
                                         Fill="Transparent"
@@ -164,18 +163,17 @@
                         BorderBrush="{DynamicResource BrushBorderDefault}"
                         BorderThickness="1"
                         CornerRadius="6"
-                        ToolTip.Tip="Toggle Theme"
+                        ToolTip.Tip="Toggle Theme"  
                         Command="{Binding ToggleThemeCommand}">
                         <!-- Sun icon (visible in dark mode) -->
                         <Path
-                            Data="M12 17a5 5 0 100-10 5 5 0 000 10zm0-13v2m0 12v2M5 12H3m18 0h-2m-2.05-7.07L17.3 6.28M6.7 17.72l-1.35 1.35M4.93 4.93L6.28 6.28M17.72 17.72l1.35 1.35"
-                            Stroke="{DynamicResource BrushTextSecondary}"
-                            StrokeThickness="1.5"
-                            Fill="Transparent"
-                            Width="14" Height="14"
-                            Stretch="Uniform"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"/>
+    Data="{DynamicResource IconSun}"
+    Width="14"
+    Height="14"
+    Stretch="Uniform"
+    Fill="Transparent"
+    Stroke="{DynamicResource BrushTextMuted}"
+    StrokeThickness="1.5"/>
                     </Button>
 
                 </StackPanel>
