@@ -26,19 +26,26 @@ public class DepartmentTypeToNameConverter : IValueConverter
         if (value is not DepartmentType department)
             return "Unknown Department";
 
-        return department switch
-        {
-            DepartmentType.HumanResources => "Human Resources",
-            DepartmentType.Finance => "Finance",
-            DepartmentType.Sales => "Sales",
-            DepartmentType.Marketing => "Marketing",
-            DepartmentType.Production => "Production",
-            DepartmentType.Warehouse => "Warehouse",
-            DepartmentType.Logistics => "Logistics",
-            DepartmentType.Management => "Board Chairman",
-            _ => "Unknown Department",
-        };
+        return GetDisplayName(department);
     }
+
+    /// <summary>
+    /// Single source of truth for DepartmentType display names — callable
+    /// from XAML (via this converter) or plain C# (ViewModels), so raw
+    /// enum names like "HumanResources" never leak into the UI.
+    /// </summary>
+    public static string GetDisplayName(DepartmentType department) => department switch
+    {
+        DepartmentType.HumanResources => "Human Resources",
+        DepartmentType.Finance => "Finance",
+        DepartmentType.Sales => "Sales",
+        DepartmentType.Marketing => "Marketing",
+        DepartmentType.Production => "Production",
+        DepartmentType.Warehouse => "Warehouse",
+        DepartmentType.Logistics => "Logistics",
+        DepartmentType.Management => "Board Chairman",
+        _ => "Unknown Department",
+    };
 
     public object? ConvertBack(
         object? value,

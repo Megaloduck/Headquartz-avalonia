@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.Linq;
-
-using Avalonia.Threading;
-
+﻿using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
-
 using Headquartz.App.Models;
 using Headquartz.App.Services;
 using Headquartz.Domain.Enums;
+using Headquartz.App.Converters;
+using System;
+using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace Headquartz.App.ViewModels;
 
@@ -57,7 +55,7 @@ public partial class DepartmentReportViewModel : ViewModelBase
         var dept = company.Departments
             .FirstOrDefault(d => d.Type == _deptType);
 
-        DeptName = _deptType.ToString();
+        DeptName = DepartmentTypeToNameConverter.GetDisplayName(_deptType);
         DeptEmoji = Emoji(_deptType);
         Efficiency = dept?.Efficiency ?? 0;
         StressLevel = dept?.StressLevel ?? 0;

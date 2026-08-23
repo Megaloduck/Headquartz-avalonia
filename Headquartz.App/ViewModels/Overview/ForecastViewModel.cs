@@ -30,6 +30,9 @@ public partial class ForecastViewModel : ViewModelBase
     [ObservableProperty] private long _ticksElapsed;
     [ObservableProperty] private bool _hasNoTodayEvents;
 
+    // ── Collections ──────────────────────────────────────────
+
+    public ObservableCollection<StatCardModel> StatCards { get; } = [];
     public ObservableCollection<CalendarDayModel> CalendarDays { get; } = [];
     public ObservableCollection<CalendarEventCardModel> TodayEvents { get; } = [];
 
@@ -71,12 +74,35 @@ public partial class ForecastViewModel : ViewModelBase
 
         CurrentCash = company.Cash;
 
-
         // Calendar & stats
         TicksElapsed = clock.Tick;
 
         var elapsed = clock.WorldTime - new DateTime(2026, 1, 1, 8, 0, 0);
         SimulationElapsedDisplay = $"{elapsed.Days:D2} : {elapsed.Hours:D2} : {elapsed.Minutes:D2}";
+
+        // Build Stat Cards
+        StatCards.Clear();
+        StatCards.Add(new StatCardModel
+        {
+            Label = "Upcoming Event",
+            Value = UpcomingEventTitle
+        });
+        StatCards.Add(new StatCardModel
+        {
+            Label = "Ticks Elapsed",
+            Value = $"{TicksElapsed} Ticks",
+            Subtext = "5 seconds per tick"
+        });
+        StatCards.Add(new StatCardModel
+        {
+            Label = "Simulation Elapsed",
+            Value = SimulationElapsedDisplay
+        });
+        StatCards.Add(new StatCardModel
+        {
+            Label = "Current Cash",
+            Value = $"${CurrentCash:N0}"
+        });
 
         BuildCalendar();
         RefreshTodayEvents();
@@ -203,6 +229,16 @@ public partial class ForecastViewModel : ViewModelBase
     {
         var next = GetNextUpcomingEvent();
         UpcomingEventTitle = next?.Title ?? "—";
+
+        // Update the stat card for Upcoming Event
+        if (StatCards.Count > 0)
+        {
+            StatCards[0] = new StatCardModel
+            {
+                Label = "Upcoming Event",
+                Value = UpcomingEventTitle
+            };
+        }
     }
 
     private Headquartz.Domain.Entities.CalendarEventDefinition? GetNextUpcomingEvent()
@@ -255,4 +291,13 @@ public partial class ForecastViewModel : ViewModelBase
 
         return next;
     }
+}
+
+// ── Stat Card Model ──────────────────────────────────────────
+
+public class StatCardModel
+{
+    public string Label { get; set; } = "";
+    public string Value { get; set; } = "";
+    public string? Subtext { get; set; }
 }

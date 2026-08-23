@@ -9,38 +9,33 @@
        Classes are additive — combine freely, e.g. Classes="money text-danger".
        ============================================================ -->
 
-	<Style Selector="TextBlock">
-		<Setter Property="Foreground" Value="{DynamicResource BrushTextPrimary}"/>
-	</Style>
 
-	<!-- ── Font-family utilities (orthogonal, combine with anything) ── -->
-	<Style Selector="TextBlock.font-display">
-		<Setter Property="FontFamily" Value="{DynamicResource FontFamilyDisplay}"/>
-	</Style>
-	<Style Selector="TextBlock.font-mono">
-		<Setter Property="FontFamily" Value="{DynamicResource FontFamilyMono}"/>
-	</Style>
-
-	<!-- ── Display / Headings (Georgia) ──────────────────────────── -->
+	<!-- ── Display / Headings (Lora) ──────────────────────────── -->
 
 	<!-- Hero text: splash screens, big standalone numbers -->
-	<Style Selector="TextBlock.display">
+	<Style Selector="TextBlock.display">	
 		<Setter Property="FontFamily" Value="{DynamicResource FontFamilyDisplay}"/>
-		<Setter Property="FontSize"   Value="{DynamicResource FontSizeDisplay}"/>
+		<Setter Property="FontSize" Value="{DynamicResource FontSizeDisplay}"/>
 		<Setter Property="FontWeight" Value="Bold"/>
+		<Setter Property="LineHeight" Value="{DynamicResource LineHeightDisplay}"/>
+		<Setter Property="LetterSpacing" Value="{DynamicResource LetterSpacingDisplay}"/>
 		<Setter Property="Foreground" Value="{DynamicResource BrushTextPrimary}"/>
+		<Setter Property="VerticalAlignment" Value="Center"/>
 	</Style>
 
 	<!-- Top-of-page header, e.g. "Finance Dashboard" -->
-	<Style Selector="TextBlock.page-title">
+	 <Style Selector="TextBlock.page-title">
 		<Setter Property="FontFamily" Value="{DynamicResource FontFamilyDisplay}"/>
-		<Setter Property="FontSize"   Value="{DynamicResource FontSizeDisplay}"/>
-		<Setter Property="FontWeight" Value="Bold"/>
+		<Setter Property="FontSize" Value="{DynamicResource FontSizeH1}"/>
+		<Setter Property="FontWeight" Value="SemiBold"/>
+		<Setter Property="LineHeight" Value="{DynamicResource LineHeightH1}"/>
+		<Setter Property="LetterSpacing" Value="{DynamicResource LetterSpacingHeading}"/>
 		<Setter Property="Foreground" Value="{DynamicResource BrushTextPrimary}"/>
 	</Style>
 
 	<!-- One-line description under a page title -->
 	<Style Selector="TextBlock.page-subtitle">
+		<Setter Property="FontFamily" Value="{DynamicResource FontFamilyBody}"/>
 		<Setter Property="FontSize"   Value="{DynamicResource FontSizeBase}"/>
 		<Setter Property="Foreground" Value="{DynamicResource BrushTextSecondary}"/>
 	</Style>
@@ -54,33 +49,38 @@
 	</Style>
 
 	<!-- Card-level section header, e.g. "Department Budgets" -->
-	<Style Selector="TextBlock.section-header">
+	<Style Selector="TextBlock.section-title">
 		<Setter Property="FontFamily" Value="{DynamicResource FontFamilyDisplay}"/>
-		<Setter Property="FontSize"   Value="{DynamicResource FontSizeH2}"/>
-		<Setter Property="FontWeight" Value="Bold"/>
-		<Setter Property="Margin"     Value="0,0,0,16"/>
+		<Setter Property="FontSize" Value="{DynamicResource FontSizeH2}"/>
+		<Setter Property="FontWeight" Value="SemiBold"/>
+		<Setter Property="LineHeight" Value="{DynamicResource LineHeightH2}"/>
+		<Setter Property="LetterSpacing" Value="{DynamicResource LetterSpacingHeading}"/>
 		<Setter Property="Foreground" Value="{DynamicResource BrushTextPrimary}"/>
 	</Style>
 
 	<!-- Smaller in-card subheader -->
-	<Style Selector="TextBlock.subsection-header">
+	<Style Selector="TextBlock.subsection-title">
 		<Setter Property="FontFamily" Value="{DynamicResource FontFamilyDisplay}"/>
-		<Setter Property="FontSize"   Value="{DynamicResource FontSizeH3}"/>
-		<Setter Property="FontWeight" Value="Bold"/>
+		<Setter Property="FontSize" Value="{DynamicResource FontSizeH3}"/>
+		<Setter Property="FontWeight" Value="SemiBold"/>
+		<Setter Property="LineHeight" Value="{DynamicResource LineHeightH3}"/>
+		<Setter Property="LetterSpacing" Value="{DynamicResource LetterSpacingHeading}"/>
 		<Setter Property="Foreground" Value="{DynamicResource BrushTextPrimary}"/>
 	</Style>
 
 	<!-- ── Operational / body text (Inter — app default) ────────── -->
 
-	<Style Selector="TextBlock.sidebar-title">
+	<Style Selector="TextBlock.sidebar-title">		
+		<Setter Property="FontFamily" Value="{DynamicResource FontFamilyBody}"/>
 		<Setter Property="FontWeight" Value="SemiBold"/>
-		<Setter Property="FontSize"   Value="14"/>
+		<Setter Property="FontSize"   Value="{DynamicResource FontSizeUI}"/>
 		<Setter Property="VerticalAlignment" Value="Center"/>
 		<Setter Property="Foreground" Value="{DynamicResource BrushTextPrimary}"/>
 	</Style>
 
 	<Style Selector="TextBlock.base-text">
-		<Setter Property="FontSize"   Value="13"/>
+		<Setter Property="FontFamily" Value="{DynamicResource FontFamilyBody}"/>
+		<Setter Property="FontSize"   Value="{DynamicResource FontSizeBody}"/>
 		<Setter Property="FontWeight" Value="Medium"/>
 		<Setter Property="VerticalAlignment" Value="Center"/>
 		<Setter Property="Foreground" Value="{DynamicResource BrushTextMuted}"/>
@@ -93,11 +93,7 @@
 		<Setter Property="Foreground" Value="{DynamicResource BrushTextSecondary}"/>
 	</Style>
 
-	<!-- KPI card label, e.g. "Cash" above a KPI value -->
-	<Style Selector="TextBlock.kpi-label">
-		<Setter Property="FontSize"   Value="{DynamicResource FontSizeBase}"/>
-		<Setter Property="Foreground" Value="{DynamicResource BrushTextSecondary}"/>
-	</Style>
+	
 
 	<!-- Uppercase micro-label, e.g. "CURRENT TICK", "ROOM CODE" -->
 	<Style Selector="TextBlock.label-upper">
@@ -105,13 +101,7 @@
 		<Setter Property="FontWeight"   Value="SemiBold"/>
 		<Setter Property="LetterSpacing" Value="0.5"/>
 		<Setter Property="Foreground"   Value="{DynamicResource BrushTextMuted}"/>
-	</Style>
-
-	<!-- Small helper/footnote text -->
-	<Style Selector="TextBlock.caption">
-		<Setter Property="FontSize"   Value="{DynamicResource FontSizeSm}"/>
-		<Setter Property="Foreground" Value="{DynamicResource BrushTextMuted}"/>
-	</Style>
+	</Style>	
 
 	<!-- Small bold text inside pill/badge borders, e.g. "TAKEN", "REVIEWED" -->
 	<Style Selector="TextBlock.badge-text">
@@ -120,33 +110,47 @@
 		<Setter Property="LetterSpacing" Value="0.3"/>
 	</Style>
 
-	<!-- ── Precision-critical data (Courier New) ─────────────────── -->
+	<!-- ── Precision-critical data (Mono) ─────────────────── -->
 	<!-- Per Build Guide §4.1: numeric figures, KPI values, and
 	     timestamps use monospace so digits align and stay unambiguous. -->
+
+		 <!-- KPI card label, e.g. "Cash" above a KPI value -->
+	<Style Selector="TextBlock.kpi-label">
+		<Setter Property="FontFamily" Value="{DynamicResource FontFamilyBody}"/>
+		<Setter Property="FontSize"   Value="{DynamicResource FontSizeSmall}"/>
+		<Setter Property="Foreground" Value="{DynamicResource BrushTextSecondary}"/>
+	</Style>
 
 	<!-- Headline KPI number, e.g. the big number in a KPI card -->
 	<Style Selector="TextBlock.kpi-value">
 		<Setter Property="FontFamily" Value="{DynamicResource FontFamilyMono}"/>
 		<Setter Property="FontSize"   Value="{DynamicResource FontSizeKpi}"/>
-		<Setter Property="FontWeight" Value="Bold"/>
+		<Setter Property="FontWeight" Value="Heavy"/>
 		<Setter Property="Foreground" Value="{DynamicResource BrushTextPrimary}"/>
 	</Style>
 
 	<!-- Inline monetary figure, e.g. "$25,000" in a table row -->
-	<Style Selector="TextBlock.money">
+	<Style Selector="TextBlock.number-value">
 		<Setter Property="FontFamily" Value="{DynamicResource FontFamilyMono}"/>
-		<Setter Property="FontWeight" Value="SemiBold"/>
+		<Setter Property="FontSize" Value="{DynamicResource FontSizeFigure}"/>
+		<Setter Property="FontWeight" Value="Medium"/>
+		<Setter Property="Foreground" Value="{DynamicResource BrushTextPrimary}"/>
 	</Style>
+
+	<!-- Small helper/footnote text -->
+	<Style Selector="TextBlock.caption">
+		<Setter Property="FontFamily" Value="{DynamicResource FontFamilyMono}"/>
+		<Setter Property="FontSize"   Value="{DynamicResource FontSizeMicro}"/>
+		<Setter Property="VerticalAlignment" Value="Center"/>
+		<Setter Property="Foreground" Value="{DynamicResource BrushTextMuted}"/>
+	</Style>
+
 
 	<!-- Generic numeric figure: tick counts, quantities, percentages -->
 	<Style Selector="TextBlock.figure">
 		<Setter Property="FontFamily" Value="{DynamicResource FontFamilyMono}"/>
-	</Style>
-
-	<!-- Timestamps, e.g. "MM/dd HH:mm" -->
-	<Style Selector="TextBlock.timestamp">
-		<Setter Property="FontFamily" Value="{DynamicResource FontFamilyMono}"/>
-		<Setter Property="FontSize"   Value="{DynamicResource FontSizeSm}"/>
+		<Setter Property="FontSize"   Value="{DynamicResource FontSizeSmall}"/>
+		<Setter Property="VerticalAlignment" Value="Center"/>
 		<Setter Property="Foreground" Value="{DynamicResource BrushTextMuted}"/>
 	</Style>
 
@@ -176,34 +180,11 @@
 		<Setter Property="Foreground" Value="{DynamicResource BrushAccentPrimary}"/>
 	</Style>
 
-  <!-- Add Styles Here -->
 
-    <Style Selector="TextBlock.display">	
-		<Setter Property="FontFamily" Value="{DynamicResource FontFamilyDisplay}"/>
-		<Setter Property="FontSize" Value="{DynamicResource FontSizeDisplay}"/>
-		<Setter Property="FontWeight" Value="Bold"/>
-		<Setter Property="LineHeight" Value="{DynamicResource LineHeightDisplay}"/>
-		<Setter Property="LetterSpacing" Value="{DynamicResource LetterSpacingDisplay}"/>
-		<Setter Property="Foreground" Value="{DynamicResource BrushTextPrimary}"/>
-	</Style>
 
-    <Style Selector="TextBlock.page-title">
-		<Setter Property="FontFamily" Value="{DynamicResource FontFamilyDisplay}"/>
-		<Setter Property="FontSize" Value="{DynamicResource FontSizeH1}"/>
-		<Setter Property="FontWeight" Value="SemiBold"/>
-		<Setter Property="LineHeight" Value="{DynamicResource LineHeightH1}"/>
-		<Setter Property="LetterSpacing" Value="{DynamicResource LetterSpacingHeading}"/>
-		<Setter Property="Foreground" Value="{DynamicResource BrushTextPrimary}"/>
-	</Style>
-    <Style Selector="TextBlock.section-title">
-		<Setter Property="FontFamily" Value="{DynamicResource FontFamilyDisplay}"/>
-		<Setter Property="FontSize" Value="{DynamicResource FontSizeH2}"/>
-		<Setter Property="FontWeight" Value="SemiBold"/>
-		<Setter Property="LineHeight" Value="{DynamicResource LineHeightH2}"/>
-		<Setter Property="LetterSpacing" Value="{DynamicResource LetterSpacingHeading}"/>
-		<Setter Property="Foreground" Value="{DynamicResource BrushTextPrimary}"/>
-	</Style>
-    <Style Selector="TextBlock.subsection-title">
+	<!--hello -->
+	
+<Style Selector="TextBlock.subsection-title">
 		<Setter Property="FontFamily" Value="{DynamicResource FontFamilyDisplay}"/>
 		<Setter Property="FontSize" Value="{DynamicResource FontSizeH3}"/>
 		<Setter Property="FontWeight" Value="SemiBold"/>
@@ -211,72 +192,65 @@
 		<Setter Property="LetterSpacing" Value="{DynamicResource LetterSpacingHeading}"/>
 		<Setter Property="Foreground" Value="{DynamicResource BrushTextPrimary}"/>
 	</Style>
-    <Style Selector="TextBlock.body">
+ <Style Selector="TextBlock.body">
 		<Setter Property="FontFamily" Value="{DynamicResource FontFamilyBody}"/>
 		<Setter Property="FontSize" Value="{DynamicResource FontSizeBody}"/>
 		<Setter Property="FontWeight" Value="Normal"/>
 		<Setter Property="LineHeight" Value="{DynamicResource LineHeightBody}"/>
 		<Setter Property="LetterSpacing" Value="{DynamicResource LetterSpacingBody}"/>
 		<Setter Property="Foreground" Value="{DynamicResource BrushTextPrimary}"/>
-	</Style>
-
-    <Style Selector="TextBlock.label">
+	 </Style>
+ <Style Selector="TextBlock.label">
 		<Setter Property="FontFamily" Value="{DynamicResource FontFamilyBody}"/>
 		<Setter Property="FontSize" Value="{DynamicResource FontSizeSmall}"/>
 		<Setter Property="FontWeight" Value="Medium"/>
 		<Setter Property="LetterSpacing" Value="{DynamicResource LetterSpacingLabel}"/>
 		<Setter Property="Foreground" Value="{DynamicResource BrushTextPrimary}"/>
 	</Style>
-    <Style Selector="TextBlock.secondary">
+ <Style Selector="TextBlock.secondary">
 		<Setter Property="FontFamily" Value="{DynamicResource FontFamilyBody}"/>
 		<Setter Property="FontSize" Value="{DynamicResource FontSizeBody}"/>
 		<Setter Property="FontWeight" Value="Normal"/>
 		<Setter Property="LineHeight" Value="{DynamicResource LineHeightBody}"/>
 		<Setter Property="Foreground" Value="{DynamicResource BrushTextSecondary}"/>
 	</Style>
-    <Style Selector="TextBlock.caption">
+ <Style Selector="TextBlock.caption">
 		<Setter Property="FontFamily" Value="{DynamicResource FontFamilyBody}"/>
 		<Setter Property="FontSize" Value="{DynamicResource FontSizeCaption}"/>
 		<Setter Property="FontWeight" Value="Normal"/>
 		<Setter Property="LineHeight" Value="{DynamicResource LineHeightCaption}"/>
 		<Setter Property="Foreground" Value="{DynamicResource BrushTextSecondary}"/>
 	</Style>
-    <Style Selector="TextBlock.label-upper">
+ <Style Selector="TextBlock.label-upper">
 		<Setter Property="FontFamily" Value="{DynamicResource FontFamilyBody}"/>
 		<Setter Property="FontSize" Value="{DynamicResource FontSizeMicro}"/>
 		<Setter Property="FontWeight" Value="SemiBold"/>
 		<Setter Property="LetterSpacing" Value="{DynamicResource LetterSpacingUppercase}"/>
 		<Setter Property="Foreground" Value="{DynamicResource BrushTextMuted}"/>
 	</Style>
-    <Style Selector="TextBlock.badge-text">
+ <Style Selector="TextBlock.badge-text">
 		<Setter Property="FontFamily" Value="{DynamicResource FontFamilyBody}"/>
 		<Setter Property="FontSize" Value="{DynamicResource FontSizeMicro}"/>
 		<Setter Property="FontWeight" Value="SemiBold"/>
 		<Setter Property="Foreground" Value="{DynamicResource BrushTextPrimary}"/>
 	</Style>
-    <Style Selector="TextBlock.kpi-value">
+ <Style Selector="TextBlock.kpi-value">
 		<Setter Property="FontFamily" Value="{DynamicResource FontFamilyMono}"/>
 		<Setter Property="FontSize" Value="{DynamicResource FontSizeKpi}"/>
 		<Setter Property="FontWeight" Value="SemiBold"/>
 		<Setter Property="Foreground" Value="{DynamicResource BrushTextPrimary}"/>
 	</Style>
-    <Style Selector="TextBlock.figure">
+ <Style Selector="TextBlock.figure">
 		<Setter Property="FontFamily" Value="{DynamicResource FontFamilyMono}"/>
 		<Setter Property="FontSize" Value="{DynamicResource FontSizeFigure}"/>
 		<Setter Property="FontWeight" Value="Normal"/>
 		<Setter Property="Foreground" Value="{DynamicResource BrushTextPrimary}"/>
 	</Style>
-    <Style Selector="TextBlock.money">
+ <Style Selector="TextBlock.money">
 		<Setter Property="FontFamily" Value="{DynamicResource FontFamilyMono}"/>
 		<Setter Property="FontSize" Value="{DynamicResource FontSizeFigure}"/>
 		<Setter Property="FontWeight" Value="Medium"/>
 		<Setter Property="Foreground" Value="{DynamicResource BrushTextPrimary}"/>
-	</Style>
+	 </Style>
+
 </Styles>
-
-
-
-
-
-
-

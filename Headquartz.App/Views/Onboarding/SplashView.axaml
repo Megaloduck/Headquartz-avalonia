@@ -46,8 +46,7 @@
 					<TextBlock Text="H" FontSize="30" FontWeight="Bold" Foreground="{DynamicResource BrushTextPrimary}"
                         HorizontalAlignment="Center" VerticalAlignment="Center"/>
 				</Border>
-				<TextBlock Text="HEADQUARTZ" FontSize="34" FontWeight="Bold"
-                    Foreground="{DynamicResource BrushTextPrimary}" LetterSpacing="6" VerticalAlignment="Center"/>
+				<TextBlock Text="Headquartz" Classes="display"/>
 			</StackPanel>
 
 			<!-- Subtitle -->

@@ -20,42 +20,33 @@
 
             <!-- HEADER -->
             <StackPanel Spacing="4">
-                <TextBlock FontSize="34" FontWeight="Bold" Text="Forecast Overview"/>
-                <TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="Future event projection and calendar."/>
+                <TextBlock Classes="page-title" Text="Forecast Overview"/>
+                <TextBlock Classes="page-subtitle" Text="Future event projection and calendar."/>
             </StackPanel>
 
             <!-- TOP STAT CARDS -->
-            <Grid ColumnDefinitions="*,*,*,*" Margin="0,0,0,8">
-                <!-- Upcoming Event -->
-                <Border Grid.Column="0" Margin="4" Padding="16" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
-                    <StackPanel Spacing="4">
-                        <TextBlock FontSize="12" Foreground="{DynamicResource BrushTextMuted}" FontWeight="SemiBold" Text="Upcoming Event"/>
-                        <TextBlock FontSize="22" FontWeight="Bold" Text="{Binding UpcomingEventTitle}" TextTrimming="CharacterEllipsis"/>
-                    </StackPanel>
-                </Border>
-                <!-- Item 2 placeholder (ticks) -->
-                <Border Grid.Column="1" Margin="4" Padding="16" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
-                    <StackPanel Spacing="4">
-                        <TextBlock FontSize="12" Foreground="{DynamicResource BrushTextMuted}" FontWeight="SemiBold" Text="Ticks Elapsed"/>
-                        <TextBlock FontSize="22" FontWeight="Bold" Text="{Binding TicksElapsed, StringFormat='{}{0} Ticks'}"/>
-                        <TextBlock FontSize="10" Foreground="{DynamicResource BrushTextMuted}" Text="5 seconds per tick"/>
-                    </StackPanel>
-                </Border>
-                <!-- Item 3 placeholder (simulation time) -->
-                <Border Grid.Column="2" Margin="4" Padding="16" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
-                    <StackPanel Spacing="4">
-                        <TextBlock FontSize="12" Foreground="{DynamicResource BrushTextMuted}" FontWeight="SemiBold" Text="Simulation Elapsed"/>
-                        <TextBlock FontSize="22" FontWeight="Bold" Text="{Binding SimulationElapsedDisplay}"/>
-                    </StackPanel>
-                </Border>
-                <!-- Current Cash -->
-                <Border Grid.Column="3" Margin="4" Padding="16" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
-                    <StackPanel Spacing="4">
-                        <TextBlock FontSize="12" Foreground="{DynamicResource BrushTextMuted}" FontWeight="SemiBold" Text="Current Cash"/>
-                        <TextBlock FontSize="22" FontWeight="Bold" Text="{Binding CurrentCash, StringFormat='${0:N0}'}"/>
-                    </StackPanel>
-                </Border>
-            </Grid> 
+<ItemsControl ItemsSource="{Binding StatCards}">
+    <ItemsControl.ItemsPanel>
+        <ItemsPanelTemplate>
+            <UniformGrid Columns="4" />
+        </ItemsPanelTemplate>
+    </ItemsControl.ItemsPanel>
+    <ItemsControl.ItemTemplate>
+        <DataTemplate>
+            <Border Margin="4" Padding="16" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
+                <StackPanel Spacing="4">
+                    <TextBlock FontSize="12" Foreground="{DynamicResource BrushTextMuted}" FontWeight="SemiBold" Text="{Binding Label}"/>
+                    <TextBlock FontSize="22" FontWeight="Bold" Text="{Binding Value}" TextTrimming="CharacterEllipsis"/>
+                    <TextBlock 
+                       
+                        FontSize="10" 
+                        Foreground="{DynamicResource BrushTextMuted}" 
+                        Text="{Binding Subtext}"/>
+                </StackPanel>
+            </Border>
+        </DataTemplate>
+    </ItemsControl.ItemTemplate>
+</ItemsControl>
 
             <!-- EVENT CALENDAR -->
             <Border Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">

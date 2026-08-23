@@ -1,14 +1,12 @@
-using System;
-using System.Collections.ObjectModel;
-using System.Linq;
-
 using Avalonia.Threading;
-
 using CommunityToolkit.Mvvm.ComponentModel;
-
 using Headquartz.App.Models;
 using Headquartz.App.Services;
 using Headquartz.Domain.Enums;
+using Headquartz.App.Converters;
+using System;
+using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace Headquartz.App.ViewModels;
 
@@ -32,6 +30,7 @@ public partial class CompanyDashboardViewModel : ViewModelBase
 
     // ── Collections ──────────────────────────────────────────
 
+    public ObservableCollection<KpiModel> CoreKpis { get; } = [];
     public ObservableCollection<DepartmentHealthModel> DepartmentHealth { get; } = [];
     public ObservableCollection<EventViewModel> RecentAlerts { get; } = [];
 
@@ -77,6 +76,17 @@ public partial class CompanyDashboardViewModel : ViewModelBase
             CompanyHealth = (int)Math.Clamp((avgEff - avgStress + 100) / 2, 0, 100);
         }
 
+        // Core KPIs
+        CoreKpis.Clear();
+        CoreKpis.Add(new KpiModel { Label = "Cash", Value = Cash.ToString("$#,##0") });
+        CoreKpis.Add(new KpiModel { Label = "Revenue", Value = Revenue.ToString("$#,##0") });
+        CoreKpis.Add(new KpiModel { Label = "Expenses", Value = Expenses.ToString("$#,##0") });
+        CoreKpis.Add(new KpiModel { Label = "Reputation", Value = $"{Reputation}/100"    });
+        CoreKpis.Add(new KpiModel { Label = "Employees", Value = EmployeeCount.ToString() });
+        CoreKpis.Add(new KpiModel { Label = "Active Tasks", Value = ActiveTasks.ToString() });
+        CoreKpis.Add(new KpiModel { Label = "Active Orders", Value = ActiveOrders.ToString() });
+        CoreKpis.Add(new KpiModel { Label = "Simulation Tick", Value = Tick.ToString() });
+
         // Department health rows
         DepartmentHealth.Clear();
         foreach (var dept in company.Departments)
@@ -85,7 +95,7 @@ public partial class CompanyDashboardViewModel : ViewModelBase
 
             DepartmentHealth.Add(new DepartmentHealthModel
             {
-                Name = dept.Type.ToString(),
+                Name = DepartmentTypeToNameConverter.GetDisplayName(dept.Type),
                 Emoji = DeptEmoji(dept.Type),
                 Efficiency = dept.Efficiency,
                 StressLevel = dept.StressLevel,
@@ -131,4 +141,12 @@ public partial class CompanyDashboardViewModel : ViewModelBase
         DepartmentType.Logistics => "🚚",
         _ => "🏢",
     };
+}
+
+// ── KPI Model ────────────────────────────────────────────────
+
+public class KpiModel
+{
+    public string Label { get; set; } = "";
+    public string Value { get; set; } = "";
 }

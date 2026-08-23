@@ -1,6 +1,7 @@
 ﻿using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Headquartz.App.Converters;
 using Headquartz.App.Models;
 using Headquartz.App.Services;
 using Headquartz.Domain.Entities;
@@ -96,7 +97,7 @@ public partial class FinanceBudgetAllocationViewModel : ViewModelBase
             Departments.Add(new BudgetRowEditModel
             {
                 Type = dept.Type,
-                Name = dept.Type.ToString(),
+                Name = DepartmentTypeToNameConverter.GetDisplayName(dept.Type),
                 Emoji = DeptEmoji(dept.Type),
                 Budget = dept.Budget,
                 Efficiency = dept.Efficiency,

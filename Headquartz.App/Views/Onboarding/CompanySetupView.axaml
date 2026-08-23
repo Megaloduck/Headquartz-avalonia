@@ -139,8 +139,8 @@
                 </Border>
 
                 <!-- ┌────────── RIGHT: Form ──────────┐ -->
-                <Border Classes="card" Padding="32" Grid.Column="1">
-                    <StackPanel Spacing="24">
+                <Border Classes="card" Padding="22" Grid.Column="1">
+                    <StackPanel Spacing="24" VerticalAlignment="Stretch">
 
                         <!-- Company Name -->
                         <StackPanel Spacing="8">

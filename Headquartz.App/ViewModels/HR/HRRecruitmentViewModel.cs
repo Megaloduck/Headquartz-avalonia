@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Headquartz.App.Converters;
 using Headquartz.App.Services;
 using Headquartz.Domain.Entities;
 using Headquartz.Domain.Enums;
@@ -92,7 +93,7 @@ public partial class HRRecruitmentViewModel : ViewModelBase
             Salary = Salary,
         });
 
-        StatusMessage = $"✅ {EmployeeName} hired as {SelectedRole} in {SelectedDepartment}.";
+        StatusMessage = $"✅ {EmployeeName} hired as {SelectedRole} in {DepartmentTypeToNameConverter.GetDisplayName(SelectedDepartment)}.";
         IsSuccess = true;
         EmployeeName = "";
     }

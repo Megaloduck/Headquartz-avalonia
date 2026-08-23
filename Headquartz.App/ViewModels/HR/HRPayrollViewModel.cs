@@ -1,5 +1,6 @@
 ﻿using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
+using Headquartz.App.Converters;
 using Headquartz.App.Models;
 using Headquartz.App.Services;
 using Headquartz.Domain.Entities;
@@ -95,7 +96,7 @@ public partial class HRPayrollViewModel : ViewModelBase
             {
                 Id = emp.Id,
                 Name = emp.Name,
-                Department = emp.Department.ToString(),
+                Department = DepartmentTypeToNameConverter.GetDisplayName(emp.Department),
                 Role = emp.Role.ToString(),
                 Morale = emp.Morale,
                 Productivity = emp.Productivity,

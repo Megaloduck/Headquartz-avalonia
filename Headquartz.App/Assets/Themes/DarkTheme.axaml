@@ -14,7 +14,7 @@
 	<Color x:Key="ColorBgBase">#080C14</Color>
 	<Color x:Key="ColorBgSurface">#0F1623</Color>
 	<Color x:Key="ColorBgElevated">#161D2E</Color>
-	<Color x:Key="ColorBgCard">#1A2236</Color>
+	<Color x:Key="ColorBgCard">#2B3242</Color> 
 	<Color x:Key="ColorBgCardHover">#1F2A3F</Color>
 	<Color x:Key="ColorBgInput">#111827</Color>
 	<Color x:Key="ColorBgSidebar">#090E1A</Color>
@@ -55,7 +55,7 @@
 	<Color x:Key="ColorBadgeSuccessFg">#86EFAC</Color>
 
 	<!-- Nested card background (dark) -->
-	<Color x:Key="ColorBgNested">#2B3242</Color>
+	<Color x:Key="ColorBgNested">#1A2236</Color> 
 
 	<!-- Department accent colors -->
 	<Color x:Key="ColorDeptHR">#8B5CF6</Color>

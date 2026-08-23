@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 using Headquartz.App.Models;
 using Headquartz.App.Services;
 using Headquartz.Domain.Enums;
+using Headquartz.App.Converters;
 
 using System;
 using System.Collections.ObjectModel;
@@ -115,7 +116,7 @@ public partial class FinanceDashboardViewModel : ViewModelBase
         {
             DepartmentBudgets.Add(new BudgetRowModel
             {
-                DepartmentName = dept.Type.ToString(),
+                DepartmentName = DepartmentTypeToNameConverter.GetDisplayName(dept.Type),
                 Budget = dept.Budget,
                 Efficiency = dept.Efficiency,
                 StressLevel = dept.StressLevel,
