@@ -134,15 +134,33 @@
 		<Setter Property="VerticalScrollBarVisibility"   Value="Auto"/>
 	</Style>
 
+	<Style Selector="Border.page">
+		<Setter Property="BorderBrush"     Value="{DynamicResource BrushBorderSubtle}"/>
+		<Setter Property="CornerRadius"    Value="{DynamicResource RadiusLg}"/>
+		<Setter Property="Padding"         Value="{DynamicResource PaddingCard}"/>
+		<Setter Property="Background"     Value="{DynamicResource BrushBgSurface}"/>
+		<Setter Property="HorizontalAlignment"        Value="Stretch"/>
+		<Setter Property="BorderThickness" Value="1"/>
+	</Style>
+
 	<!-- BORDER CARD CLASSES -->
 
 	<Style Selector="Border.card">
-		<Setter Property="Background"      Value="{DynamicResource BrushBgCard}"/>
+		<Setter Property="BorderBrush"     Value="{DynamicResource BrushBorderSubtle}"/>
 		<Setter Property="CornerRadius"    Value="{DynamicResource RadiusLg}"/>
 		<Setter Property="Padding"         Value="{DynamicResource PaddingCard}"/>
-		<Setter Property="BorderBrush"     Value="{DynamicResource BrushBorderSubtle}"/>
+		<Setter Property="Background"     Value="{DynamicResource BrushBorderCard}"/>
+		<Setter Property="HorizontalAlignment"        Value="Stretch"/>
 		<Setter Property="BorderThickness" Value="1"/>
 	</Style>
+
+        <Style Selector="Border.card.selected">
+            <Setter Property="BorderBrush"     Value="{DynamicResource BrushAccentPrimary}"/>
+			<Setter Property="CornerRadius"    Value="{DynamicResource RadiusLg}"/>
+			<Setter Property="Padding"         Value="{DynamicResource PaddingCard}"/>
+            <Setter Property="Background"      Value="{DynamicResource BrushBgElevated}"/>
+            <Setter Property="BorderThickness" Value="2"/>
+        </Style>
 
 	<Style Selector="Border.card-inner">
 		<Setter Property="Background"      Value="{DynamicResource BrushBgNested}"/>

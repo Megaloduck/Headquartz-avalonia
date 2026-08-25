@@ -5,31 +5,7 @@
              x:Class="Headquartz.App.CompanySetupView"
              Background="{DynamicResource BrushBgBase}">
 
-    <UserControl.Styles>
-        <!-- Industry card selection states -->
-        <Style Selector="Border.industry-card">
-            <Setter Property="BorderBrush"     Value="{DynamicResource BrushBorderSubtle}"/>
-            <Setter Property="Background"      Value="{DynamicResource BrushBgInput}"/>
-            <Setter Property="BorderThickness" Value="1"/>
-        </Style>
-        <Style Selector="Border.industry-card.selected">
-            <Setter Property="BorderBrush"     Value="{DynamicResource BrushAccentPrimary}"/>
-            <Setter Property="Background"      Value="{DynamicResource BrushBgElevated}"/>
-            <Setter Property="BorderThickness" Value="2"/>
-        </Style>
-
-        <!-- Difficulty card selection states -->
-        <Style Selector="Border.difficulty-card">
-            <Setter Property="BorderBrush"     Value="{DynamicResource BrushBorderSubtle}"/>
-            <Setter Property="Background"      Value="{DynamicResource BrushBgInput}"/>
-            <Setter Property="BorderThickness" Value="1"/>
-        </Style>
-        <Style Selector="Border.difficulty-card.selected">
-            <Setter Property="BorderBrush"     Value="{DynamicResource BrushAccentPrimary}"/>
-            <Setter Property="Background"      Value="{DynamicResource BrushBgElevated}"/>
-            <Setter Property="BorderThickness" Value="2"/>
-        </Style>
-    </UserControl.Styles>
+  
 
 
         <Grid RowDefinitions="Auto,*" Margin="20" RowSpacing="20">
@@ -38,12 +14,9 @@
             <Grid Grid.Row="0" ColumnDefinitions="*,Auto" >
                 <StackPanel Grid.Column="0" Spacing="4">
                     <TextBlock Text="Company Setup"
-                               FontSize="32"
-                               FontWeight="Bold"
-                               Foreground="{DynamicResource BrushTextPrimary}"/>
+                               Classes="page-title"    />
                     <TextBlock Text="Configure your company before the sessions begins"
-                               FontSize="14"
-                               Foreground="{DynamicResource BrushTextMuted}"/>
+                               Classes="page-subtitle"    />
                 </StackPanel>
                 <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10" VerticalAlignment="Top">
                     <Button Classes="toggletheme"
@@ -66,13 +39,11 @@
             <Grid Grid.Row="1" ColumnDefinitions="300,*" ColumnSpacing="20">
 
                 <!-- ┌────────── LEFT: Configuration Summary ──────────┐ -->
-                <Border Classes="card" Padding="22" >
+                <Border Classes="page" Padding="22" >
                     <StackPanel Spacing="20">
 
                         <TextBlock Text="Configuration Summary"
-                                   FontSize="18"
-                                   FontWeight="Bold"
-                                   Foreground="{DynamicResource BrushTextPrimary}"/>
+                                    Classes="section-title"    />
 
                         <!-- Company icon placeholder -->
                         <Border Height="280"
@@ -95,7 +66,7 @@
                                    Foreground="{DynamicResource BrushTextPrimary}"
                                    TextTrimming="CharacterEllipsis"/>
 
-                        <WrapPanel ItemSpacing="50">
+                        <Grid ColumnDefinitions="100,*" ColumnSpacing="20">
                             <!--INDUSTRY STATUS-->
                             <StackPanel>
                                 <TextBlock Text="INDUSTRY"
@@ -110,7 +81,7 @@
                             </StackPanel>
 
                             <!--DIFFICULTY STATUS-->
-                            <StackPanel>
+                            <StackPanel Grid.Column="1">
                                  <TextBlock Text="DIFFICULTY"
                                        FontSize="9"
                                        FontWeight="SemiBold"
@@ -121,7 +92,7 @@
                                        FontWeight="SemiBold"
                                        Foreground="{DynamicResource BrushTextPrimary}"/>                            
                             </StackPanel>
-                        </WrapPanel>
+                        </Grid>
 
                         <StackPanel Spacing="4">
                             <TextBlock Text="STARTING CAPITAL"
@@ -139,15 +110,14 @@
                 </Border>
 
                 <!-- ┌────────── RIGHT: Form ──────────┐ -->
-                <Border Classes="card" Padding="22" Grid.Column="1">
+             <Grid Grid.Column="1" RowDefinitions="Auto,*" RowSpacing="20">
+                <Border Classes="page"  Padding="22">
                     <StackPanel Spacing="24" VerticalAlignment="Stretch">
 
                         <!-- Company Name -->
-                        <StackPanel Spacing="8">
+                        <StackPanel Spacing="15">
                             <TextBlock Text="Company Name"
-                                       FontSize="18"
-                                       FontWeight="Bold"
-                                       Foreground="{DynamicResource BrushTextPrimary}"/>
+                                        Classes="section-title"    />
                             <Grid ColumnDefinitions="*,Auto">
                                 <TextBox Text="{Binding CompanyName}"
                                          PlaceholderText="Company Name"
@@ -168,17 +138,19 @@
                                                Foreground="{DynamicResource BrushTextPrimary}"/>
                                 </Button>
                             </Grid>
+                            <StackPanel Orientation="Horizontal" Spacing="10">
                             <TextBlock Text="*3 letters minimum"
-                                       FontSize="12"
-                                       Foreground="{DynamicResource BrushTextMuted}"/>
+                                       FontSize="12" Foreground="{DynamicResource BrushTextMuted}"/>
+                            <TextBlock Text="{Binding ErrorMessage}"  IsVisible="{Binding HasError}"
+                                       FontSize="12"  Foreground="{DynamicResource BrushDanger}"/>
+                            </StackPanel>
+                            
                         </StackPanel>
 
                         <!-- Industry type -->
-                        <StackPanel Spacing="12">
-                            <TextBlock Text="Industry type"
-                                       FontSize="18"
-                                       FontWeight="Bold"
-                                       Foreground="{DynamicResource BrushTextPrimary}"/>
+                        <StackPanel Spacing="15">
+                            <TextBlock Text="Industry Type"
+                                       Classes="section-title"    />
                             <ItemsControl ItemsSource="{Binding Industries}">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
@@ -196,10 +168,7 @@
                                                 BorderThickness="0"
                                                 Command="{Binding $parent[ItemsControl].DataContext.SelectIndustryCommand}"
                                                 CommandParameter="{Binding}">
-                                            <Border Height="70"
-                                                    HorizontalAlignment="Stretch"  
-                                                    CornerRadius="12"
-                                                    Classes="industry-card"
+                                            <Border Height="70" Classes="card"
                                                     Classes.selected="{Binding IsSelected}">
                                                 <TextBlock Text="{Binding Label}"
                                                            FontSize="14"
@@ -217,11 +186,9 @@
                         </StackPanel>
 
                         <!-- Difficulty -->
-                        <StackPanel Spacing="12">
-                            <TextBlock Text="Difficulty"
-                                       FontSize="18"
-                                       FontWeight="Bold"
-                                       Foreground="{DynamicResource BrushTextPrimary}"/>
+                        <StackPanel Spacing="15">
+                            <TextBlock Text="Difficulty" 
+                                      Classes="section-title"    />
                             <ItemsControl ItemsSource="{Binding Difficulties}">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
@@ -232,32 +199,27 @@
                                 </ItemsControl.ItemsPanel>
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
-                                        <Button HorizontalAlignment="Stretch"  
+                                          <Button HorizontalAlignment="Stretch"  
                                                 HorizontalContentAlignment="Stretch"
                                                 Padding="0"
                                                 Background="Transparent"    
                                                 BorderThickness="0"
                                                 Command="{Binding $parent[ItemsControl].DataContext.SelectDifficultyCommand}"        
                                                 CommandParameter="{Binding}">
-                                            <Border Height="70"
-                                                    HorizontalAlignment="Stretch"
-                                                    CornerRadius="12"
-                                                    Classes="difficulty-card"
+                                            <Border Height="70" Classes="card"
                                                     Classes.selected="{Binding IsSelected}">
-                                                <Grid ColumnDefinitions="*,Auto"
-                                                      Margin="16,0">
+                                                <Grid ColumnDefinitions="*,Auto"        ColumnSpacing="20">
                                                     <StackPanel VerticalAlignment="Center">
                                                         <TextBlock Text="{Binding Label}"
                                                                    FontSize="16"
                                                                    FontWeight="Bold"
                                                                    Foreground="{DynamicResource BrushTextPrimary}"/>
                                                     </StackPanel>
-                                                    <StackPanel Grid.Column="1"
-                                                                VerticalAlignment="Center"
+                                                    <StackPanel Grid.Column="1"              
                                                                 HorizontalAlignment="Right"
                                                                 Spacing="2">
                                                         <TextBlock Text="Starting at"
-                                                                   FontSize="11"
+                                                                   FontSize="11"                                                
                                                                    Foreground="{DynamicResource BrushTextMuted}"/>
                                                         <TextBlock Text="{Binding CapitalAmount}"                 
                                                                    FontSize="16"
@@ -275,16 +237,18 @@
                                        Foreground="{DynamicResource BrushTextMuted}"/>
                         </StackPanel>
 
-                        <!-- Error banner -->
-                        <Border IsVisible="{Binding HasError}"
-                                Classes="alert-critical"
-                                Padding="10">
-                            <TextBlock Text="{Binding ErrorMessage}"
-                                       FontSize="13"/>
-                        </Border>
+                        
 
-                        <!-- Confirm -->
-                        <Button HorizontalAlignment="Stretch"
+                       
+
+                    </StackPanel>
+                     
+                </Border>
+               
+                    <!-- Confirm -->
+                        <Button  Grid.Row="1"
+                            HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
                                 Padding="0,16"
                                 CornerRadius="12"
                                 Command="{Binding ConfirmCommand}">
@@ -300,10 +264,8 @@
                                        Foreground="{DynamicResource BrushTextPrimary}"
                                        HorizontalAlignment="Center"/>
                         </Button>
-
-                    </StackPanel>
-                </Border>
-
+                </Grid>
+                
             </Grid>
         </Grid>
  

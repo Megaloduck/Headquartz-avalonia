@@ -43,7 +43,7 @@
 	<!-- Department / company name display -->
 	<Style Selector="TextBlock.dept-title">
 		<Setter Property="FontFamily" Value="{DynamicResource FontFamilyDisplay}"/>
-		<Setter Property="FontSize"   Value="{DynamicResource FontSizeXl}"/>
+		<Setter Property="FontSize"   Value="{DynamicResource FontSizeH3}"/>
 		<Setter Property="FontWeight" Value="SemiBold"/>
 		<Setter Property="Foreground" Value="{DynamicResource BrushTextPrimary}"/>
 	</Style>
