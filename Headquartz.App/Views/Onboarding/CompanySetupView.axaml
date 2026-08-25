@@ -48,13 +48,11 @@
                         <!-- Company icon placeholder -->
                         <Border Height="280"
                                 CornerRadius="12"
-                                Background="{DynamicResource BrushBgBase}"
+                               Background="{DynamicResource BrushBgElevated}"
                                 BorderBrush="{DynamicResource BrushBorderSubtle}"
                                 BorderThickness="1">
 
-                            <TextBlock Text="{Binding SelectedIndustryEmoji}"
-                                   FontSize="70"                                  
-                                   FontWeight="Heavy"
+                            <TextBlock Text="{Binding SelectedIndustryEmoji}"       FontSize="72"       
                                    VerticalAlignment="Center"
                                    HorizontalAlignment="Center"
                                    Foreground="{DynamicResource BrushTextPrimary}" />

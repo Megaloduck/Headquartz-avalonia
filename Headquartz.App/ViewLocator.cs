@@ -21,8 +21,7 @@ public class ViewLocator : IDataTemplate
             ProfileCreationViewModel => new ProfileCreationView(),
             MainMenuViewModel => new MainMenuView(),
             LobbyViewModel => new LobbyView(),
-            CompanySetupViewModel => new CompanySetupView(),
-            DepartmentSelectionViewModel => new DepartmentSelectionView(),
+            CompanySetupViewModel => new CompanySetupView(),   
 
             // ── Main menu ─────────────────────────────────────
             CompanyViewModel => new CompanyView(),

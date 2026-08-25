@@ -1,4 +1,4 @@
-    <UserControl
+<UserControl
     Name="ShellRoot"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -129,8 +129,9 @@
 
                     <!-- Role dropdown (solo player can switch departments) -->
                     <ComboBox
-                        ItemsSource="{Binding AvailableRoles}"
-                        SelectedItem="{Binding CurrentRole}"
+                        IsVisible="{Binding CanSwitchDepartments}"
+    ItemsSource="{Binding AvailableRoles}"
+    SelectedItem="{Binding CurrentRole}"
                         Padding="8,4"
                         Background="{DynamicResource BrushBgElevated}"
                         BorderBrush="{DynamicResource BrushBorderDefault}"

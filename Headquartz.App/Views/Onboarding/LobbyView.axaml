@@ -5,469 +5,344 @@
              x:Class="Headquartz.App.LobbyView"
              Background="{DynamicResource BrushBgBase}">
 
-	<Grid ColumnDefinitions="*,780,*" RowDefinitions="Auto,*,Auto">
+    <UserControl.Styles>
+        <Style Selector="Border.dept-tile">
+            <Setter Property="Background" Value="{DynamicResource BrushBgSurface}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BrushBorderSubtle}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
+        <Style Selector="Border.dept-tile.selected">
+            <Setter Property="BorderBrush" Value="{DynamicResource BrushAccentPrimary}"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="Background" Value="{DynamicResource BrushBgElevated}"/>
+        </Style>
+        <Style Selector="Border.dept-tile.taken">
+            <Setter Property="Opacity" Value="0.45"/>
+        </Style>
+    </UserControl.Styles>
 
-		<!-- ── Background glow ────────────────────────────── -->
-		<Canvas Grid.ColumnSpan="3" Grid.RowSpan="3" IsHitTestVisible="False">
-			<Ellipse Canvas.Left="-100" Canvas.Top="-100"
-                Width="500" Height="500" Opacity="0.05">
-				<Ellipse.Fill>
-					<RadialGradientBrush>
-						<GradientStop Color="{DynamicResource ColorAccentPrimary}" Offset="0"/>
-						<GradientStop Color="Transparent" Offset="1"/>
-					</RadialGradientBrush>
-				</Ellipse.Fill>
-			</Ellipse>
-		</Canvas>
+    <Grid RowDefinitions="Auto,*" Margin="24" RowSpacing="20">
 
-		<!-- ── Top bar ────────────────────────────────────── -->
-		<Border
-            Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="0"
-            Padding="24,16"
-            Background="{DynamicResource BrushBgBase}"
-            BorderBrush="{DynamicResource BrushBgInput}"
-            BorderThickness="0,0,0,1">
-			<Grid ColumnDefinitions="*,Auto,*">
+        <!-- ═══════════ HEADER ═══════════ -->
+        <Grid Grid.Row="0" ColumnDefinitions="*,Auto">
+            <StackPanel Grid.Column="0" Spacing="4">
+                <TextBlock Text="Game Lobby" Classes="page-title"/>
+                <TextBlock Text="Each role has unique responsibilities. Coordinate with your team to cover all departments."
+                           Classes="page-subtitle"/>
+            </StackPanel>
+            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10" VerticalAlignment="Top">
+                <Button Padding="10" ToolTip.Tip="Toggle Theme" Command="{Binding ToggleThemeCommand}">
+                    <Path Data="{DynamicResource IconSun}" Width="14" Height="14" Stretch="Uniform"
+                          Fill="Transparent" Stroke="{DynamicResource BrushTextSecondary}" StrokeThickness="1.5"/>
+                </Button>
+                <Button Classes="danger" Padding="16,10" Command="{Binding LeaveRoomCommand}">
+                    <TextBlock Text="Return to Main Menu" FontSize="14" FontWeight="SemiBold"/>
+                </Button>
+            </StackPanel>
+        </Grid>
 
-				<!-- Left: back -->
-				<Button
-                    Grid.Column="0"
-                    HorizontalAlignment="Left"
-                    Padding="12,8"
-                    Background="Transparent"
-                    BorderThickness="0"
-                    CornerRadius="8"
-                    Command="{Binding LeaveRoomCommand}">
-					<TextBlock Text="← Leave Room" FontSize="13" Foreground="{DynamicResource BrushTextMuted}"/>
-				</Button>
+        <!-- ═══════════ MAIN CONTENT ═══════════ -->
+        <Grid Grid.Row="1" ColumnDefinitions="300,*,300" ColumnSpacing="20">
 
-				<!-- Center: logo + title -->
-				<StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="12" HorizontalAlignment="Center">
-					<Border Width="32" Height="32" CornerRadius="8">
-						<Border.Background>
-							<LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
-								<GradientStop Color="{DynamicResource ColorAccentPrimary}" Offset="0"/>
-								<GradientStop Color="{DynamicResource ColorAccentPrimaryHover}" Offset="1"/>
-							</LinearGradientBrush>
-						</Border.Background>
-						<TextBlock Text="H" FontSize="16" FontWeight="Black" Foreground="{DynamicResource BrushTextPrimary}"
-                            HorizontalAlignment="Center" VerticalAlignment="Center"/>
-					</Border>
-					<TextBlock
-                        Text="MULTIPLAYER LOBBY"
-                        FontSize="14"
-                        FontWeight="Bold"
-                        Foreground="{DynamicResource BrushTextSecondary}"
-                        LetterSpacing="3"
-                        VerticalAlignment="Center"/>
-				</StackPanel>
+            <!-- ┌────────── LEFT: Player ID Card ──────────┐ -->
+            <Border Classes="page" Padding="22" >
+                <StackPanel Spacing="20">
 
-				<!-- Right: ping -->
-				<StackPanel
-                    Grid.Column="2"
-                    Orientation="Horizontal"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Center"
-                    Spacing="6">
-					<Border Width="8" Height="8" CornerRadius="4" Background="{DynamicResource BrushSuccess}"/>
-					<TextBlock
-                        Text="{Binding LocalPing, StringFormat='{}{0} ms'}"
-                        FontSize="12"
-                        Foreground="{DynamicResource BrushTextMuted}"/>
-				</StackPanel>
+                    <TextBlock Text="Player ID Card" Classes="section-title"    />
 
-			</Grid>
-		</Border>
+                    <!-- Player icon placeholder -->
+                        <Border Height="280" CornerRadius="12"
+                               Background="{DynamicResource BrushBgElevated}"
+                                BorderBrush="{DynamicResource BrushBorderSubtle}"
+                                BorderThickness="1">
+                            <TextBlock Text="{Binding PlayerAvatar}" FontSize="72"                           
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Center"
+                                   Foreground="{DynamicResource BrushTextPrimary}" />
+                        </Border>
 
-		<!-- ── Main content ───────────────────────────────── -->
-		<Grid
-            Grid.Column="1" Grid.Row="1"
-            ColumnDefinitions="*,320"
-            Margin="0,24,0,0">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBlock Grid.Column="0" Text="{Binding PlayerName}" FontSize="28"  FontWeight="Heavy"
+                                   Foreground="{DynamicResource BrushTextPrimary}"
+                                   TextTrimming="CharacterEllipsis"/>
+                            <TextBlock Grid.Column="1" Text="{Binding PlayerLevel, StringFormat='Level {0}'}"
+                                       Classes="caption" VerticalAlignment="Center"/>
+                        </Grid>
 
-			<!-- Left: company config + player list + room code -->
-			<StackPanel Grid.Column="0" Spacing="16" Margin="0,0,16,0">
+                    
+                     <Grid ColumnDefinitions="150,*" ColumnSpacing="20">
+                         <!--DEPARTMENT STATUS-->
+                        <StackPanel >
+                            <TextBlock Text="DEPARTMENT" Classes="label-upper"/>
+                            <TextBlock Text="{Binding PlayerDepartmentName}" FontSize="14" FontWeight="SemiBold"
+                                       Foreground="{DynamicResource BrushTextPrimary}"/>
+                        </StackPanel>
 
-				<!-- Room code card -->
-				<Border
-                    Padding="20"
-                    Background="{DynamicResource BrushBgSurface}"
-                    BorderBrush="{DynamicResource BrushBgInput}"
-                    BorderThickness="1"
-                    CornerRadius="14">
-					<Grid ColumnDefinitions="*,Auto">
+                         <!--PING STATUS-->
+                         <StackPanel Grid.Column="1">
+                         <TextBlock Text="PING" Classes="label-upper"/>
+                        <Border Padding="8,4" CornerRadius="6"
+                                Background="{DynamicResource BrushBadgeSuccessBg}" HorizontalAlignment="Left">
+                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                <Border Width="6" Height="6" CornerRadius="3" Background="{DynamicResource BrushSuccess}"/>
+                                <TextBlock Text="{Binding LocalPing, StringFormat='{}{0} ms'}" FontSize="11"
+                                           Foreground="{DynamicResource BrushBadgeSuccessFg}"/>
+                            </StackPanel>
+                        </Border>
+                             </StackPanel>
+                         </Grid>
+                    
 
-						<StackPanel Grid.Column="0" Spacing="4">
-							<TextBlock
-                                Text="ROOM CODE"
-                                FontSize="11"
-                                FontWeight="Bold"
-                                Foreground="{DynamicResource BrushBorderStrong}"
-                                LetterSpacing="2"/>
-							<TextBlock
-                                Text="{Binding RoomCode}"
-                                FontSize="36"
-                                FontWeight="Black"
-                                Foreground="{DynamicResource BrushTextPrimary}"
-                                LetterSpacing="8"/>
-							<TextBlock
-                                Text="Share this code with your team"
-                                FontSize="12"
-                                Foreground="{DynamicResource BrushBorderStrong}"/>
-						</StackPanel>
+                    <Button Margin="0,16,0,0" HorizontalAlignment="Stretch" Padding="0,14"
+                            CornerRadius="12"
+                            IsEnabled="{Binding HasLocalDepartment}"
+                            Command="{Binding PrintIdCardCommand}">
+                        <Button.Background>
+                            <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,0%">
+                                <GradientStop Color="{DynamicResource ColorAccentPrimary}" Offset="0"/>
+                                <GradientStop Color="{DynamicResource ColorAccentPrimaryHover}" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Button.Background>
+                        <TextBlock Text="{Binding PrintButtonLabel}" FontSize="14" FontWeight="Bold"
+                                   Foreground="White" HorizontalAlignment="Center"/>
+                    </Button>
 
-						<Button
-                            Grid.Column="1"
-                            Padding="14,10"
-                            Background="{DynamicResource BrushBgInput}"
-                            CornerRadius="8"
-                            VerticalAlignment="Center"
-                            Command="{Binding CopyRoomCodeCommand}">
-							<TextBlock Text="📋 Copy" FontSize="13" Foreground="{DynamicResource BrushTextSecondary}"/>
-						</Button>
+                </StackPanel>
+            </Border>
 
-					</Grid>
-				</Border>
+            <!-- ┌────────── CENTER: Responsibilities + Selection ──────────┐ -->
+            <Border Grid.Column="1" Padding="24" Background="{DynamicResource BrushBgSurface}"
+                    BorderBrush="{DynamicResource BrushBorderSubtle}" BorderThickness="1"
+                    CornerRadius="12">
+                <Grid>
+                <StackPanel Spacing="12">                
+                    
 
-				<!-- Company config summary / gating actions -->
-				<Border
-                    Padding="20"
-                    Background="{DynamicResource BrushBgSurface}"
-                    BorderBrush="{DynamicResource BrushBgInput}"
-                    BorderThickness="1"
-                    CornerRadius="14">
-					<StackPanel Spacing="10">
-
-						<TextBlock
-                            Text="COMPANY"
-                            FontSize="11"
-                            FontWeight="Bold"
-                            Foreground="{DynamicResource BrushBorderStrong}"
-                            LetterSpacing="2"/>
-
-						<TextBlock
-                            Text="{Binding CompanyConfigSummary}"
-                            FontSize="14"
-                            FontWeight="SemiBold"
-                            Foreground="{DynamicResource BrushTextPrimary}"
-                            TextWrapping="Wrap"/>
-
-						<!-- Host: configure the company before anything else -->
-						<Button
-                            IsVisible="{Binding ShowConfigureCompanyButton}"
-                            HorizontalAlignment="Stretch"
-                            Padding="0,12"
-                            CornerRadius="10"
+                <!-- State 1: host hasn't configured the company yet -->
+                <StackPanel IsVisible="{Binding ShowConfigureCompanyButton}"
+                            HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="14">
+                    <TextBlock Text="Configure your company to unlock department selection."
+                               Classes="secondary" />
+                    <Button HorizontalAlignment="Center" Padding="22,12" CornerRadius="12"
                             Command="{Binding ConfigureCompanyCommand}">
-							<Button.Background>
-								<LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,0%">
-									<GradientStop Color="{DynamicResource ColorAccentPrimary}" Offset="0"/>
-									<GradientStop Color="{DynamicResource ColorAccentPrimaryHover}" Offset="1"/>
-								</LinearGradientBrush>
-							</Button.Background>
-							<TextBlock
-                                Text="Configure Company →"
-                                FontSize="14"
-                                FontWeight="Bold"
-                                Foreground="{DynamicResource BrushTextPrimary}"
-                                HorizontalAlignment="Center"/>
-						</Button>
+                        <Button.Background>
+                            <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,0%">
+                                <GradientStop Color="{DynamicResource ColorAccentPrimary}" Offset="0"/>
+                                <GradientStop Color="{DynamicResource ColorAccentPrimaryHover}" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Button.Background>
+                        <TextBlock Text="Configure Company →" FontWeight="Bold" Foreground="White"/>
+                    </Button>
+                </StackPanel>
 
-						<!-- Host (once configured) or any joiner: pick a department -->
-						<Button
-                            IsVisible="{Binding ShowPickDepartmentButton}"
-                            HorizontalAlignment="Stretch"
-                            Padding="0,12"
-                            CornerRadius="10"
-                            Background="{DynamicResource BrushAccentPrimary}"
-                            Command="{Binding PickDepartmentCommand}">
-							<TextBlock
-                                Text="Pick Your Department →"
-                                FontSize="14"
-                                FontWeight="Bold"
-                                Foreground="{DynamicResource BrushTextPrimary}"
-                                HorizontalAlignment="Center"/>
-						</Button>
+                <!-- State 2: joiner waiting on the host -->
+                <TextBlock IsVisible="{Binding ShowWaitingForCompany}"
+                           Text="Waiting for the host to configure the company..."
+                           Classes="secondary" 
+                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
-					</StackPanel>
-				</Border>
+                <!-- State 3: company configured — responsibilities + grid -->
+                <Grid IsVisible="{Binding !ShowConfigureCompanyButton, FallbackValue=True}" RowDefinitions="Auto,Auto,*" RowSpacing="20">
+                    <Grid.IsVisible>
+                        <MultiBinding Converter="{x:Static BoolConverters.And}">
+                            <Binding Path="!ShowConfigureCompanyButton"/>
+                            <Binding Path="!ShowWaitingForCompany"/>
+                        </MultiBinding>
+                    </Grid.IsVisible>
 
-				<!-- Player list -->
-				<Border
-                    Padding="20"
-                    Background="{DynamicResource BrushBgSurface}"
-                    BorderBrush="{DynamicResource BrushBgInput}"
-                    BorderThickness="1"
-                    CornerRadius="14">
-					<StackPanel Spacing="16">
+                    <TextBlock Grid.Row="0" Text="Department Responsibilities" Classes="section-title"/>
 
-						<StackPanel Orientation="Horizontal" Spacing="10">
-							<TextBlock
-                                Text="PLAYERS"
-                                FontSize="11"
-                                FontWeight="Bold"
-                                Foreground="{DynamicResource BrushBorderStrong}"
-                                LetterSpacing="2"
-                                VerticalAlignment="Center"/>
-							<Border
-                                Padding="8,2"
-                                Background="{DynamicResource BrushBgInput}"
-                                CornerRadius="10">
-								<TextBlock
-                                    Text="{Binding Players.Count}"
-                                    FontSize="11"
-                                    Foreground="{DynamicResource BrushTextSecondary}"/>
-							</Border>
-						</StackPanel>
+                    <Border Grid.Row="1" Padding="0">
+                        <Grid ColumnDefinitions="240,20,*">
+                            <Border Grid.Column="0" CornerRadius="12"
+                                    Background="{Binding PreviewCard.AccentColor}" Height="150">
+                                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="6">
+                                    <TextBlock Text="{Binding PreviewCard.Emoji}" FontSize="36" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="Gameplay Preview" FontSize="11" Foreground="White" Opacity="0.85"
+                                               HorizontalAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
+                            <StackPanel Grid.Column="2" Spacing="8" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding PreviewCard.Title}" FontSize="17" FontWeight="Bold"
+                                           Foreground="{DynamicResource BrushTextPrimary}"/>
+                                <TextBlock Text="{Binding PreviewCard.ResponsibilitiesSummary}"
+                                           Classes="secondary" TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
 
-						<ItemsControl ItemsSource="{Binding Players}">
-							<ItemsControl.ItemTemplate>
-								<DataTemplate>
-									<Border
-                                        Margin="0,0,0,8"
-                                        Padding="14,12"
-                                        Background="{DynamicResource BrushBgInput}"
-                                        CornerRadius="10">
-										<Grid ColumnDefinitions="40,*,Auto,60,Auto">
+                    <StackPanel Grid.Row="2" Spacing="12">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBlock Grid.Column="0" Text="Department Selection" Classes="section-title"/>
+                            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                                <ProgressBar Value="{Binding CoverageRatio}" Maximum="1" Width="140" Height="6"
+                                             Foreground="{DynamicResource BrushAccentPrimary}"/>
+                                <TextBlock Classes="caption">
+                                    <Run Text="{Binding DepartmentsCovered}"/>
+                                    <Run Text="/"/>
+                                    <Run Text="{Binding DepartmentsTotal}"/>
+                                    <Run Text=" covered"/>
+                                </TextBlock>
+                            </StackPanel>
+                        </Grid>
 
-											<!-- Avatar -->
-											<Border
-                                                Grid.Column="0"
-                                                Width="36" Height="36"
-                                                CornerRadius="18"
-                                                Background="{DynamicResource BrushBgInput}">
-												<TextBlock
-                                                    Text="{Binding AvatarEmoji}"
-                                                    FontSize="20"
-                                                    HorizontalAlignment="Center"
-                                                    VerticalAlignment="Center"/>
-											</Border>
+                        <ItemsControl ItemsSource="{Binding Cards}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <UniformGrid Columns="4" ColumnSpacing="12" RowSpacing="12"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Button
+                                        Height="150"
+                                        Padding="0"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        IsEnabled="{Binding !IsTaken}"
+                                        PointerEntered="OnCardPointerEntered"
+                                        Command="{Binding $parent[ItemsControl].DataContext.SelectCardCommand}"
+                                        CommandParameter="{Binding}">
 
-											<!-- Name + badges -->
-											<StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="10,0,0,0">
-												<StackPanel Orientation="Horizontal" Spacing="8">
-													<TextBlock
-                                                        FontSize="14"
-                                                        FontWeight="SemiBold"
-                                                        Foreground="{DynamicResource BrushTextPrimary}"
-                                                        Text="{Binding Username}"/>
-													<!-- Host badge -->
-													<Border
-                                                        IsVisible="{Binding IsHost}"
-                                                        Padding="6,2"
-                                                        Background="{DynamicResource BrushBgBase}"
-                                                        CornerRadius="4">
-														<TextBlock
-                                                            Text="HOST"
-                                                            FontSize="9"
-                                                            FontWeight="Bold"
-                                                            Foreground="{DynamicResource BrushAccentPrimaryHover}"/>
-													</Border>
-													<!-- You badge -->
-													<Border
-                                                        IsVisible="{Binding IsLocalPlayer}"
-                                                        Padding="6,2"
+                                        <Border
+                                            Classes="dept-tile"
+                                            Classes.selected="{Binding IsSelected}"
+                                            Classes.taken="{Binding IsTaken}"
+                                            CornerRadius="12"
+                                            Padding="14">
+
+                                            <Grid RowDefinitions="Auto,*,Auto">
+
+                                                <Border Grid.Row="0" Width="36" Height="36" CornerRadius="18"
+                                                        Background="{Binding AccentColor}" Opacity="0.22"
+                                                        HorizontalAlignment="Left"/>
+                                                <TextBlock Grid.Row="0" Text="{Binding Emoji}" FontSize="17"
+                                                           Width="36" Height="36" HorizontalAlignment="Left"                      
+                                                           VerticalAlignment="Center"/>
+
+                                                <TextBlock Grid.Row="1" Text="{Binding Department}" FontSize="13"
+                                                           FontWeight="SemiBold"
+                                                           Foreground="{DynamicResource BrushTextPrimary}"
+                                                           TextWrapping="Wrap" VerticalAlignment="Bottom"/>
+
+                                                <Border Grid.Row="2" IsVisible="{Binding IsSelected}" Margin="0,8,0,0"
+                                                        Padding="6,2" CornerRadius="6"
                                                         Background="{DynamicResource BrushBadgeSuccessBg}"
-                                                        CornerRadius="4">
-														<TextBlock
-                                                            Text="YOU"
-                                                            FontSize="9"
-                                                            FontWeight="Bold"
-                                                            Foreground="{DynamicResource BrushSuccess}"/>
-													</Border>
-												</StackPanel>
-												<TextBlock
-                                                    FontSize="11"
-                                                    Foreground="{DynamicResource BrushBorderStrong}"
-                                                    Text="{Binding Level, StringFormat='Level {0}'}"/>
-											</StackPanel>
+                                                        HorizontalAlignment="Left">
+                                                    <TextBlock Text="YOURS" Classes="badge-text"
+                                                               Foreground="{DynamicResource BrushBadgeSuccessFg}"/>
+                                                </Border>
 
-											<!-- Ping -->
-											<TextBlock
-                                                Grid.Column="3"
-                                                FontSize="11"
-                                                Foreground="{DynamicResource BrushBorderStrong}"
-                                                VerticalAlignment="Center"
-                                                Text="{Binding PingMs, StringFormat='{}{0}ms'}"/>
+                                                <TextBlock Grid.Row="2" IsVisible="{Binding IsTaken}" Margin="0,8,0,0"
+                                                           Text="{Binding TakenByUsername}" FontSize="10"
+                                                           Foreground="{DynamicResource BrushTextMuted}"
+                                                           TextTrimming="CharacterEllipsis"/>
 
-											<!-- Status -->
-											<Border
-                                                Grid.Column="4"
-                                                Padding="8,4"
-                                                CornerRadius="6"
-                                                VerticalAlignment="Center"
-                                                Background="{DynamicResource BrushBgInput}">
-												<TextBlock
-                                                    Text="{Binding StatusLabel}"
-                                                    FontSize="11"
-                                                    FontWeight="SemiBold"
-                                                    Foreground="{Binding StatusColor}"/>
-											</Border>
+                                            </Grid>
+                                        </Border>
+                                    </Button>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Grid>
+                    </StackPanel>
+                    </Grid>   
+            </Border>
 
-										</Grid>
-									</Border>
-								</DataTemplate>
-							</ItemsControl.ItemTemplate>
-						</ItemsControl>
+            <!-- ┌────────── RIGHT: Room + Players + Start ──────────┐ -->
+            <Grid Grid.Column="2" RowDefinitions="Auto,*,Auto">
 
-					</StackPanel>
-				</Border>
+                <StackPanel Grid.Row="0" Spacing="12">
+                    <Border IsVisible="{Binding IsMultiplayer}" Padding="18" Background="{DynamicResource BrushBgSurface}"
+                            BorderBrush="{DynamicResource BrushBorderSubtle}" BorderThickness="1"
+                            CornerRadius="12">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <StackPanel Grid.Column="0" Spacing="2">
+                                <TextBlock Text="ROOM CODE" Classes="label-upper"/>
+                                <TextBlock Text="{Binding RoomCode}" FontSize="24" FontWeight="Black"
+                                           Foreground="{DynamicResource BrushTextPrimary}" LetterSpacing="4"/>
+                                <TextBlock Text="Share this code with your team" Classes="caption"/>
+                            </StackPanel>
+                            <Button Grid.Column="1" Padding="10,7" Background="{DynamicResource BrushBgInput}"
+                                    CornerRadius="12" VerticalAlignment="Center"
+                                    Command="{Binding CopyRoomCodeCommand}">
+                                <TextBlock Text="📋 Copy" FontSize="12"/>
+                            </Button>
+                        </Grid>
+                    </Border>
 
-			</StackPanel>
+                    <Border Padding="18" Background="{DynamicResource BrushBgSurface}"
+                            BorderBrush="{DynamicResource BrushBorderSubtle}" BorderThickness="1"
+                            CornerRadius="12">
+                        <StackPanel Spacing="10">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <TextBlock Text="PLAYERS" Classes="label-upper"/>
+                                <Border Padding="7,1" CornerRadius="6"
+                                        Background="{DynamicResource BrushBgInput}">
+                                    <TextBlock Text="{Binding Players.Count}" FontSize="11"
+                                               Foreground="{DynamicResource BrushTextSecondary}"/>
+                                </Border>
+                            </StackPanel>
 
-			<!-- Right: role slots + status -->
-			<StackPanel Grid.Column="1" Spacing="12">
+                            <ItemsControl ItemsSource="{Binding Players}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Margin="0,0,0,6" Padding="10,8" Background="{DynamicResource BrushBgInput}"
+                                                CornerRadius="12">
+                                            <Grid ColumnDefinitions="Auto,*,Auto">
+                                                <TextBlock Grid.Column="0" Text="{Binding AvatarEmoji}" FontSize="16"
+                                                           Margin="0,0,8,0"/>
+                                                <StackPanel Grid.Column="1">
+                                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                                        <TextBlock Text="{Binding Username}" FontSize="12" FontWeight="SemiBold"
+                                                                   Foreground="{DynamicResource BrushTextPrimary}"/>
+                                                        <TextBlock Text="HOST" FontSize="9" FontWeight="Bold"
+                                                                   Foreground="{DynamicResource BrushAccentPrimaryHover}"
+                                                                   IsVisible="{Binding IsHost}"/>
+                                                        <TextBlock Text="YOU" FontSize="9" FontWeight="Bold"
+                                                                   Foreground="{DynamicResource BrushSuccess}"
+                                                                   IsVisible="{Binding IsLocalPlayer}"/>
+                                                    </StackPanel>
+                                                    <TextBlock Text="{Binding Level, StringFormat='Level {0}'}" Classes="caption"/>
+                                                </StackPanel>
+                                                <TextBlock Grid.Column="2" Text="{Binding StatusLabel}" FontSize="11"
+                                                           FontWeight="SemiBold" Foreground="{Binding StatusColor}"
+                                                           VerticalAlignment="Center"/>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
 
-				<TextBlock
-                    Text="AVAILABLE ROLES"
-                    FontSize="11"
-                    FontWeight="Bold"
-                    Foreground="{DynamicResource BrushBorderStrong}"
-                    LetterSpacing="2"
-                    Margin="0,0,0,4"/>
+                <Border Grid.Row="1" Margin="0,12,0,0" Padding="16" Background="{DynamicResource BrushBgSurface}"
+                        BorderBrush="{DynamicResource BrushBorderSubtle}" BorderThickness="1"
+                        CornerRadius="12">
+                    <TextBlock Text="{Binding StatusMessage}" Classes="caption" TextWrapping="Wrap"
+                               HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center"/>
+                </Border>
 
-				<ItemsControl ItemsSource="{Binding Slots}">
-					<ItemsControl.ItemTemplate>
-						<DataTemplate>
-							<Border
-                                Margin="0,0,0,6"
-                                Padding="12,10"
-                                Background="{DynamicResource BrushBgSurface}"
-                                BorderBrush="{DynamicResource BrushBgInput}"
-                                BorderThickness="1"
-                                CornerRadius="8">
-								<Grid ColumnDefinitions="32,*,Auto">
-
-									<TextBlock
-                                        Grid.Column="0"
-                                        Text="{Binding RoleEmoji}"
-                                        FontSize="16"
-                                        VerticalAlignment="Center"/>
-
-									<TextBlock
-                                        Grid.Column="1"
-                                        FontSize="13"
-                                        FontWeight="SemiBold"
-                                        Foreground="{DynamicResource BrushTextSecondary}"
-                                        Text="{Binding RoleName}"
-                                        VerticalAlignment="Center"
-                                        Margin="6,0"/>
-
-									<!-- Open indicator -->
-									<Border
-                                        Grid.Column="2"
-                                        Padding="7,2"
-                                        CornerRadius="4"
-                                        Background="{DynamicResource BrushBadgeSuccessBg}">
-										<TextBlock
-                                            Text="Open"
-                                            FontSize="10"
-                                            Foreground="{DynamicResource BrushSuccess}"/>
-									</Border>
-
-								</Grid>
-							</Border>
-						</DataTemplate>
-					</ItemsControl.ItemTemplate>
-				</ItemsControl>
-
-				<!-- Status message -->
-				<Border
-                    Margin="0,8,0,0"
-                    Padding="12,10"
-                    Background="{DynamicResource BrushBgSurface}"
-                    BorderBrush="{DynamicResource BrushBgInput}"
-                    BorderThickness="1"
-                    CornerRadius="8">
-					<StackPanel Orientation="Horizontal" Spacing="8">
-						<Border Width="8" Height="8" CornerRadius="4" Background="{DynamicResource BrushWarning}" VerticalAlignment="Center"/>
-						<TextBlock
-                            Text="{Binding StatusMessage}"
-                            FontSize="12"
-                            Foreground="{DynamicResource BrushTextSecondary}"
-                            TextWrapping="Wrap"/>
-					</StackPanel>
-				</Border>
-
-			</StackPanel>
-
-		</Grid>
-
-		<!-- ── Bottom action bar ──────────────────────────── -->
-		<Border
-            Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="2"
-            Padding="24,16"
-            Background="{DynamicResource BrushBgBase}"
-            BorderBrush="{DynamicResource BrushBgInput}"
-            BorderThickness="0,1,0,0">
-			<Grid ColumnDefinitions="*,560,*">
-				<Grid Grid.Column="1" ColumnDefinitions="*,16,*">
-
-					<!-- Ready toggle — only shown once the local player has a department -->
-					<Button
-                        Grid.Column="0"
-                        IsVisible="{Binding HasLocalDepartment}"
-                        HorizontalAlignment="Stretch"
-                        Padding="0,14"
-                        CornerRadius="10"
-                        Command="{Binding ToggleReadyCommand}">
-						<Button.Background>
-							<SolidColorBrush Color="{DynamicResource ColorBgInput}"/>
-						</Button.Background>
-						<Button.BorderBrush>
-							<SolidColorBrush Color="{DynamicResource ColorBgInput}"/>
-						</Button.BorderBrush>
-						<Button.BorderThickness>
-							<Thickness>1</Thickness>
-						</Button.BorderThickness>
-						<TextBlock
-                            FontSize="14"
-                            FontWeight="Bold"
-                            HorizontalAlignment="Center">
-							<TextBlock.Styles>
-								<Style Selector="TextBlock">
-									<Setter Property="Text" Value="{Binding IsReady, StringFormat='{}✓ I\'m Ready', FallbackValue='Mark as Ready'}"/>
-								</Style>
-							</TextBlock.Styles>
-							<TextBlock.Foreground>
-								<SolidColorBrush Color="{DynamicResource ColorTextSecondary}"/>
-							</TextBlock.Foreground>
-						</TextBlock>
-					</Button>
-
-					<!-- Start game (host only, once ready to start) -->
-					<Button
-                        Grid.Column="2"
-                        IsVisible="{Binding HasLocalDepartment}"
-                        HorizontalAlignment="Stretch"
-                        Padding="0,14"
-                        CornerRadius="10"
+                <Button Grid.Row="2" Margin="0,12,0,0" HorizontalAlignment="Stretch" Padding="0,14"
+                        CornerRadius="12"
+                        IsVisible="{Binding IsHost}"
                         IsEnabled="{Binding CanStart}"
                         Command="{Binding StartGameCommand}">
-						<Button.IsVisible>
-							<MultiBinding Converter="{x:Static BoolConverters.And}">
-								<Binding Path="HasLocalDepartment"/>
-								<Binding Path="IsHost"/>
-							</MultiBinding>
-						</Button.IsVisible>
-						<Button.Background>
-							<LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,0%">
-								<GradientStop Color="{DynamicResource ColorSuccess}" Offset="0"/>
-								<GradientStop Color="{DynamicResource ColorSuccess}" Offset="1"/>
-							</LinearGradientBrush>
-						</Button.Background>
-						<TextBlock
-                            Text="▶  Start Game"
-                            FontSize="15"
-                            FontWeight="Bold"
-                            Foreground="{DynamicResource BrushTextPrimary}"
-                            HorizontalAlignment="Center"/>
-					</Button>
+                    <Button.Background>
+                        <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,0%">
+                            <GradientStop Color="{DynamicResource ColorSuccess}" Offset="0"/>
+                            <GradientStop Color="{DynamicResource ColorSuccess}" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Button.Background>
+                    <TextBlock Text="Start Game →" FontSize="14" FontWeight="Bold" Foreground="White"
+                               HorizontalAlignment="Center"/>
+                </Button>
 
-				</Grid>
-			</Grid>
-		</Border>
+            </Grid>
 
-	</Grid>
+        </Grid>
+    </Grid>
 
 </UserControl>

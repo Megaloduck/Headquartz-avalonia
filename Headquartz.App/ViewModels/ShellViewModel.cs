@@ -126,6 +126,8 @@ public partial class ShellViewModel : ViewModelBase
 
     private readonly List<NotificationModel> _allNotifications = [];
 
+
+
     // =========================================================
     // CONSTRUCTORS
     // =========================================================
@@ -456,5 +458,44 @@ public partial class ShellViewModel : ViewModelBase
 
         foreach (var section in SidebarService.GetSections(CurrentRole))
             SidebarSections.Add(section);
+    }
+
+    [ObservableProperty] private bool _canSwitchDepartments = true;
+
+    public ShellViewModel(SimulationService simulation, DepartmentType startingDepartment, bool canSwitchDepartments)
+    {
+        _simulation = simulation;
+        _navigation = new NavigationService(_simulation);
+        _navigation.OnViewChanged += HandleViewChanged;
+
+        _notifications = new NotificationService(_simulation.Engine);
+        _notifications.NotificationFired += OnNotificationFired;
+
+        _simulation.Engine.OnUpdated += OnSimulationTick;
+        _simulation.Engine.OnUpdated += () => Dispatcher.UIThread.Post(PruneOldNotifications);
+
+        IsDarkTheme = ThemeService.Instance.IsDark;
+        CompanyName = _simulation.Engine.Company.Name;
+        Industry = _simulation.Engine.Company.Industry.ToString();
+        TicksPerWorkHour = _simulation.Engine.Profile.TicksPerWorkHour;
+        DifficultyLabel = _simulation.Engine.Profile.Difficulty.ToString();
+
+        _subTickTimer = new DispatcherTimer(
+            TimeSpan.FromMilliseconds(100),
+            DispatcherPriority.Render,
+            OnSubTickTimer);
+        _subTickTimer.Start();
+
+        CanSwitchDepartments = canSwitchDepartments;
+        CurrentRole = startingDepartment;
+        LoadSidebar();
+        _navigation.Navigate("company", startingDepartment);
+        RefreshStaticTickValues();
+
+        foreach (var department in Enum.GetValues<DepartmentType>())
+        {
+            if (CanSwitchDepartments || department == startingDepartment)
+                AvailableRoles.Add(department);
+        }
     }
 }

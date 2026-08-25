@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 using Headquartz.Domain.Enums;
 
@@ -82,11 +83,9 @@ public static class AvatarOptions
 
 // ── Department Selection ──────────────────────────────────────────────────────
 
-public class DepartmentSelectionCard
+public partial class DepartmentSelectionCard : ObservableObject
 {
-    /// <summary>Which department this card represents.</summary>
     public DepartmentType Role { get; set; }
-
     public string Title { get; set; } = "";
     public string Department { get; set; } = "";
     public string Description { get; set; } = "";
@@ -95,7 +94,8 @@ public class DepartmentSelectionCard
     public string ResponsibilitiesSummary { get; set; } = "";
     public string DifficultyLabel { get; set; } = "";
     public int DifficultyStars { get; set; } = 2;
-    public bool IsTaken { get; set; }
-    public string? TakenByUsername { get; set; }
-    public bool IsSelected { get; set; }
-}   
+
+    [ObservableProperty] private bool _isTaken;
+    [ObservableProperty] private string? _takenByUsername;
+    [ObservableProperty] private bool _isSelected;
+}

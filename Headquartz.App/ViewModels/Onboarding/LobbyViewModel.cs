@@ -1,14 +1,14 @@
 ﻿using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Headquartz.App.Converters;
 using Headquartz.App.Models.Onboarding;
 using Headquartz.App.Services;
-using Headquartz.App.ViewModels;
+using Headquartz.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 
 namespace Headquartz.App.ViewModels;
 
@@ -17,70 +17,106 @@ public partial class LobbyViewModel : ViewModelBase
     private readonly OnboardingFlowService _flow;
     private readonly DispatcherTimer _pingTimer;
 
-    // ── State ─────────────────────────────────────────────────
+    // ── Room / session state ─────────────────────────────────
 
     [ObservableProperty] private string _roomCode = "";
     [ObservableProperty] private bool _isHost;
+    [ObservableProperty] private bool _isMultiplayer;
     [ObservableProperty] private bool _isReady;
     [ObservableProperty] private bool _canStart;
     [ObservableProperty] private string _statusMessage = "Waiting for players...";
-    [ObservableProperty] private int _localPing = 0;
+    [ObservableProperty] private int _localPing;
+    [ObservableProperty] private bool _isDarkTheme = true;
 
-    // ── Flow gating ──────────────────────────────────────────
-    //
-    // The lobby now gates progression on two things before anyone can
-    // ready up: the host must have configured the company, and the local
-    // player must have picked a department. Joiners skip the company step
-    // entirely (only the host configures it) and go straight to picking
-    // a department.
+    // ── Company gating ────────────────────────────────────────
 
     [ObservableProperty] private bool _isCompanyConfigured;
-    [ObservableProperty] private bool _hasLocalDepartment;
     [ObservableProperty] private bool _showConfigureCompanyButton;
-    [ObservableProperty] private bool _showPickDepartmentButton;
+    [ObservableProperty] private bool _showWaitingForCompany;
     [ObservableProperty] private string _companyConfigSummary = "";
+    [ObservableProperty] private string _companyName = "";
+    [ObservableProperty] private string _industryLabel = "";
+    [ObservableProperty] private string _difficultyLabel = "";
+    [ObservableProperty] private string _capitalDisplay = "";
 
-    // ── Collections ──────────────────────────────────────────
+    // ── Local player ID card ──────────────────────────────────
 
+    [ObservableProperty] private string _playerName = "";
+    [ObservableProperty] private string _playerAvatar = "👤";
+    [ObservableProperty] private int _playerLevel = 1;
+    [ObservableProperty] private string _playerDepartmentName = "Unassigned";
+    [ObservableProperty] private bool _hasLocalDepartment;
+    [ObservableProperty] private string _printButtonLabel = "Print My ID Card";
+
+    // ── Department grid + preview ────────────────────────────
+
+    [ObservableProperty] private DepartmentSelectionCard? _previewCard;
+    [ObservableProperty] private DepartmentSelectionCard? _selectedCard;
+    [ObservableProperty] private int _departmentsCovered;
+    [ObservableProperty] private int _departmentsTotal = 7;
+    [ObservableProperty] private double _coverageRatio;
+
+    public ObservableCollection<DepartmentSelectionCard> Cards { get; } = [];
     public ObservableCollection<LobbyPlayerRowModel> Players { get; } = [];
 
-    // ── Slot labels (always show 8 slots) ────────────────────
-
-    public ObservableCollection<LobbySlotModel> Slots { get; } = [];
-
-    private static readonly (string Role, string Emoji, string Color)[] RoleSlots =
+    // NOTE: "Manager" is intentionally omitted from every Title here — it's
+    // reserved for GameDifficulty.Manager. Management is special-cased as
+    // "Board Chairman" and excluded from the 7-department coverage count.
+    private static readonly (DepartmentType Department, string Title, string DeptLabel,
+        string Emoji, string Color, string Responsibilities)[] DepartmentData =
     [
-        ("Human Resources", "👥", "#8B5CF6"),
-        ("Finance",         "💰", "#10B981"),
-        ("Sales",           "📈", "#3B82F6"),
-        ("Marketing",       "📣", "#F59E0B"),
-        ("Production",      "🏭", "#EF4444"),
-        ("Warehouse",       "📦", "#F97316"),
-        ("Logistics",       "🚚", "#06B6D4"),
-        ("Board Chairman",      "🏛️", "#EAB308"),
-  ];
+        (DepartmentType.HumanResources, "Human Resources", "Human Resources", "👥", "#8B5CF6",
+            "Workforce · Hiring · Morale · Training · Payroll · Resignations"),
+        (DepartmentType.Finance, "Finance", "Finance", "💰", "#10B981",
+            "Budgets · Cash Flow · Loans · Payroll Risk · Audits"),
+        (DepartmentType.Sales, "Sales", "Sales", "📈", "#3B82F6",
+            "Revenue · Orders · Clients · Pipeline · Deadlines"),
+        (DepartmentType.Marketing, "Marketing", "Marketing", "📣", "#F59E0B",
+            "Campaigns · Brand · Reputation · Research · Demand"),
+        (DepartmentType.Production, "Production", "Production", "🏭", "#EF4444",
+            "Manufacturing · Maintenance · Quality and Quantity Controls"),
+        (DepartmentType.Warehouse, "Warehouse", "Warehouse", "📦", "#F97316",
+            "Inventory · Stock Levels · Resource Planning · Storage"),
+        (DepartmentType.Logistics, "Logistics", "Logistics", "🚚", "#06B6D4",
+            "Shipments · Routes · Delivery SLAs · Fleet and Vehicle Controls"),
+        (DepartmentType.Management, "Board Chairman", "Management", "🏛️", "#EAB308",
+            "Full Oversight · All Reports · Strategic Decisions"),
+    ];
 
     public LobbyViewModel(OnboardingFlowService flow)
     {
         _flow = flow;
 
-        RoomCode = flow.SessionConfig?.RoomCode ?? "";
-        IsHost = flow.SessionConfig?.Players.Any(p => p.IsLocalPlayer && p.IsHost) ?? false;
+        var config = flow.SessionConfig;
+        IsMultiplayer = config?.IsMultiplayer ?? false;
+        RoomCode = config?.RoomCode ?? "";
+        IsHost = config?.Players.Any(p => p.IsLocalPlayer && p.IsHost) ?? true;
 
-        BuildSlots();
+        PlayerName = flow.CurrentProfile?.Username ?? "Player";
+        PlayerAvatar = flow.CurrentProfile?.AvatarEmoji ?? "👤";
+        PlayerLevel = flow.CurrentProfile?.Level ?? 1;
+
+        IsDarkTheme = ThemeService.Instance.IsDark;
+
+        BuildCards();
         SyncPlayers();
-        RefreshFlowState();
+        RefreshCompanyState();
+        SyncCardClaims();
+        EvaluateCanStart();
 
-        // Simulate ping updates
-        _pingTimer = new DispatcherTimer
-        {
-            Interval = TimeSpan.FromSeconds(2)
-        };
+        _pingTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(2) };
         _pingTimer.Tick += (_, _) => SimulatePingUpdate();
         _pingTimer.Start();
     }
 
     // ── Commands ──────────────────────────────────────────────
+
+    [RelayCommand]
+    private void ToggleTheme()
+    {
+        ThemeService.Instance.Toggle();
+        IsDarkTheme = ThemeService.Instance.IsDark;
+    }
 
     [RelayCommand]
     private void CopyRoomCode()
@@ -90,52 +126,51 @@ public partial class LobbyViewModel : ViewModelBase
 
     /// <summary>Host-only: leaves the lobby to configure company/industry/difficulty.</summary>
     [RelayCommand]
-    private void ConfigureCompany()
-    {
-        _flow.ProceedToCompanySetup();
-    }
-
-    /// <summary>
-    /// Leaves the lobby to pick a department. Used by both the host
-    /// (after configuring the company) and joining players (immediately).
-    /// </summary>
-    [RelayCommand]
-    private void PickDepartment()
-    {
-        _flow.ProceedToDepartmentSelection();
-    }
+    private void ConfigureCompany() => _flow.ProceedToCompanySetup();
 
     [RelayCommand]
-    private void ToggleReady()
+    private void SelectCard(DepartmentSelectionCard card)
     {
-        // Can't ready up without a department assigned yet.
+        if (card.IsTaken) return;
+        if (IsReady) return; // un-ready first to change departments
+
+        _flow.SelectDepartment(card.Role);
+
+        HasLocalDepartment = true;
+        PlayerDepartmentName = card.Department;
+        PreviewCard = card;
+
+        SyncCardClaims();
+    }
+
+    /// <summary>Hover preview — wired from the view's PointerEntered handler.</summary>
+    [RelayCommand]
+    private void SetPreview(DepartmentSelectionCard card) => PreviewCard = card;
+
+    [RelayCommand]
+    private void PrintIdCard()
+    {
         if (!HasLocalDepartment) return;
 
         IsReady = !IsReady;
+        PrintButtonLabel = IsReady ? "✓ ID Printed" : "Print My ID Card";
 
-        var local = _flow.SessionConfig?.Players
-            .FirstOrDefault(p => p.IsLocalPlayer);
-
+        var local = _flow.SessionConfig?.Players.FirstOrDefault(p => p.IsLocalPlayer);
         if (local != null)
-        {
-            local.Status = IsReady
-                ? LobbyPlayerStatus.Ready
-                : LobbyPlayerStatus.Connected;
-        }
+            local.Status = IsReady ? LobbyPlayerStatus.Ready : LobbyPlayerStatus.Connected;
 
         SyncPlayers();
         EvaluateCanStart();
 
         StatusMessage = IsReady
-            ? "You are ready. Waiting for others..."
-            : "Waiting for players...";
+            ? "ID printed. Waiting for the rest of the team..."
+            : "Update your department, then print your ID again.";
     }
 
     [RelayCommand]
     private void StartGame()
     {
         if (!CanStart) return;
-
         _pingTimer.Stop();
         _flow.LaunchGame();
     }
@@ -149,30 +184,54 @@ public partial class LobbyViewModel : ViewModelBase
 
     // ── Internal ──────────────────────────────────────────────
 
-    private void BuildSlots()
+    private void BuildCards()
     {
-        Slots.Clear();
-        for (int i = 0; i < RoleSlots.Length; i++)
+        Cards.Clear();
+        foreach (var (department, title, deptLabel, emoji, color, resp) in DepartmentData)
         {
-            var (role, emoji, color) = RoleSlots[i];
-            Slots.Add(new LobbySlotModel
+            Cards.Add(new DepartmentSelectionCard
             {
-                SlotIndex = i,
-                RoleName = role,
-                RoleEmoji = emoji,
+                Role = department,
+                Title = title,
+                Department = deptLabel,
+                Emoji = emoji,
                 AccentColor = color,
-                IsOccupied = false,
+                ResponsibilitiesSummary = resp,
             });
         }
+    }
+
+    private void SyncCardClaims()
+    {
+        var config = _flow.SessionConfig;
+        int covered = 0;
+
+        foreach (var card in Cards)
+        {
+            var claimedBy = config?.Players.FirstOrDefault(p => p.AssignedRole == card.Role);
+            bool isLocal = claimedBy?.IsLocalPlayer == true;
+            bool isTakenByOther = claimedBy != null && !isLocal;
+
+            card.IsTaken = isTakenByOther;
+            card.TakenByUsername = isTakenByOther ? claimedBy!.Username : null;
+            card.IsSelected = isLocal;
+
+            if (claimedBy != null && card.Role != DepartmentType.Management)
+                covered++;
+        }
+
+        DepartmentsCovered = Math.Min(covered, DepartmentsTotal);
+        CoverageRatio = DepartmentsTotal > 0 ? (double)DepartmentsCovered / DepartmentsTotal : 0;
+
+        SelectedCard = Cards.FirstOrDefault(c => c.IsSelected);
+        PreviewCard ??= SelectedCard ?? Cards.FirstOrDefault();
     }
 
     private void SyncPlayers()
     {
         Players.Clear();
 
-        var sessionPlayers = _flow.SessionConfig?.Players ?? [];
-
-        foreach (var p in sessionPlayers)
+        foreach (var p in _flow.SessionConfig?.Players ?? [])
         {
             Players.Add(new LobbyPlayerRowModel
             {
@@ -199,42 +258,48 @@ public partial class LobbyViewModel : ViewModelBase
                 PingMs = p.PingMs,
             });
         }
-
-        // Fill remaining slots as empty
-        int emptySlots = Math.Max(0, 2 - Players.Count);
-        for (int i = 0; i < emptySlots; i++)
-        {
-            Players.Add(new LobbyPlayerRowModel { IsEmpty = true });
-        }
     }
 
-    /// <summary>
-    /// Recomputes the company-configured / department-picked gating state.
-    /// Called on construction; since a fresh LobbyViewModel is created each
-    /// time the onboarding shell routes back to the Lobby screen, this is
-    /// sufficient to reflect state after a detour to CompanySetup or
-    /// DepartmentSelection.
-    /// </summary>
-    private void RefreshFlowState()
+    private void RefreshCompanyState()
     {
         IsCompanyConfigured = _flow.IsCompanyConfigured;
-        HasLocalDepartment = _flow.LocalPlayerHasDepartment;
-
-        // Host must configure the company before picking a department.
-        // Joiners skip straight to department picking.
         ShowConfigureCompanyButton = IsHost && !IsCompanyConfigured;
-        ShowPickDepartmentButton = (!IsHost || IsCompanyConfigured) && !HasLocalDepartment;
+        ShowWaitingForCompany = !IsHost && !IsCompanyConfigured;
+
+        var config = _flow.SessionConfig;
+        CompanyName = config?.CompanyName ?? "";
+        IndustryLabel = config?.Industry.ToString() ?? "";
+        DifficultyLabel = config?.Difficulty.ToString() ?? "";
+        CapitalDisplay = config != null ? $"${config.InitialCapital:N0}" : "";
 
         CompanyConfigSummary = IsCompanyConfigured
-            ? $"{_flow.SessionConfig?.CompanyName} · {_flow.SessionConfig?.Industry} · {_flow.SessionConfig?.Difficulty} Difficulty"
+            ? $"{CompanyName} · {IndustryLabel} · {DifficultyLabel} Difficulty"
             : IsHost
                 ? "Configure your company to continue."
                 : "Waiting for the host to configure the company...";
+
+        var localPlayer = config?.Players.FirstOrDefault(p => p.IsLocalPlayer);
+        HasLocalDepartment = localPlayer?.AssignedRole.HasValue ?? false;
+        if (HasLocalDepartment)
+            PlayerDepartmentName = DepartmentTypeToNameConverter.GetDisplayName(localPlayer!.AssignedRole!.Value);
+
+        if (!IsCompanyConfigured)
+        {
+            StatusMessage = IsHost
+                ? "Configure your company to unlock department selection."
+                : "Waiting for the host to configure the company...";
+        }
     }
 
     private void EvaluateCanStart()
     {
-        if (!IsHost) return;
+        if (!IsMultiplayer)
+        {
+            CanStart = IsCompanyConfigured && HasLocalDepartment;
+            return;
+        }
+
+        if (!IsHost) { CanStart = false; return; }
 
         var players = _flow.SessionConfig?.Players ?? [];
         CanStart = IsCompanyConfigured
@@ -247,17 +312,16 @@ public partial class LobbyViewModel : ViewModelBase
     {
         LocalPing = Random.Shared.Next(8, 45);
 
-        var local = _flow.SessionConfig?.Players
-            .FirstOrDefault(p => p.IsLocalPlayer);
-
+        var local = _flow.SessionConfig?.Players.FirstOrDefault(p => p.IsLocalPlayer);
         if (local != null)
             local.PingMs = LocalPing;
 
         SyncPlayers();
+        SyncCardClaims();
     }
 }
 
-// ── Row models ────────────────────────────────────────────────────────────────
+// ── Row model ────────────────────────────────────────────────────────────────
 
 public class LobbyPlayerRowModel
 {
@@ -270,15 +334,4 @@ public class LobbyPlayerRowModel
     public string StatusLabel { get; set; } = "";
     public string StatusColor { get; set; } = "#6B7280";
     public int PingMs { get; set; }
-    public bool IsEmpty { get; set; }
-}
-
-public class LobbySlotModel
-{
-    public int SlotIndex { get; set; }
-    public string RoleName { get; set; } = "";
-    public string RoleEmoji { get; set; } = "";
-    public string AccentColor { get; set; } = "";
-    public bool IsOccupied { get; set; }
-    public string? OccupiedBy { get; set; }
 }

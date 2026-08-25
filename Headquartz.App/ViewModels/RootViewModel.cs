@@ -36,21 +36,23 @@ public partial class RootViewModel : ViewModelBase
 
         var simulation = new SimulationService(profile, industry);
 
-        // Apply company name from session config
         if (!string.IsNullOrEmpty(flow.SessionConfig?.CompanyName))
             simulation.Engine.Company.Name = flow.SessionConfig.CompanyName;
 
-        // Determine starting department for the local player
         var localPlayer = flow.SessionConfig?.Players
             .FirstOrDefault(p => p.IsLocalPlayer);
 
         var startingDepartment = localPlayer?.AssignedRole
             ?? DepartmentType.Management;
 
-        // Start simulation loop
+        // Under 7 players, nobody has full coverage — everyone can switch into
+        // any unclaimed department from the shell's role picker. At 7, seats
+        // are 1:1 and the switcher locks.
+        int playerCount = flow.SessionConfig?.Players.Count ?? 1;
+        bool canSwitchDepartments = playerCount < 7;
+
         _ = simulation.StartAsync();
 
-        // Swap shell to gameplay
-        ActiveShell = new ShellViewModel(simulation, startingDepartment);
+        ActiveShell = new ShellViewModel(simulation, startingDepartment, canSwitchDepartments);
     }
 }

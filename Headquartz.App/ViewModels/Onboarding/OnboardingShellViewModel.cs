@@ -56,9 +56,6 @@ public partial class OnboardingShellViewModel : ViewModelBase
             OnboardingScreen.CompanySetup =>
                 new CompanySetupViewModel(_flow),
 
-            OnboardingScreen.DepartmentSelection =>
-                new DepartmentSelectionViewModel(_flow),
-
             OnboardingScreen.Gameplay =>
                 HandleGameplayTransition(),
 
