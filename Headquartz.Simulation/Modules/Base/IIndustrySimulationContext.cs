@@ -24,6 +24,7 @@ public interface IIndustrySimulationContext
     // ── Seeding ──
     IReadOnlyList<InventoryItem> GetInitialInventory();
     IReadOnlyList<Employee> GetInitialEmployees();
+    IReadOnlyList<Department> GetInitialDepartments();
 
     // ── Order Generation ──
     string GetRandomClientName();

@@ -123,4 +123,38 @@ public abstract class IndustrySimulationContextBase : IIndustrySimulationContext
     // ── Flags ──
     public virtual bool HasPhysicalProducts => true;
     public virtual bool HasPerishableInventory => false;
+
+    /// <summary>
+    /// Default department seed: the standard 7 departments at baseline
+    /// budget/efficiency, adjusted by this industry's own profile deltas
+    /// (DepartmentEfficiencyDelta / DepartmentBudgetDelta). Override this
+    /// only if an industry needs department stats that can't be expressed
+    /// as a delta on the shared baseline.
+    /// </summary>
+    public virtual IReadOnlyList<Department> GetInitialDepartments()
+    {
+        var profile = GetProfile();
+
+        var departments = new List<Department>
+        {
+            new() { Type = DepartmentType.HumanResources, Budget = 10_000, Efficiency = 50 },
+            new() { Type = DepartmentType.Finance,        Budget = 15_000, Efficiency = 60 },
+            new() { Type = DepartmentType.Sales,          Budget = 12_000, Efficiency = 55 },
+            new() { Type = DepartmentType.Marketing,      Budget = 12_000, Efficiency = 50 },
+            new() { Type = DepartmentType.Production,     Budget = 25_000, Efficiency = 70 },
+            new() { Type = DepartmentType.Warehouse,      Budget = 10_000, Efficiency = 50 },
+            new() { Type = DepartmentType.Logistics,      Budget = 15_000, Efficiency = 60 },
+        };
+
+        foreach (var dept in departments)
+        {
+            if (profile.DepartmentEfficiencyDelta.TryGetValue(dept.Type, out int effDelta))
+                dept.Efficiency = Math.Clamp(dept.Efficiency + effDelta, 0, 100);
+
+            if (profile.DepartmentBudgetDelta.TryGetValue(dept.Type, out decimal budgetDelta))
+                dept.Budget = Math.Max(0, dept.Budget + budgetDelta);
+        }
+
+        return departments;
+    }
 }

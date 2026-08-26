@@ -554,8 +554,15 @@ public class SimulationEngine
 
     private void SeedDepartments()
     {
-        var departments = new List<Department>
+        if (IndustryContext != null)
         {
+            Company.Departments = IndustryContext.GetInitialDepartments().ToList();
+            return;
+        }
+
+        // Absolute fallback — no industry context available
+        Company.Departments =
+        [
             new() { Type = DepartmentType.HumanResources, Budget = 10_000, Efficiency = 50 },
             new() { Type = DepartmentType.Finance,        Budget = 15_000, Efficiency = 60 },
             new() { Type = DepartmentType.Sales,          Budget = 12_000, Efficiency = 55 },
@@ -563,18 +570,7 @@ public class SimulationEngine
             new() { Type = DepartmentType.Production,     Budget = 25_000, Efficiency = 70 },
             new() { Type = DepartmentType.Warehouse,      Budget = 10_000, Efficiency = 50 },
             new() { Type = DepartmentType.Logistics,      Budget = 15_000, Efficiency = 60 },
-        };
-
-        foreach (var dept in departments)
-        {
-            if (_industryProfile.DepartmentEfficiencyDelta.TryGetValue(dept.Type, out int effDelta))
-                dept.Efficiency = Math.Clamp(dept.Efficiency + effDelta, 0, 100);
-
-            if (_industryProfile.DepartmentBudgetDelta.TryGetValue(dept.Type, out decimal budgetDelta))
-                dept.Budget = Math.Max(0, dept.Budget + budgetDelta);
-        }
-
-        Company.Departments = departments;
+        ];
     }
 
     private void SeedEmployees()
@@ -630,12 +626,6 @@ public class SimulationEngine
             return;
         }
 
-        // Absolute fallback
-        Company.Inventory =
-        [
-            new() { Id = Guid.NewGuid(), Name = "Steel",       Quantity = 500, UnitCost = 10, MinimumStock = 100, MaximumStock = 1_000 },
-            new() { Id = Guid.NewGuid(), Name = "Plastic",     Quantity = 300, UnitCost =  5, MinimumStock =  50, MaximumStock =   800 },
-            new() { Id = Guid.NewGuid(), Name = "Electronics", Quantity = 150, UnitCost = 25, MinimumStock =  40, MaximumStock =   400 },
-        ];
+        
     }
 }
