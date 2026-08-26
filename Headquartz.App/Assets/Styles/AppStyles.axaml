@@ -134,6 +134,24 @@
 		<Setter Property="VerticalScrollBarVisibility"   Value="Auto"/>
 	</Style>
 
+
+
+
+	<!-- BORDER STYLE CLASSES -->
+		<Style Selector="Border.dept-tile">
+            <Setter Property="Background" Value="{DynamicResource BrushBgSurface}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BrushBorderSubtle}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
+        <Style Selector="Border.dept-tile.selected">
+            <Setter Property="BorderBrush" Value="{DynamicResource BrushAccentPrimary}"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="Background" Value="{DynamicResource BrushBgElevated}"/>
+        </Style>
+        <Style Selector="Border.dept-tile.taken">
+            <Setter Property="Opacity" Value="0.45"/>
+        </Style>
+
 	<Style Selector="Border.page">
 		<Setter Property="BorderBrush"     Value="{DynamicResource BrushBorderSubtle}"/>
 		<Setter Property="CornerRadius"    Value="{DynamicResource RadiusLg}"/>
@@ -142,8 +160,6 @@
 		<Setter Property="HorizontalAlignment"        Value="Stretch"/>
 		<Setter Property="BorderThickness" Value="1"/>
 	</Style>
-
-	<!-- BORDER CARD CLASSES -->
 
 	<Style Selector="Border.card">
 		<Setter Property="BorderBrush"     Value="{DynamicResource BrushBorderSubtle}"/>

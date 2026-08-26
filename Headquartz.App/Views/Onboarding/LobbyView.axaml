@@ -5,22 +5,6 @@
              x:Class="Headquartz.App.LobbyView"
              Background="{DynamicResource BrushBgBase}">
 
-    <UserControl.Styles>
-        <Style Selector="Border.dept-tile">
-            <Setter Property="Background" Value="{DynamicResource BrushBgSurface}"/>
-            <Setter Property="BorderBrush" Value="{DynamicResource BrushBorderSubtle}"/>
-            <Setter Property="BorderThickness" Value="1"/>
-        </Style>
-        <Style Selector="Border.dept-tile.selected">
-            <Setter Property="BorderBrush" Value="{DynamicResource BrushAccentPrimary}"/>
-            <Setter Property="BorderThickness" Value="2"/>
-            <Setter Property="Background" Value="{DynamicResource BrushBgElevated}"/>
-        </Style>
-        <Style Selector="Border.dept-tile.taken">
-            <Setter Property="Opacity" Value="0.45"/>
-        </Style>
-    </UserControl.Styles>
-
     <Grid RowDefinitions="Auto,*" Margin="24" RowSpacing="20">
 
         <!-- ═══════════ HEADER ═══════════ -->
@@ -186,26 +170,25 @@
                             </StackPanel>
                         </Grid>
 
+                        <!--Department Selection Items-->
                         <ItemsControl ItemsSource="{Binding Cards}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
-                                    <UniformGrid Columns="4" ColumnSpacing="12" RowSpacing="12"/>
+                                    <UniformGrid Columns="4" ColumnSpacing="10" RowSpacing="10"/>
                                 </ItemsPanelTemplate>
                             </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Button
-                                        Height="150"
-                                        Padding="0"
-                                        Background="Transparent"
-                                        BorderThickness="0"
-                                        IsEnabled="{Binding !IsTaken}"
-                                        PointerEntered="OnCardPointerEntered"
-                                        Command="{Binding $parent[ItemsControl].DataContext.SelectCardCommand}"
-                                        CommandParameter="{Binding}">
-
-                                        <Border
-                                            Classes="dept-tile"
+                                    <Button HorizontalAlignment="Stretch"
+                                                HorizontalContentAlignment="Stretch"                                    
+                                               Padding="0"
+                                                Background="Transparent"
+                                                BorderThickness="0"
+                                                IsEnabled="{Binding !IsTaken}"
+                                                PointerEntered="OnCardPointerEntered"
+                                                Command="{Binding $parent[ItemsControl].DataContext.SelectCardCommand}"
+                                                CommandParameter="{Binding}">
+                                        <Border Classes="card"
                                             Classes.selected="{Binding IsSelected}"
                                             Classes.taken="{Binding IsTaken}"
                                             CornerRadius="12"
@@ -213,12 +196,12 @@
 
                                             <Grid RowDefinitions="Auto,*,Auto">
 
-                                                <Border Grid.Row="0" Width="36" Height="36" CornerRadius="18"
-                                                        Background="{Binding AccentColor}" Opacity="0.22"
-                                                        HorizontalAlignment="Left"/>
-                                                <TextBlock Grid.Row="0" Text="{Binding Emoji}" FontSize="17"
-                                                           Width="36" Height="36" HorizontalAlignment="Left"                      
-                                                           VerticalAlignment="Center"/>
+                                                <Border Grid.Row="0" Width="40" Height="40  " CornerRadius="18"
+                                                        Background="{Binding AccentColor}" 
+                                                        HorizontalAlignment="Left">
+                                                <TextBlock Text="{Binding Emoji}" FontSize="25"   HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                </Border>
+                                                
 
                                                 <TextBlock Grid.Row="1" Text="{Binding Department}" FontSize="13"
                                                            FontWeight="SemiBold"
@@ -244,6 +227,9 @@
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
+
+                        <TextBlock Text="Keep others pick one" Classes="figure"/>
+
                     </StackPanel>
                 </Grid>
                     </StackPanel>
@@ -259,7 +245,7 @@
                             CornerRadius="12">
                         <Grid ColumnDefinitions="*,Auto">
                             <StackPanel Grid.Column="0" Spacing="2">
-                                <TextBlock Text="ROOM CODE" Classes="label-upper"/>
+                                <TextBlock Text="ROOM CODE" Classes="label-upper"/>                                
                                 <TextBlock Text="{Binding RoomCode}" FontSize="24" FontWeight="Black"
                                            Foreground="{DynamicResource BrushTextPrimary}" LetterSpacing="4"/>
                                 <TextBlock Text="Share this code with your team" Classes="caption"/>
