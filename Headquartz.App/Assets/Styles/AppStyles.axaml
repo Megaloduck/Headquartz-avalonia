@@ -90,6 +90,12 @@
 		<Setter Property="Background" Value="{DynamicResource BrushBgElevated}"/>
 	</Style>
 
+
+	<Style Selector="Button.active">
+			<Setter Property="BorderBrush" Value="{DynamicResource BrushAccentPrimary}"/>
+			<Setter Property="BorderThickness" Value="2"/>
+		</Style>
+
 	<!-- TEXTBOX -->
 
 	<Style Selector="TextBox">

@@ -7,23 +7,23 @@
 
 			<!-- HEADER -->
             <StackPanel Spacing="4">
-                <TextBlock FontSize="34" FontWeight="Bold" Text="Branding"/>
-				<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}"	 Text="Brand guidelines, advertising materials, content calendar, and brand sentiment."/>
+                <TextBlock Classes="page-title" Text="Branding"/>
+				<TextBlock Classes="page-subtitle" Text="Brand guidelines, advertising materials, content calendar, and brand sentiment."/>
             </StackPanel>		
 
 			<!-- KPI ROW -->
-			<ItemsControl ItemsSource="{Binding Kpis}">
+			<ItemsControl ItemsSource="{Binding Kpis}" HorizontalAlignment="Stretch">
 				<ItemsControl.ItemsPanel>
 					<ItemsPanelTemplate>
-						<WrapPanel ItemSpacing="10"/>
+						<UniformGrid Columns="5" ColumnSpacing="10" />
 					</ItemsPanelTemplate>
 				</ItemsControl.ItemsPanel>
 				<ItemsControl.ItemTemplate>
 					<DataTemplate>
-						<Border Width="200" Margin="0,5" Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
+						<Border	HorizontalAlignment="Stretch"	Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
 							<StackPanel>
-								<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="{Binding Title}"/>
-								<TextBlock FontSize="22" FontWeight="Bold" Text="{Binding Value}"/>
+								<TextBlock Classes="kpi-label"   Text="{Binding Title}"/>
+								<TextBlock Classes="kpi-value"   Text="{Binding Value}"/>
 							</StackPanel>
 						</Border>
 					</DataTemplate>

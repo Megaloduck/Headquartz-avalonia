@@ -16,17 +16,24 @@ public partial class HREmployeeManagementViewModel : ViewModelBase
 {
     private readonly SimulationService _simulation;
 
+    // ── KPIs ─────────────────────────────────────────────────
+
     [ObservableProperty] private int _totalEmployees;
     [ObservableProperty] private int _atRiskCount;
     [ObservableProperty] private decimal _totalPayroll;
     [ObservableProperty] private string _filterDepartment = "All";
 
+    // ── Collections ──────────────────────────────────────────
+
+    public ObservableCollection<KpiCardModel> Kpis { get; } = [];
     public ObservableCollection<EmployeeRowModel> Employees { get; } = [];
     public ObservableCollection<string> DepartmentFilters { get; } =
     [
         "All", "HumanResources", "Finance", "Sales",
         "Marketing", "Production", "Warehouse", "Logistics"
     ];
+
+    // ── Constructor ───────────────────────────────────────────
 
     public HREmployeeManagementViewModel(SimulationService simulation)
     {
@@ -39,6 +46,8 @@ public partial class HREmployeeManagementViewModel : ViewModelBase
     }
 
     partial void OnFilterDepartmentChanged(string value) => Refresh();
+
+    // ── Commands ──────────────────────────────────────────────
 
     [RelayCommand]
     private void FireEmployee(EmployeeRowModel row)
@@ -74,6 +83,8 @@ public partial class HREmployeeManagementViewModel : ViewModelBase
         Refresh();
     }
 
+    // ── Refresh ───────────────────────────────────────────────
+
     private void Refresh()
     {
         var company = _simulation.Engine.Company;
@@ -84,10 +95,56 @@ public partial class HREmployeeManagementViewModel : ViewModelBase
                 .Where(e => e.Department.ToString() == FilterDepartment)
                 .ToList();
 
+        // Update properties
         TotalEmployees = company.Employees.Count;
         AtRiskCount = company.Employees.Count(e => e.Morale <= 15);
         TotalPayroll = company.Employees.Sum(e => e.Salary);
 
+        // ── KPIs ──────────────────────────────────────────────
+        Kpis.Clear();
+
+        Kpis.Add(new KpiCardModel
+        {
+            Title = "Total Employees",
+            Value = TotalEmployees.ToString("N0")
+        });
+
+        Kpis.Add(new KpiCardModel
+        {
+            Title = "At-Risk Employees",
+            Value = AtRiskCount.ToString("N0")
+        });
+
+        Kpis.Add(new KpiCardModel
+        {
+            Title = "Monthly Payroll",
+            Value = $"${TotalPayroll:N0}"
+        });
+
+        // Add extra useful KPIs
+        // Fix: Explicitly cast double to decimal
+        decimal avgMorale = company.Employees.Any()
+            ? (decimal)company.Employees.Average(e => e.Morale)
+            : 0;
+
+        Kpis.Add(new KpiCardModel
+        {
+            Title = "Avg Morale",
+            Value = avgMorale > 0 ? $"{avgMorale:F0}%" : "N/A"
+        });
+
+        // Fix: Explicitly cast double to decimal
+        decimal avgProductivity = company.Employees.Any()
+            ? (decimal)company.Employees.Average(e => e.Productivity)
+            : 0;
+
+        Kpis.Add(new KpiCardModel
+        {
+            Title = "Avg Productivity",
+            Value = avgProductivity > 0 ? $"{avgProductivity:F0}%" : "N/A"
+        });
+
+        // ── Employees ──────────────────────────────────────────
         Employees.Clear();
         foreach (var emp in source.OrderBy(e => e.Morale))
         {

@@ -8,12 +8,10 @@
 
 		<!-- HEADER -->
 		<StackPanel Grid.Row="0" Margin="30,30,30,10" Spacing="4">
-			<TextBlock FontSize="34" FontWeight="Bold" Text="Communication"/>
+			<TextBlock Classes="page-title" Text="Communication"/>
 			<StackPanel Orientation="Horizontal" Spacing="20">
-				<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}"
-                    Text="{Binding WorldTime, StringFormat='World time: {0}'}"/>
-				<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}"
-                    Text="{Binding CurrentTick, StringFormat='Tick: {0}'}"/>
+				<TextBlock Classes="page-subtitle"        Text="{Binding WorldTime, StringFormat='World time: {0}'}"/>
+				<TextBlock Classes="page-subtitle"        Text="{Binding CurrentTick, StringFormat='Tick: {0}'}"/>
 			</StackPanel>
 		</StackPanel>
 

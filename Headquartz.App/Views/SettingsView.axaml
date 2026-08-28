@@ -6,21 +6,13 @@
              mc:Ignorable="d" d:DesignWidth="1100" d:DesignHeight="800"
              x:Class="Headquartz.App.SettingsView">
 
-	<UserControl.Styles>
-		<Style Selector="Button.active">
-			<Setter Property="BorderBrush" Value="{DynamicResource BrushAccentPrimary}"/>
-			<Setter Property="BorderThickness" Value="2"/>
-		</Style>
-	</UserControl.Styles>
-
-
+	
 	<ScrollViewer>
 		<StackPanel Margin="30" Spacing="20">
 
 			<StackPanel Spacing="4">
-				<TextBlock FontSize="34" FontWeight="Bold" Text="Settings"/>
-				<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextMuted}"
-                    Text="System preferences, simulation controls, and company configuration."/>
+				<TextBlock Classes="page-title"  Text="Settings"/>
+				<TextBlock Classes="page-subtitle"  Text="System preferences, simulation controls, and company configuration."/>
 			</StackPanel>
 
 			<!-- ═══════════════════════════════════════════ -->

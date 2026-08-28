@@ -9,27 +9,28 @@
 
 			<!-- HEADER -->
             <StackPanel Spacing="4">
-				<TextBlock FontSize="34" FontWeight="Bold" Text="Recruitment"/>
-				<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="Post jobs, track applicants, schedule interviews, manage offers"/>
+				<TextBlock Classes="page-title" Text="Recruitment"/>
+				<TextBlock Classes="page-subtitle"  Text="Post jobs, track applicants, schedule interviews, manage offers"/>
 			</StackPanel>
 
-			<!-- FUNDS ROW -->
-			<WrapPanel ItemSpacing=" 10">
-				<Border Width="220"  Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
-					<StackPanel>
-						<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="Available Cash"/>
-						<TextBlock FontSize="26" FontWeight="Bold"
-                            Text="{Binding CompanyCash, StringFormat='${0:N0}'}"/>
-					</StackPanel>
-				</Border>
-				<Border Width="220" Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
-					<StackPanel>
-						<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="Hire Cost (2× salary)"/>
-						<TextBlock FontSize="26" FontWeight="Bold"
-                            Text="{Binding HireCost, StringFormat='${0:N0}'}"/>
-					</StackPanel>
-				</Border>
-			</WrapPanel>
+			<!-- KPI ROW -->
+			<ItemsControl ItemsSource="{Binding Kpis}" HorizontalAlignment="Stretch">
+				<ItemsControl.ItemsPanel>
+					<ItemsPanelTemplate>
+						<UniformGrid Columns="5" ColumnSpacing="10" />
+					</ItemsPanelTemplate>
+				</ItemsControl.ItemsPanel>
+				<ItemsControl.ItemTemplate>
+					<DataTemplate>
+						<Border	HorizontalAlignment="Stretch"	Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
+							<StackPanel>
+								<TextBlock Classes="kpi-label"   Text="{Binding Title}"/>
+								<TextBlock Classes="kpi-value"   Text="{Binding Value}"/>
+							</StackPanel>
+						</Border>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
 
 			<!-- HIRE FORM -->
 			<Border Padding="28" Background="{DynamicResource BrushBgCard}" CornerRadius="12">

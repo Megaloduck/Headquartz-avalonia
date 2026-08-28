@@ -1,12 +1,14 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Headquartz.App.Converters;
+using Headquartz.App.Models;
 using Headquartz.App.Services;
 using Headquartz.Domain.Entities;
 using Headquartz.Domain.Enums;
 using Headquartz.Simulation.Commands;
 using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace Headquartz.App.ViewModels;
 
@@ -25,6 +27,10 @@ public partial class HRRecruitmentViewModel : ViewModelBase
     [ObservableProperty] private decimal _companyCash;
     [ObservableProperty] private decimal _hireCost;
 
+    // ── KPIs ──────────────────────────────────────────────────
+
+    public ObservableCollection<KpiCardModel> Kpis { get; } = [];
+
     // ── Dropdown sources ──────────────────────────────────────
 
     public ObservableCollection<EmployeeRole> AvailableRoles { get; } = [];
@@ -42,20 +48,72 @@ public partial class HRRecruitmentViewModel : ViewModelBase
         foreach (var d in Enum.GetValues<DepartmentType>())
             AvailableDepartments.Add(d);
 
-        RefreshCash();
+        Refresh();
 
-        _simulation.Engine.OnUpdated += RefreshCash;
+        _simulation.Engine.OnUpdated += Refresh;
     }
 
     partial void OnSalaryChanged(decimal value)
     {
         HireCost = value * 2;
+        UpdateKpis();
     }
 
-    private void RefreshCash()
+    private void Refresh()
     {
-        CompanyCash = _simulation.Engine.Company.Cash;
+        var company = _simulation.Engine.Company;
+
+        CompanyCash = company.Cash;
         HireCost = Salary * 2;
+
+        UpdateKpis();
+    }
+
+    private void UpdateKpis()
+    {
+        var company = _simulation.Engine.Company;
+
+        Kpis.Clear();
+
+        Kpis.Add(new KpiCardModel
+        {
+            Title = "Available Cash",
+            Value = $"${CompanyCash:N0}"
+        });
+
+        Kpis.Add(new KpiCardModel
+        {
+            Title = "Hire Cost (2× salary)",
+            Value = $"${HireCost:N0}"
+        });
+
+        // Additional useful KPIs
+        int totalEmployees = company.Employees.Count;
+        Kpis.Add(new KpiCardModel
+        {
+            Title = "Total Employees",
+            Value = totalEmployees.ToString("N0")
+        });
+
+        decimal avgSalary = company.Employees.Any()
+            ? company.Employees.Average(e => e.Salary)
+            : 0;
+        Kpis.Add(new KpiCardModel
+        {
+            Title = "Avg Salary",
+            Value = avgSalary > 0 ? $"${avgSalary:N0}" : "N/A"
+        });
+
+        // Department count
+        int deptCount = company.Employees
+            .Select(e => e.Department)
+            .Distinct()
+            .Count();
+        Kpis.Add(new KpiCardModel
+        {
+            Title = "Departments",
+            Value = deptCount.ToString("N0")
+        });
     }
 
     // ── Commands ──────────────────────────────────────────────
@@ -96,6 +154,8 @@ public partial class HRRecruitmentViewModel : ViewModelBase
         StatusMessage = $"✅ {EmployeeName} hired as {SelectedRole} in {DepartmentTypeToNameConverter.GetDisplayName(SelectedDepartment)}.";
         IsSuccess = true;
         EmployeeName = "";
+
+        Refresh();
     }
 
     [RelayCommand]

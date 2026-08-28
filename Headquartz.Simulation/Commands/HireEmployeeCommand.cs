@@ -31,7 +31,14 @@ public class HireEmployeeCommand
     public bool Validate(
         SimulationEngine engine)
     {
-        return engine.Company.Cash >= Salary * 2;
+        decimal buffer = Salary * 2;
+
+        // Company must be solvent AND the hiring department must have
+        // enough of its own Budget to cover the buffer. If the
+        // department's short, the fix is a RequestBudgetIncreaseCommand
+        // to Finance — not a straight hire against shared Cash.
+        return engine.Company.Cash >= buffer &&
+               DepartmentBudgetGuard.CanAfford(engine, Department, buffer);
     }
 
     public void Execute(
@@ -58,5 +65,7 @@ public class HireEmployeeCommand
             employee);
 
         engine.Company.Cash -= Salary;
+
+        DepartmentBudgetGuard.Spend(engine, Department, Salary);
     }
 }

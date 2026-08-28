@@ -34,7 +34,15 @@ public partial class FinanceBudgetAllocationViewModel : ViewModelBase
     [ObservableProperty] private decimal _totalOperationalCost;
     [ObservableProperty] private decimal _companyCash;
 
+    // ── KPIs ──────────────────────────────────────────────────
+
+    public ObservableCollection<KpiCardModel> Kpis { get; } = [];
+
+    // ── Collections ──────────────────────────────────────────
+
     public ObservableCollection<BudgetRowEditModel> Departments { get; } = [];
+
+    // ── Constructor ───────────────────────────────────────────
 
     public FinanceBudgetAllocationViewModel(SimulationService simulation)
     {
@@ -127,6 +135,59 @@ public partial class FinanceBudgetAllocationViewModel : ViewModelBase
             row.StressLevel = dept.StressLevel;
             row.StaffCount = company.Employees.Count(e => e.Department == row.Type);
         }
+
+        // ── KPIs ──────────────────────────────────────────────
+        UpdateKpis();
+    }
+
+    private void UpdateKpis()
+    {
+        var company = _simulation.Engine.Company;
+
+        Kpis.Clear();
+
+        Kpis.Add(new KpiCardModel
+        {
+            Title = "Company Cash",
+            Value = $"${CompanyCash:N0}"
+        });
+
+        Kpis.Add(new KpiCardModel
+        {
+            Title = "Total Budget Allocated",
+            Value = $"${TotalBudget:N0}"
+        });
+
+        Kpis.Add(new KpiCardModel
+        {
+            Title = "Operational Cost / Tick",
+            Value = $"${TotalOperationalCost:N0}"
+        });
+
+        // Additional useful KPIs
+        // Fix: Explicitly cast double to decimal
+        decimal avgEfficiency = Departments.Any()
+            ? (decimal)Departments.Average(d => d.Efficiency)
+            : 0;
+
+        Kpis.Add(new KpiCardModel
+        {
+            Title = "Avg Dept Efficiency",
+            Value = avgEfficiency > 0 ? $"{avgEfficiency:F0}%" : "N/A"
+        });
+
+        // Fix: Explicitly cast double to decimal
+        decimal avgStress = Departments.Any()
+            ? (decimal)Departments.Average(d => d.StressLevel)
+            : 0;
+
+        Kpis.Add(new KpiCardModel
+        {
+            Title = "Avg Dept Stress",
+            Value = avgStress > 0 ? $"{avgStress:F0}%" : "N/A"
+        });
+
+       
     }
 
     private void ApplyBudget(BudgetRowEditModel row)

@@ -58,7 +58,7 @@
 					<ItemsControl ItemsSource="{Binding Metrics}">
     <ItemsControl.ItemsPanel>
         <ItemsPanelTemplate>
-            <UniformGrid Columns="4" ColumnSpacing="10" />
+            <UniformGrid Columns="4" ColumnSpacing="10" RowSpacing="10" />
         </ItemsPanelTemplate>
     </ItemsControl.ItemsPanel>
 

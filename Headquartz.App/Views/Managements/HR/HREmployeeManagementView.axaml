@@ -9,31 +9,28 @@
 
 			<!-- HEADER -->
             <StackPanel Spacing="4">
-				<TextBlock FontSize="34" FontWeight="Bold" Text="Employee Management"/>
-				<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="Staff directory, search or filter, contract details, employment history and status."/>
+				<TextBlock Classes="page-title" Text="Employee Management"/>
+				<TextBlock Classes="page-subtitle" Text="Staff directory, search or filter, contract details, employment history and status."/>
 			</StackPanel>
 
-			<!-- SUMMARY ROW -->
-			<WrapPanel ItemSpacing="10">
-				<Border Width="200" Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
-					<StackPanel>
-						<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="Total Employees"/>
-						<TextBlock FontSize="28" FontWeight="Bold" Text="{Binding TotalEmployees}"/>
-					</StackPanel>
-				</Border>
-				<Border Width="200"  Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
-					<StackPanel>
-						<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="At-Risk Employees"/>
-						<TextBlock FontSize="28" FontWeight="Bold" Text="{Binding AtRiskCount}"/>
-					</StackPanel>
-				</Border>
-				<Border Width="200" Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
-					<StackPanel>
-						<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="Monthly Payroll"/>
-						<TextBlock FontSize="28" FontWeight="Bold" Text="{Binding TotalPayroll, StringFormat='${0:N0}'}"/>
-					</StackPanel>
-				</Border>
-			</WrapPanel>
+			<!-- KPI ROW -->
+			<ItemsControl ItemsSource="{Binding Kpis}" HorizontalAlignment="Stretch">
+				<ItemsControl.ItemsPanel>
+					<ItemsPanelTemplate>
+						<UniformGrid Columns="5" ColumnSpacing="10" />
+					</ItemsPanelTemplate>
+				</ItemsControl.ItemsPanel>
+				<ItemsControl.ItemTemplate>
+					<DataTemplate>
+						<Border	HorizontalAlignment="Stretch"	Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
+							<StackPanel>
+								<TextBlock Classes="kpi-label"   Text="{Binding Title}"/>
+								<TextBlock Classes="kpi-value"   Text="{Binding Value}"/>
+							</StackPanel>
+						</Border>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
 
 			<!-- FILTER -->
 			<StackPanel Orientation="Horizontal" Spacing="12">

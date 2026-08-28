@@ -36,7 +36,10 @@ public class CreateTaskCommand
     public bool Validate(
         SimulationEngine engine)
     {
-        return engine.Company.Cash >= BudgetCost;
+        // Same dual gate as hiring: company-wide solvency plus the
+        // requesting department's own remaining allocation.
+        return engine.Company.Cash >= BudgetCost &&
+               DepartmentBudgetGuard.CanAfford(engine, Department, BudgetCost);
     }
 
     public void Execute(
@@ -73,5 +76,7 @@ public class CreateTaskCommand
         engine.Company.Tasks.Add(task);
 
         engine.Company.Cash -= BudgetCost;
+
+        DepartmentBudgetGuard.Spend(engine, Department, BudgetCost);
     }
 }

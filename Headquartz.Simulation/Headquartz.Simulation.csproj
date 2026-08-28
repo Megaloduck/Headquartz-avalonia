@@ -7,6 +7,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Phase\" />
     <Folder Include="Schedulers\" />
   </ItemGroup>
 

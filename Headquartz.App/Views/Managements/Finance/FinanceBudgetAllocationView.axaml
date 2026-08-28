@@ -9,34 +9,29 @@
 
 			<!-- HEADER -->
             <StackPanel Spacing="4">
-				<TextBlock FontSize="34" FontWeight="Bold" Text="Budget Allocation"/>
-				<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="Create budgets, allocate funds, track department spending, and forecast adjustments."/>
+				<TextBlock Classes="page-title"  Text="Budget Allocation"/>
+				<TextBlock Classes="page-subtitle"  Text="Create budgets, allocate funds, track department spending, and forecast adjustments."/>
 			</StackPanel>
 
-			<!-- SUMMARY ROW -->
-			<WrapPanel ItemSpacing="10	">
-				<Border Width="200" Margin="0,5" Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
-					<StackPanel>
-						<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="Company Cash"/>
-						<TextBlock FontSize="23" FontWeight="Bold"
-                            Text="{Binding CompanyCash, StringFormat='${0:N0}'}"/>
-					</StackPanel>
-				</Border>
-				<Border Width="200" Margin="0,5" Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
-					<StackPanel>
-						<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="Total Budget Allocated"/>
-						<TextBlock FontSize="23" FontWeight="Bold"
-                            Text="{Binding TotalBudget, StringFormat='${0:N0}'}"/>
-					</StackPanel>
-				</Border>
-				<Border Width="200" Margin="0,5" Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
-					<StackPanel>
-						<TextBlock FontSize="13" Foreground="{DynamicResource BrushTextSecondary}" Text="Operational Cost / Tick"/>
-						<TextBlock FontSize="23" FontWeight="Bold"
-                            Text="{Binding TotalOperationalCost, StringFormat='${0:N0}'}"/>
-					</StackPanel>
-				</Border>
-			</WrapPanel>
+			<!-- KPI ROW -->
+			<ItemsControl ItemsSource="{Binding Kpis}" HorizontalAlignment="Stretch">
+				<ItemsControl.ItemsPanel>
+					<ItemsPanelTemplate>
+						<UniformGrid Columns="5" ColumnSpacing="10" />
+					</ItemsPanelTemplate>
+				</ItemsControl.ItemsPanel>
+				<ItemsControl.ItemTemplate>
+					<DataTemplate>
+						<Border	HorizontalAlignment="Stretch"	Padding="20" Background="{DynamicResource BrushBgCard}" CornerRadius="12">
+							<StackPanel>
+								<TextBlock Classes="kpi-label"   Text="{Binding Title}"/>
+								<TextBlock Classes="kpi-value"   Text="{Binding Value}"/>
+							</StackPanel>
+						</Border>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
+
 
 			<!-- ACTIONS -->
 			<WrapPanel ItemSpacing="10">

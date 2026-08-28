@@ -5,8 +5,6 @@
              x:Class="Headquartz.App.CompanySetupView"
              Background="{DynamicResource BrushBgBase}">
 
-  
-
 
         <Grid RowDefinitions="Auto,*" Margin="20" RowSpacing="20">
 
