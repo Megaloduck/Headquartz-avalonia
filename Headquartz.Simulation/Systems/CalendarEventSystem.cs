@@ -17,6 +17,15 @@ public class CalendarEventSystem
     private readonly List<ActiveEvent> _activeEvents = [];
     private readonly HashSet<string> _firedToday = [];
 
+    /// <summary>
+    /// Tracks manual-trigger definitions (e.g. "grand-opening") that have
+    /// already fired, so a repeated DeclareGrandOpeningCommand — or any
+    /// future manual-trigger definition — can't double-apply its effects.
+    /// Unlike _firedToday this never resets; a manual event fires at most
+    /// once per game, whenever it's triggered.
+    /// </summary>
+    private readonly HashSet<string> _manuallyFiredIds = [];
+
     private DateTime _lastCheckedDate = DateTime.MinValue;
 
     /// <summary>
@@ -39,8 +48,13 @@ public class CalendarEventSystem
             _lastCheckedDate = today;
         }
 
-        // 1. Check for scheduled events that start today
-        foreach (var def in CalendarEventRegistry.GetActiveForDate(today))
+        // 1. Check for scheduled events that start today. Manual-trigger
+        //    definitions (e.g. "grand-opening") are excluded here — they
+        //    only fire via TriggerManualEvent, called from the command
+        //    that represents the team's actual decision
+        //    (DeclareGrandOpeningCommand), not from a calendar date.
+        foreach (var def in CalendarEventRegistry.GetActiveForDate(today)
+                     .Where(d => !d.IsManualTrigger))
         {
             if (_firedToday.Contains(def.Id)) continue;
 
@@ -68,6 +82,28 @@ public class CalendarEventSystem
 
         // 4. Remove expired events
         _activeEvents.RemoveAll(a => a.RemainingTicks <= 0);
+    }
+
+    // =========================================================
+    // MANUAL TRIGGER (e.g. DeclareGrandOpeningCommand)
+    // =========================================================
+
+    /// <summary>
+    /// Fires a manual-trigger definition right now, at the current
+    /// simulation date, instead of waiting for a calendar match. No-ops
+    /// if the definition doesn't exist or has already been manually
+    /// fired once — a manual event only ever starts once per game,
+    /// whenever the triggering command actually runs.
+    /// </summary>
+    public void TriggerManualEvent(SimulationEngine engine, string definitionId)
+    {
+        if (_manuallyFiredIds.Contains(definitionId)) return;
+
+        var def = CalendarEventRegistry.GetById(definitionId);
+        if (def == null) return;
+
+        _manuallyFiredIds.Add(definitionId);
+        StartEvent(engine, def, engine.Clock.WorldTime.Date);
     }
 
     // =========================================================

@@ -66,7 +66,17 @@ public class SimulationEngine
             Name = "Headquartz Industries",
             Industry = industry,
             Cash = profile.InitialCapital * _industryProfile.CashMultiplier,
-            Reputation = _industryProfile.StartingReputation,
+
+            // Founding starts at zero reputation regardless of industry —
+            // nobody knows the company exists yet. Reputation is earned
+            // through Marketing/Sales during Pre-Opening and beyond, not
+            // inherited from the industry template. This intentionally
+            // supersedes _industryProfile.StartingReputation, which is
+            // left defined (unused for this purpose) rather than removed,
+            // in case a future "veteran founder" mode wants it back.
+            Reputation = 0,
+
+            Phase = CompanyPhase.PreOpening,
         };
 
         Events = new EventBus();
@@ -123,23 +133,73 @@ public class SimulationEngine
     // MAIN UPDATE LOOP
     // =========================================================
 
+    /// <summary>
+    /// The ambient simulation — the steady-state systems loop, random
+    /// event/task/order generation, and stress cascade — is dormant
+    /// during CompanyPhase.PreOpening. Founding is meant to be a calm
+    /// setup window: players hire, allocate budget, and stock up
+    /// through their own commands (never gated), but nothing automatic
+    /// fires at them yet. DeclareGrandOpeningCommand flips the phase and
+    /// switches all of it on.
+    ///
+    /// This single gate replaces what would otherwise be several
+    /// separate, easy-to-miss bugs if departments simply started empty
+    /// with the old always-on update loop:
+    ///   - HumanResourcesSystem.UpdateDepartmentStress adds +10 stress
+    ///     per tick to any department with zero staff — every
+    ///     department, every tick, until first hire. Left unguarded
+    ///     this maxes stress out in roughly one work hour and starts
+    ///     firing DepartmentCrisisEvent during the exact phase where
+    ///     being unstaffed is the expected starting condition.
+    ///   - ProcessInventory publishes InventoryLowEvent whenever
+    ///     Quantity <= MinimumStock, which is unconditionally true for
+    ///     a freshly seeded catalog sitting at Quantity 0 (see
+    ///     SeedInventory). HandleInventoryLow then drains Cash and dings
+    ///     Reputation for every catalog item, every tick — punishing a
+    ///     warehouse for being empty by design, before Warehouse has
+    ///     had a chance to authorize anything.
+    ///   - WarehouseSystem auto-restocks (spends Cash, adds 25 units)
+    ///     any item under MinimumStock. At Quantity 0 that's every
+    ///     catalog item, every tick — the game would silently stock the
+    ///     warehouse on its own, which defeats "Warehouse authorizes
+    ///     goods" as a deliberate founding action entirely.
+    ///
+    /// Payroll, manual task processing, and calendar/holiday effects
+    /// stay on regardless of phase — salaries owed are owed from day
+    /// one, a task a player explicitly created should still run, and
+    /// real-world calendar time doesn't pause just because the company
+    /// hasn't opened yet.
+    /// </summary>
     private void Update()
     {
         Commands.Process(this);
         Clock.Advance();
 
-        foreach (var system in _systems)
-            system.Update(this);
+        if (Company.Phase == CompanyPhase.GrandOpening)
+        {
+            foreach (var system in _systems)
+                system.Update(this);
+        }
 
         ProcessPayroll();
-        ProcessInventory();
-        ProcessOrders();
-        GenerateRandomOrders();
-        GenerateDepartmentTasks();
+
+        if (Company.Phase == CompanyPhase.GrandOpening)
+        {
+            ProcessInventory();
+            ProcessOrders();
+            GenerateRandomOrders();
+            GenerateDepartmentTasks();
+        }
+
         AssignEmployeesToTasks();
         ProcessTasks();
-        GenerateRandomEvents();
-        RunCascade();
+
+        if (Company.Phase == CompanyPhase.GrandOpening)
+        {
+            GenerateRandomEvents();
+            RunCascade();
+        }
+
         _calendarEventSystem.Update(this);
         CleanupCompletedTasks();
 
@@ -549,7 +609,11 @@ public class SimulationEngine
     }
 
     // =========================================================
-    // SEEDING — all delegated to industry context
+    // SEEDING — founding state: empty departments, no staff, no
+    // pre-existing stock. All delegated to industry context for shape
+    // (which item types exist, what the department deltas are); the
+    // actual starting quantities are zeroed here so nothing is
+    // pre-built before the players do it themselves.
     // =========================================================
 
     private void SeedDepartments()
@@ -560,72 +624,65 @@ public class SimulationEngine
             return;
         }
 
-        // Absolute fallback — no industry context available
+        // Absolute fallback — no industry context available. Same
+        // founding rule applies: zero budget, zero efficiency, Finance
+        // allocates from here.
         Company.Departments =
         [
-            new() { Type = DepartmentType.HumanResources, Budget = 10_000, Efficiency = 50 },
-            new() { Type = DepartmentType.Finance,        Budget = 15_000, Efficiency = 60 },
-            new() { Type = DepartmentType.Sales,          Budget = 12_000, Efficiency = 55 },
-            new() { Type = DepartmentType.Marketing,      Budget = 12_000, Efficiency = 50 },
-            new() { Type = DepartmentType.Production,     Budget = 25_000, Efficiency = 70 },
-            new() { Type = DepartmentType.Warehouse,      Budget = 10_000, Efficiency = 50 },
-            new() { Type = DepartmentType.Logistics,      Budget = 15_000, Efficiency = 60 },
+            new() { Type = DepartmentType.HumanResources, Budget = 0, Efficiency = 0 },
+            new() { Type = DepartmentType.Finance,        Budget = 0, Efficiency = 0 },
+            new() { Type = DepartmentType.Sales,          Budget = 0, Efficiency = 0 },
+            new() { Type = DepartmentType.Marketing,      Budget = 0, Efficiency = 0 },
+            new() { Type = DepartmentType.Production,     Budget = 0, Efficiency = 0 },
+            new() { Type = DepartmentType.Warehouse,      Budget = 0, Efficiency = 0 },
+            new() { Type = DepartmentType.Logistics,      Budget = 0, Efficiency = 0 },
         ];
     }
 
+    /// <summary>
+    /// Founding starts with zero staff across every department. HR
+    /// hires from here via HireEmployeeCommand, or by fulfilling a
+    /// WorkforceRequest raised by another department.
+    /// IIndustrySimulationContext.GetInitialEmployees() still exists
+    /// and still returns each industry's flavor roster — it's just no
+    /// longer consumed here to pre-populate the company. Left in place
+    /// as reference data in case it's useful later (e.g. a "suggested
+    /// hires" list in the recruitment UI).
+    /// </summary>
     private void SeedEmployees()
     {
-        List<Employee> roster;
-
-        if (IndustryContext != null)
-        {
-            roster = IndustryContext.GetInitialEmployees().ToList();
-        }
-        else
-        {
-            roster =
-            [
-                new() { Id = Guid.NewGuid(), Name = "Alice",  Role = EmployeeRole.Manager,    Department = DepartmentType.Finance,        Salary = 5_000, Morale = 75, Productivity = 80 },
-                new() { Id = Guid.NewGuid(), Name = "Bob",    Role = EmployeeRole.Worker,     Department = DepartmentType.Warehouse,      Salary = 2_500, Morale = 60, Productivity = 70 },
-                new() { Id = Guid.NewGuid(), Name = "Carol",  Role = EmployeeRole.Supervisor, Department = DepartmentType.Production,     Salary = 3_500, Morale = 65, Productivity = 75 },
-                new() { Id = Guid.NewGuid(), Name = "David",  Role = EmployeeRole.Worker,     Department = DepartmentType.Logistics,      Salary = 2_600, Morale = 55, Productivity = 68 },
-                new() { Id = Guid.NewGuid(), Name = "Emma",   Role = EmployeeRole.Manager,    Department = DepartmentType.Marketing,      Salary = 4_800, Morale = 80, Productivity = 82 },
-                new() { Id = Guid.NewGuid(), Name = "Frank",  Role = EmployeeRole.Worker,     Department = DepartmentType.Sales,          Salary = 2_800, Morale = 70, Productivity = 72 },
-                new() { Id = Guid.NewGuid(), Name = "Grace",  Role = EmployeeRole.Worker,     Department = DepartmentType.HumanResources, Salary = 2_700, Morale = 68, Productivity = 71 },
-                new() { Id = Guid.NewGuid(), Name = "Henry",  Role = EmployeeRole.Worker,     Department = DepartmentType.Production,     Salary = 2_600, Morale = 60, Productivity = 65 },
-            ];
-        }
-
-        int targetCount = Math.Max(1, (int)Math.Round(roster.Count * _industryProfile.EmployeeCountMultiplier));
-        var selected = roster.Take(targetCount).ToList();
-
-        // If multiplier pushes above base roster, pad with generic workers
-        int extras = targetCount - selected.Count;
-        for (int i = 0; i < extras; i++)
-        {
-            selected.Add(new Employee
-            {
-                Id = Guid.NewGuid(),
-                Name = $"Worker {i + 1}",
-                Role = EmployeeRole.Worker,
-                Department = DepartmentType.Sales,
-                Salary = 2_500,
-                Morale = 60,
-                Productivity = 65,
-            });
-        }
-
-        Company.Employees = selected;
+        Company.Employees = [];
     }
 
+    /// <summary>
+    /// Warehouse starts with the industry's item catalog (names, unit
+    /// costs, min/max stock) but nothing physically stocked — every
+    /// item's Quantity is zeroed. This keeps ConsumeProductionResources,
+    /// the restock UI's item dropdowns, and per-item spoilage logic all
+    /// working exactly as before, while genuinely representing an empty
+    /// warehouse: nothing exists until Warehouse spends money to
+    /// receive stock via ReceiveStock().
+    ///
+    /// Sitting at Quantity 0 would normally trip the low-stock event
+    /// (Quantity <= MinimumStock) every tick — see the CompanyPhase
+    /// gate in Update(), which skips ProcessInventory() entirely during
+    /// PreOpening specifically so an intentionally empty warehouse isn't
+    /// penalized for existing.
+    /// </summary>
     private void SeedInventory()
     {
-        if (IndustryContext != null)
+        if (IndustryContext == null)
         {
-            Company.Inventory = IndustryContext.GetInitialInventory().ToList();
+            Company.Inventory = [];
             return;
         }
 
-        
+        Company.Inventory = IndustryContext.GetInitialInventory()
+            .Select(item =>
+            {
+                item.Quantity = 0;
+                return item;
+            })
+            .ToList();
     }
 }

@@ -1,11 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 using Headquartz.App.Models;
 using Headquartz.Domain.Enums;
 using Headquartz.Simulation.Events;
+using Headquartz.Simulation.Phase;
 using Headquartz.Simulation.Systems;
+using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace Headquartz.App.Services;
 
@@ -97,6 +97,14 @@ public class NotificationService
                 e.Request.Status == WorkforceRequestStatus.Fulfilled ? "BrushBadgeSuccessBg" : "BrushAlertWarningBg",
                 e.Request.Status == WorkforceRequestStatus.Fulfilled ? "BrushSuccess" : "BrushWarning",
                 e.Request.RequestingDepartment));
+
+        // ── Company lifecycle ────────────────────────────────────────
+
+        engine.Events.Subscribe<CompanyEnteredGrandOpeningEvent>(_ =>
+            Fire("🎉 Grand Opening!",
+                 "The founding phase is over — the full simulation is live. Random events, cascading stress, and auto-generated work are now switched on.",
+                 "medium", "BrushBadgeSuccessBg", "BrushSuccess",
+                 DepartmentType.Management));
     }
 
     private void Fire(

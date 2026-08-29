@@ -71,6 +71,16 @@ public class CalendarEventDefinition
     /// </summary>
     public double? RandomChancePerTick { get; set; }
 
+    /// <summary>
+    /// True for events triggered explicitly by a game command rather than
+    /// by calendar date — currently just "grand-opening", which fires
+    /// when the team declares readiness via DeclareGrandOpeningCommand,
+    /// not on a fixed day. CalendarEventSystem's date-based scan skips
+    /// any definition with this set; it only fires via
+    /// CalendarEventSystem.TriggerManualEvent.
+    /// </summary>
+    public bool IsManualTrigger { get; set; }
+
     // ── Effects ──────────────────────────────────────────────
 
     /// <summary>
@@ -128,4 +138,4 @@ public class CalendarEventDefinition
 
         return null;
     }
-}
+}   

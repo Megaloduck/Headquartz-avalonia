@@ -14,6 +14,13 @@ public class Company
     public decimal Cash { get; set; }
     public int Reputation { get; set; }
 
+    /// <summary>
+    /// Where the company is in its lifecycle. Starts PreOpening — see
+    /// CompanyPhase for what that gates during founding. Flips to
+    /// GrandOpening via DeclareGrandOpeningCommand.
+    /// </summary>
+    public CompanyPhase Phase { get; set; } = CompanyPhase.PreOpening;
+
     public List<Employee> Employees { get; set; } = [];
     public List<InventoryItem> Inventory { get; set; } = [];
     public List<SalesOrder> Orders { get; set; } = [];

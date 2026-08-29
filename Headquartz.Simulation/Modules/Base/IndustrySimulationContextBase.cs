@@ -125,11 +125,28 @@ public abstract class IndustrySimulationContextBase : IIndustrySimulationContext
     public virtual bool HasPerishableInventory => false;
 
     /// <summary>
-    /// Default department seed: the standard 7 departments at baseline
-    /// budget/efficiency, adjusted by this industry's own profile deltas
-    /// (DepartmentEfficiencyDelta / DepartmentBudgetDelta). Override this
-    /// only if an industry needs department stats that can't be expressed
-    /// as a delta on the shared baseline.
+    /// Founding-state department seed: all 7 departments start at
+    /// Budget 0 and Efficiency 0, full stop — nothing pre-funds a
+    /// department regardless of industry.
+    ///
+    /// DepartmentEfficiencyDelta still applies on top as industry
+    /// flavor (how naturally suited this industry is to a department
+    /// once it's actually running — e.g. Automotive Production runs
+    /// efficient, Entertainment Warehouse doesn't). Efficiency is a
+    /// low-stakes multiplier, not a gate, so a little pre-founding
+    /// asymmetry there is harmless.
+    ///
+    /// DepartmentBudgetDelta is deliberately NOT applied here anymore.
+    /// Applying it would quietly pre-fund some departments straight
+    /// from industry flavor, which bypasses the actual founding
+    /// mechanic: Finance allocates the starting Cash pool out to
+    /// departments via RequestBudgetIncreaseCommand /
+    /// ReviewBudgetRequestCommand. Every department starts at literally
+    /// $0 Budget so that allocation is the only way any of them get
+    /// funded.
+    ///
+    /// Override this only if an industry needs department stats that
+    /// genuinely can't be expressed as a delta on the shared baseline.
     /// </summary>
     public virtual IReadOnlyList<Department> GetInitialDepartments()
     {
@@ -137,22 +154,19 @@ public abstract class IndustrySimulationContextBase : IIndustrySimulationContext
 
         var departments = new List<Department>
         {
-            new() { Type = DepartmentType.HumanResources, Budget = 10_000, Efficiency = 50 },
-            new() { Type = DepartmentType.Finance,        Budget = 15_000, Efficiency = 60 },
-            new() { Type = DepartmentType.Sales,          Budget = 12_000, Efficiency = 55 },
-            new() { Type = DepartmentType.Marketing,      Budget = 12_000, Efficiency = 50 },
-            new() { Type = DepartmentType.Production,     Budget = 25_000, Efficiency = 70 },
-            new() { Type = DepartmentType.Warehouse,      Budget = 10_000, Efficiency = 50 },
-            new() { Type = DepartmentType.Logistics,      Budget = 15_000, Efficiency = 60 },
+            new() { Type = DepartmentType.HumanResources, Budget = 0, Efficiency = 0 },
+            new() { Type = DepartmentType.Finance,        Budget = 0, Efficiency = 0 },
+            new() { Type = DepartmentType.Sales,          Budget = 0, Efficiency = 0 },
+            new() { Type = DepartmentType.Marketing,      Budget = 0, Efficiency = 0 },
+            new() { Type = DepartmentType.Production,     Budget = 0, Efficiency = 0 },
+            new() { Type = DepartmentType.Warehouse,      Budget = 0, Efficiency = 0 },
+            new() { Type = DepartmentType.Logistics,      Budget = 0, Efficiency = 0 },
         };
 
         foreach (var dept in departments)
         {
             if (profile.DepartmentEfficiencyDelta.TryGetValue(dept.Type, out int effDelta))
                 dept.Efficiency = Math.Clamp(dept.Efficiency + effDelta, 0, 100);
-
-            if (profile.DepartmentBudgetDelta.TryGetValue(dept.Type, out decimal budgetDelta))
-                dept.Budget = Math.Max(0, dept.Budget + budgetDelta);
         }
 
         return departments;
