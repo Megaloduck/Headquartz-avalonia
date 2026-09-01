@@ -28,6 +28,19 @@ public partial class CompanyDashboardViewModel : ViewModelBase
     [ObservableProperty] private int _companyHealth;
     [ObservableProperty] private string _industry = "";
 
+    /// <summary>
+    /// Player-facing label for Company.Phase, e.g. "🚧 Pre-Opening" or
+    /// "🎉 Grand Opening". Shown as a chip next to the Industry chip in
+    /// CompanyView's header so players can tell at a glance whether the
+    /// founding-phase gates (see CompanyPhase, WarehouseSystem,
+    /// HumanResourcesSystem, SimulationEngine.ProcessInventory) are
+    /// still active.
+    /// </summary>
+    [ObservableProperty] private string _phaseLabel = "";
+
+    /// <summary>True while Company.Phase == CompanyPhase.PreOpening.</summary>
+    [ObservableProperty] private bool _isPreOpening;
+
     // ── Collections ──────────────────────────────────────────
 
     public ObservableCollection<KpiModel> CoreKpis { get; } = [];
@@ -59,6 +72,10 @@ public partial class CompanyDashboardViewModel : ViewModelBase
         Reputation = company.Reputation;
         EmployeeCount = company.Employees.Count;
         Industry = company.Industry.ToString();
+
+        IsPreOpening = company.Phase == CompanyPhase.PreOpening;
+        PhaseLabel = IsPreOpening ? "🚧 Pre-Opening" : "🎉 Grand Opening";
+
         ActiveTasks = company.Tasks.Count(t =>
             t.Status != Domain.Enums.CompanyTaskStatus.Completed);
         ActiveOrders = company.Orders.Count(o =>
@@ -81,7 +98,7 @@ public partial class CompanyDashboardViewModel : ViewModelBase
         CoreKpis.Add(new KpiModel { Label = "Cash", Value = Cash.ToString("$#,##0") });
         CoreKpis.Add(new KpiModel { Label = "Revenue", Value = Revenue.ToString("$#,##0") });
         CoreKpis.Add(new KpiModel { Label = "Expenses", Value = Expenses.ToString("$#,##0") });
-        CoreKpis.Add(new KpiModel { Label = "Reputation", Value = $"{Reputation}/100"    });
+        CoreKpis.Add(new KpiModel { Label = "Reputation", Value = $"{Reputation}/100" });
         CoreKpis.Add(new KpiModel { Label = "Employees", Value = EmployeeCount.ToString() });
         CoreKpis.Add(new KpiModel { Label = "Active Tasks", Value = ActiveTasks.ToString() });
         CoreKpis.Add(new KpiModel { Label = "Active Orders", Value = ActiveOrders.ToString() });

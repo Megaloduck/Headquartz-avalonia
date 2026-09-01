@@ -11,6 +11,7 @@ using CommunityToolkit.Mvvm.Input;
 
 using Headquartz.App.Models;
 using Headquartz.App.Services;
+using Headquartz.Domain.Enums;
 
 namespace Headquartz.App.ViewModels;
 
@@ -162,6 +163,7 @@ public partial class ForecastViewModel : ViewModelBase
                     ColorTag = def.ColorTag,
                     EffectSummary = effectSummary,
                     IsActiveToday = date == today,
+                    IsCompanyAgenda = def.Category == CalendarEventCategory.CompanyAgenda,
                 });
             }
 
@@ -201,6 +203,7 @@ public partial class ForecastViewModel : ViewModelBase
                 ColorTag = def.ColorTag,
                 EffectSummary = effectSummary,
                 IsActiveToday = true,
+                IsCompanyAgenda = def.Category == CalendarEventCategory.CompanyAgenda,
             });
         }
 
@@ -218,6 +221,7 @@ public partial class ForecastViewModel : ViewModelBase
                     ColorTag = nextEvent.ColorTag,
                     EffectSummary = effectSummary,
                     IsActiveToday = false,
+                    IsCompanyAgenda = nextEvent.Category == CalendarEventCategory.CompanyAgenda,
                 });
             }
         }

@@ -70,6 +70,18 @@
                         </StackPanel>
                     </Grid>
 
+                    <!-- Legend: Company Agenda vs Seasonal -->
+                    <StackPanel Orientation="Horizontal" Spacing="16">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <TextBlock Text="🏢" FontSize="11"/>
+                            <TextBlock Text="Company Agenda" FontSize="11" Foreground="{DynamicResource BrushTextMuted}"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <Border Width="10" Height="10" CornerRadius="5" Background="{DynamicResource BrushInfo}"/>
+                            <TextBlock Text="Seasonal Event" FontSize="11" Foreground="{DynamicResource BrushTextMuted}"/>
+                        </StackPanel>
+                    </StackPanel>
+
                     <!-- Day-of-week headers -->
                     <Grid ColumnDefinitions="*,*,*,*,*,*,*">
                         <TextBlock Grid.Column="0" Text="SUN" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource BrushTextMuted}" HorizontalAlignment="Center"/>
@@ -115,12 +127,19 @@
                                                         Background="{Binding ColorTag, Converter={StaticResource EventColorTagConverter}}"
                                                         Opacity="0.85">
                                                         <StackPanel>
-                                                            <TextBlock
-                                                                Text="{Binding Title}"
-                                                                FontSize="10"
-                                                                FontWeight="SemiBold"
-                                                                Foreground="White"
-                                                                TextTrimming="CharacterEllipsis"/>
+                                                            <StackPanel Orientation="Horizontal" Spacing="3">
+                                                                <TextBlock
+                                                                    Text="🏢"
+                                                                    FontSize="8"
+                                                                    IsVisible="{Binding IsCompanyAgenda}"
+                                                                    VerticalAlignment="Center"/>
+                                                                <TextBlock
+                                                                    Text="{Binding Title}"
+                                                                    FontSize="10"
+                                                                    FontWeight="SemiBold"
+                                                                    Foreground="White"
+                                                                    TextTrimming="CharacterEllipsis"/>
+                                                            </StackPanel>
                                                             <TextBlock
                                                                 Text="{Binding EffectSummary}"
                                                                 FontSize="9"
@@ -164,6 +183,19 @@
                                             VerticalAlignment="Center"
                                             Margin="0,0,12,0"/>
                                         <StackPanel Grid.Column="1" Spacing="2">
+                                            <Border
+                                                IsVisible="{Binding IsCompanyAgenda}"
+                                                Padding="6,1"
+                                                CornerRadius="4"
+                                                Background="{DynamicResource BrushBgInput}"
+                                                HorizontalAlignment="Left"
+                                                Margin="0,0,0,2">
+                                                <TextBlock
+                                                    Text="COMPANY AGENDA"
+                                                    FontSize="9"
+                                                    FontWeight="Bold"
+                                                    Foreground="{DynamicResource BrushTextMuted}"/>
+                                            </Border>
                                             <TextBlock FontSize="15" FontWeight="Bold" Text="{Binding Title}"/>
                                             <TextBlock FontSize="12" Foreground="{DynamicResource BrushTextSecondary}" Text="{Binding Subtitle}"/>
                                             <TextBlock

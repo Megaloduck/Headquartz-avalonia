@@ -27,6 +27,8 @@ public class CalendarEventDefinition
     /// </summary>
     public string ColorTag { get; set; } = "Blue";
 
+    public CalendarEventCategory Category { get; set; } = CalendarEventCategory.SeasonalEvent;  
+
     public EventSeverity Severity { get; set; } = EventSeverity.Low;
 
     // ── Scheduling ───────────────────────────────────────────

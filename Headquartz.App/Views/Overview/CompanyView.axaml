@@ -20,6 +20,20 @@
 							BorderThickness="1"
 							VerticalAlignment="Center">
 							<TextBlock
+								Text="{Binding PhaseLabel}"
+								FontSize="11"
+								FontWeight="Medium"
+								Foreground="{DynamicResource BrushTextMuted}"
+								VerticalAlignment="Center"/>
+						</Border>
+						<Border
+							Padding="6,2"
+							CornerRadius="4"
+							Background="{DynamicResource BrushBgElevated}"
+							BorderBrush="{DynamicResource BrushBorderDefault}"
+							BorderThickness="1"
+							VerticalAlignment="Center">
+							<TextBlock
 								Text="{Binding Industry}"
 								FontSize="11"
 								FontWeight="Medium"

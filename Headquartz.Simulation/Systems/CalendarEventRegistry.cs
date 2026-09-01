@@ -43,6 +43,7 @@ public static class CalendarEventRegistry
             Campaign = "Fresh Start",
             Description = "Launch of the company in the simulator market.",
             ColorTag = "Green",
+            Category = CalendarEventCategory.CompanyAgenda,  
             Severity = EventSeverity.Medium,
             FixedDate = new DateTime(2026, 1, 1),
             DurationDays = 1,

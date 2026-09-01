@@ -26,6 +26,15 @@ public partial class CalendarEventCardModel : ObservableObject
     /// E.g., "Marketing +10%", "Discount 20%", "Labour pays +20%".
     /// </summary>
     [ObservableProperty] private string _effectSummary = string.Empty;
-
+        
     [ObservableProperty] private bool _isActiveToday;
+
+    /// <summary>
+    /// True when this event's source definition is CalendarEventCategory.CompanyAgenda
+    /// (Grand Opening, Payroll cycles) rather than CalendarEventCategory.SeasonalEvent
+    /// (holidays, sales periods, black-swan events). Drives the small badge/marker
+    /// in the calendar and today's-event card so players can tell company-driven
+    /// events apart from world/market-driven ones at a glance.
+    /// </summary>
+    [ObservableProperty] private bool _isCompanyAgenda;
 }

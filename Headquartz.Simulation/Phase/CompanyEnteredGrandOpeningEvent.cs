@@ -14,6 +14,5 @@ namespace Headquartz.Simulation.Phase
     public class CompanyEnteredGrandOpeningEvent : IGameEvent
     {
         public DateTime Timestamp { get; } = DateTime.UtcNow;
+    } 
     }
-
-}

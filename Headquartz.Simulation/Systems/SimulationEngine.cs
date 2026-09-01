@@ -201,6 +201,17 @@ public class SimulationEngine
         }
 
         _calendarEventSystem.Update(this);
+
+        // Founding phase ends when the "Grand Opening" CompanyAgenda event's
+        // own active window closes — see CompanyPhase.cs. Tune the length of
+        // PreOpening by changing DurationDays on that definition, not here.
+        if (Company.Phase == CompanyPhase.PreOpening &&
+            !_calendarEventSystem.ActiveEvents.Any(a => a.Definition.Id == "grand-opening"))
+        {
+            Company.Phase = CompanyPhase.GrandOpening;
+        }
+
+        CleanupCompletedTasks();
         CleanupCompletedTasks();
 
         OnUpdated?.Invoke();
@@ -280,6 +291,7 @@ public class SimulationEngine
 
     private void ProcessInventory()
     {
+        if (Company.Phase == CompanyPhase.PreOpening) return;
         if (IndustryContext != null)
             IndustryContext.ProcessInventory(this);
         else

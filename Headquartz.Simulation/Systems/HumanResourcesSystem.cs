@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using Headquartz.Domain.Enums;
 using Headquartz.Domain.Entities;
 using Headquartz.Simulation.Events;
 
@@ -18,7 +19,8 @@ public class HumanResourcesSystem : ISimulationSystem
     {
         UpdateMoraleAndProductivity(engine);
         ProcessResignations(engine);
-        UpdateDepartmentStress(engine);
+        if (engine.Company.Phase != CompanyPhase.PreOpening)   // ADD
+            UpdateDepartmentStress(engine);
     }
 
     // =========================================================
