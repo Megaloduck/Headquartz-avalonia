@@ -56,9 +56,9 @@ public partial class HRPayrollViewModel : ViewModelBase
         CanCoverPayroll = company.Cash >= TotalPayroll;
         IsPayrollCritical = company.Cash < TotalPayroll;
 
-        // Ticks cycle every 10; next payroll at next multiple of 10
+        // Ticks cycle by payroll schedule — see PayrollSchedule (work-hour × Mon-Fri × 4week, scaled by difficulty)
         long currentTick = clock.Tick;
-        long nextPayrollTick = PayrollSchedule.NextPayrollTick(currentTick);   
+        long nextPayrollTick = PayrollSchedule.NextPayrollTick(currentTick, _simulation.Engine.Profile.TicksPerWorkHour);  
         TicksUntilPayroll = (int)(nextPayrollTick - currentTick);
 
         // KPIs

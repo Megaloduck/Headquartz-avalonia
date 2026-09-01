@@ -257,7 +257,7 @@ public class SimulationEngine
 
     private void ProcessPayroll()
     {
-        if (!PayrollSchedule.IsPayrollTick(Clock.Tick)) return;   
+        if (!PayrollSchedule.IsPayrollTick(Clock.Tick, Profile.TicksPerWorkHour)) return; 
 
         decimal payroll = Company.Employees.Sum(e => e.Salary);
 

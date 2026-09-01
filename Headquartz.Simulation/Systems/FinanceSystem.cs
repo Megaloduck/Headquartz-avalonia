@@ -52,7 +52,7 @@ public class FinanceSystem : ISimulationSystem
 
     private static void ProcessLoanInterest(SimulationEngine engine)
     {
-        if (!PayrollSchedule.IsPayrollTick(engine.Clock.Tick)) return;
+        if (!PayrollSchedule.IsPayrollTick(engine.Clock.Tick, engine.Profile.TicksPerWorkHour)) return;   
 
         foreach (var loan in engine.Company.Loans
                      .Where(l => !l.IsRepaid))

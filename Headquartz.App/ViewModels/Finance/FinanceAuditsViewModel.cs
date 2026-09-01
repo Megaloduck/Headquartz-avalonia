@@ -174,6 +174,7 @@ public partial class FinanceAuditsViewModel : ViewModelBase
 
         // ── 30-Tick Cash Projection (moved from Forecast) ──────
         var clock = _simulation.Engine.Clock;
+        int ticksPerWorkHour = _simulation.Engine.Profile.TicksPerWorkHour;   
         CurrentCash = company.Cash;
 
         // Estimate revenue per tick from recent order flow
@@ -202,7 +203,7 @@ public partial class FinanceAuditsViewModel : ViewModelBase
         for (int i = 1; i <= 30; i++)
         {
             long projectedTick = currentTick + i;
-            bool isPayroll = PayrollSchedule.IsPayrollTick(projectedTick);
+            bool isPayroll = PayrollSchedule.IsPayrollTick(projectedTick, ticksPerWorkHour);   
 
             decimal tickExpense = ExpensePerTick;
             decimal tickRevenue = RevenuePerTick;
