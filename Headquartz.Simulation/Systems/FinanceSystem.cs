@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-using System;
-using System.Linq;
-
-using Headquartz.Domain.Entities;
+﻿using Headquartz.Domain.Entities;
 using Headquartz.Simulation.Events;
+using Headquartz.Simulation.Schedulers;
+using System;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace Headquartz.Simulation.Systems;
 
@@ -53,7 +52,7 @@ public class FinanceSystem : ISimulationSystem
 
     private static void ProcessLoanInterest(SimulationEngine engine)
     {
-        if (engine.Clock.Tick % 10 != 0) return;
+        if (!PayrollSchedule.IsPayrollTick(engine.Clock.Tick)) return;
 
         foreach (var loan in engine.Company.Loans
                      .Where(l => !l.IsRepaid))

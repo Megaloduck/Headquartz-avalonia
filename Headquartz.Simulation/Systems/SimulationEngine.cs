@@ -1,12 +1,11 @@
 using Headquartz.Domain.Entities;
 using Headquartz.Domain.Enums;
-
-using Headquartz.Simulation.Events;
-using Headquartz.Simulation.Ticks;
-using Headquartz.Simulation.Commands;
-using Headquartz.Simulation.Modules.Base;
-
 using Headquartz.Shared.Networking;
+using Headquartz.Simulation.Commands;
+using Headquartz.Simulation.Events;
+using Headquartz.Simulation.Modules.Base;
+using Headquartz.Simulation.Schedulers;
+using Headquartz.Simulation.Ticks;
 
 namespace Headquartz.Simulation.Systems;
 
@@ -258,7 +257,7 @@ public class SimulationEngine
 
     private void ProcessPayroll()
     {
-        if (Clock.Tick % 10 != 0) return;
+        if (!PayrollSchedule.IsPayrollTick(Clock.Tick)) return;   
 
         decimal payroll = Company.Employees.Sum(e => e.Salary);
 

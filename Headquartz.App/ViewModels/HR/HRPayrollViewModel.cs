@@ -4,6 +4,7 @@ using Headquartz.App.Converters;
 using Headquartz.App.Models;
 using Headquartz.App.Services;
 using Headquartz.Domain.Entities;
+using Headquartz.Simulation.Schedulers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -57,7 +58,7 @@ public partial class HRPayrollViewModel : ViewModelBase
 
         // Ticks cycle every 10; next payroll at next multiple of 10
         long currentTick = clock.Tick;
-        long nextPayrollTick = ((currentTick / 10) + 1) * 10;
+        long nextPayrollTick = PayrollSchedule.NextPayrollTick(currentTick);   
         TicksUntilPayroll = (int)(nextPayrollTick - currentTick);
 
         // KPIs

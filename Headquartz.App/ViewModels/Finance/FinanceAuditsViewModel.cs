@@ -5,6 +5,7 @@ using Headquartz.App.Models;
 using Headquartz.App.Services;
 using Headquartz.Domain.Entities;
 using Headquartz.Domain.Enums;
+using Headquartz.Simulation.Schedulers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -201,7 +202,7 @@ public partial class FinanceAuditsViewModel : ViewModelBase
         for (int i = 1; i <= 30; i++)
         {
             long projectedTick = currentTick + i;
-            bool isPayroll = projectedTick % 10 == 0;
+            bool isPayroll = PayrollSchedule.IsPayrollTick(projectedTick);
 
             decimal tickExpense = ExpensePerTick;
             decimal tickRevenue = RevenuePerTick;
